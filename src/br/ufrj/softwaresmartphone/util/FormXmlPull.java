@@ -196,9 +196,14 @@ public final class FormXmlPull {
 		if( att.equals( "multiple" ) ) {
 			options.setChoiceType( ChoiceType.multiple );
 		}
-		String value = readText( parser ).trim();
-		for( String option : value.split("#") ) {
-			options.add( option );
+		while( parser.next() != XmlPullParser.END_TAG ) {
+			if( parser.getEventType() != XmlPullParser.START_TAG ) {
+				continue;
+			}
+			String name = parser.getName();
+			if( name.equals( "option" ) ) {
+				options.add( readOption(parser) );
+			}
 		}
 		parser.require(XmlPullParser.END_TAG, ns, "options");
 
@@ -218,16 +223,43 @@ public final class FormXmlPull {
 	private static void writeOptions( Options options, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException {
 		serializer.startTag( ns, "options" );
 		serializer.attribute( ns, "choice", String.valueOf( options.getChoiceType() ) );
-		StringBuilder strOptions = new StringBuilder();
 		Iterator<String> it = options.iterator();
-		strOptions.append( it.next() );
 		while( it.hasNext() ) {
-			strOptions.append( "#" + it.next() );
+			writeOption( it.next(), serializer );
 		}
-		serializer.text( strOptions.toString() );
 		serializer.endTag( ns, "options" );
 	}
 
+	/**
+	 * Internal method that parses a single option.
+	 * @param parser the responsible for parsing.
+	 * @return the resultant options from parse.
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
+	private static String readOption( XmlPullParser parser ) throws XmlPullParserException, IOException
+	{
+		parser.require( XmlPullParser.START_TAG, ns, "option" );
+		String value = readText( parser ).trim();
+		parser.require( XmlPullParser.END_TAG, ns, "option" );
+		return value;
+	}
+
+	/**
+	 * Internal method that serializes a single option.
+	 * @param option the option to be serialized.
+	 * @param serializer the responsible for serialize.
+	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	private static void writeOption( String option, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException
+	{
+		serializer.startTag( ns, "option" );
+		serializer.text( option );
+		serializer.endTag( ns, "option" );
+	}
+	
 	/**
 	 * Internal method that extracts text values.
 	 * @param parser the responsible for parsing.

@@ -3,7 +3,6 @@ package br.ufrj.softwaresmartphone.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -91,14 +90,12 @@ public final class FormSAX {
 						if( item.hasOptions() ) {
 							AttributesImpl choiceAtt = new AttributesImpl();
 							choiceAtt.addAttribute( "", "", "choice", "", String.valueOf( item.getOptions().getChoiceType() ) );
-							StringBuilder options = new StringBuilder();
-							Iterator<String> it = item.getOptions().iterator();
-							options.append( it.next() );
-							while( it.hasNext() ) {
-								options.append( "#" + it.next() );
-							}
 							handler.startElement( "", "", "options", choiceAtt );
-							handler.characters( options.toString().toCharArray(), 0, options.length());
+							for( String option : item.getOptions() ) {
+								handler.startElement( "", "", "option", choiceAtt );
+								handler.characters( option.toCharArray(), 0, option.length() );
+								handler.endElement( "", "", "option" );
+							}
 							handler.endElement( "", "", "options" );
 						}
 					handler.endElement( "", "", "item" );
@@ -149,10 +146,10 @@ public final class FormSAX {
 				m_currentItem.setQuestion( m_builder );
 			} else
 			if( localName.equals( "options" ) ) {
-				for( String option : m_builder.split("#") ) {
-					m_currentOptions.add( option );
-				}
 				m_currentItem.setOptions( m_currentOptions );
+			} else
+			if( localName.equals( "option" ) ) {
+				m_currentOptions.add( m_builder );
 			} else {
 				throw new SAXException( "Invalid tag: " + localName );
 			}
@@ -193,6 +190,8 @@ public final class FormSAX {
 				} else {
 					throw new SAXException( "Missing required attribute 'choice'" );
 				}
+			} else
+			if( localName.equals( "option" ) ) {
 			} else {
 				throw new SAXException( "Invalid tag: " + localName );
 			}
