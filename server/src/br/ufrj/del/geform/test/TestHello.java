@@ -11,7 +11,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 
-public class Test {
+public class TestHello {
 
 	private final static String uri = "http://localhost:8080/GeFormWS";
 	private final static String pattern = "rest";
