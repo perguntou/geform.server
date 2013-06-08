@@ -6,9 +6,18 @@ package br.ufrj.del.geform.bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import br.ufrj.del.geform.util.DateAdapter;
+
 /**
- *
- */
+*
+*/
+@XmlRootElement
+@XmlType(propOrder={"id","timestamp","author","title","description","items"})
 public class Form {
 
 	private Long id;
@@ -83,6 +92,7 @@ public class Form {
 	/**
 	 * @return the timestamp
 	 */
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	public Date getTimestamp() {
 		return timestamp;
 	}
@@ -97,6 +107,7 @@ public class Form {
 	/**
 	 * @return the items
 	 */
+	@XmlElement(name="item")
 	public List<Item> getItems() {
 		return items;
 	}

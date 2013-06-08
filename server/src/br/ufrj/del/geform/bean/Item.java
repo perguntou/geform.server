@@ -5,12 +5,20 @@ package br.ufrj.del.geform.bean;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import br.ufrj.del.geform.util.Type;
 
 
 /**
- *
- */
+*
+*/
+@XmlRootElement
+@XmlType(propOrder={"question","options"})
 public class Item {
 
 	private String question;
@@ -40,6 +48,8 @@ public class Item {
 	/**
 	 * @return the options
 	 */
+	@XmlElementWrapper(name="options")
+	@XmlElement(name="option")
 	public List<String> getOptions() {
 		return options;
 	}
@@ -54,6 +64,7 @@ public class Item {
 	/**
 	 * @return the type
 	 */
+	@XmlAttribute
 	public Type getType() {
 		return type;
 	}
