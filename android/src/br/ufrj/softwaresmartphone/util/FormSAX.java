@@ -3,6 +3,8 @@ package br.ufrj.softwaresmartphone.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -17,8 +19,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
-
-import br.ufrj.softwaresmartphone.util.Options.ChoiceType;
 
 /**
  * This class enables the conversion between a XML based stream
@@ -83,16 +83,16 @@ public final class FormSAX {
 					handler.characters( form.title().toCharArray(), 0, form.title().length() );
 				handler.endElement( "", "", "title" );
 				for( Item item : form ) {
-					handler.startElement( "", "", "item" , null );
+					AttributesImpl typeAtt = new AttributesImpl();
+					typeAtt.addAttribute( "", "", "type", "", item.getType().toString() );
+					handler.startElement( "", "", "item" , typeAtt );
 						handler.startElement( "", "", "question" , null );
 							handler.characters( item.getQuestion().toCharArray(), 0, item.getQuestion().length() );
 						handler.endElement( "", "", "question" );
 						if( item.hasOptions() ) {
-							AttributesImpl choiceAtt = new AttributesImpl();
-							choiceAtt.addAttribute( "", "", "choice", "", String.valueOf( item.getOptions().getChoiceType() ) );
-							handler.startElement( "", "", "options", choiceAtt );
+							handler.startElement( "", "", "options", null );
 							for( String option : item.getOptions() ) {
-								handler.startElement( "", "", "option", choiceAtt );
+								handler.startElement( "", "", "option", null );
 								handler.characters( option.toCharArray(), 0, option.length() );
 								handler.endElement( "", "", "option" );
 							}
@@ -116,7 +116,7 @@ public final class FormSAX {
 		private Form m_form;
 		private String m_builder;
 		private Item m_currentItem;
-		private Options m_currentOptions;
+		private List<String> m_currentOptions;
 
 		/**
 		 * Returns the handled {@link Form} instance.
@@ -146,6 +146,9 @@ public final class FormSAX {
 				m_currentItem.setQuestion( m_builder );
 			} else
 			if( localName.equals( "options" ) ) {
+				if( m_currentOptions.isEmpty() ) {
+					throw new SAXException( "Missing required element 'option'" );
+				}
 				m_currentItem.setOptions( m_currentOptions );
 			} else
 			if( localName.equals( "option" ) ) {
@@ -171,25 +174,21 @@ public final class FormSAX {
 			if( localName.equals( "title" ) ) {
 			} else
 			if( localName.equals( "item" ) ) {
+				if( attributes == null ) {
+					throw new SAXException( "Missing required attribute 'type'" );
+				}
 				m_currentItem = new Item();
+				String attValue = attributes.getValue( uri, "type" ); 
+				try {
+					m_currentItem.setType( Type.valueOf( attValue ) );
+				} catch( IllegalArgumentException e ) {
+					throw new SAXException( "Invalid value for attribute 'type'" );
+				}
 			} else
 			if( localName.equals( "question" ) ) {
 			} else
 			if( localName.equals( "options" ) ) {
-				if( attributes != null ) {
-					String attValue = attributes.getValue( uri, "choice" ); 
-					m_currentOptions = new Options();
-					if( attValue.equals( "single" ) ) {
-						m_currentOptions.setChoiceType( ChoiceType.single );
-					} else
-					if( attValue.equals( "multiple" ) ) {
-						m_currentOptions.setChoiceType( ChoiceType.multiple );
-					} else {
-						throw new SAXException( "Invalid value for attribute 'choice'" );
-					}	
-				} else {
-					throw new SAXException( "Missing required attribute 'choice'" );
-				}
+				m_currentOptions = new ArrayList<String>();
 			} else
 			if( localName.equals( "option" ) ) {
 			} else {

@@ -1,6 +1,7 @@
 package br.ufrj.softwaresmartphone.geform;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 import android.content.Context;
@@ -24,8 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import br.ufrj.softwaresmartphone.util.Form;
 import br.ufrj.softwaresmartphone.util.Item;
-import br.ufrj.softwaresmartphone.util.Options;
-import br.ufrj.softwaresmartphone.util.Options.ChoiceType;
+import br.ufrj.softwaresmartphone.util.Type;
 
 public class FormPagerActivity extends FragmentActivity {
 
@@ -114,7 +114,9 @@ public class FormPagerActivity extends FragmentActivity {
 			rootView.addView( question );
 			question.setText( m_item.getQuestion() );
 
-			if( !m_item.hasOptions() ) {
+			final Type type = m_item.getType();
+			switch( type ) {
+			case TEXT:
 				final EditText tview = new EditText( context );
 				tview.setLayoutParams( new LayoutParams(
 												ViewGroup.LayoutParams.MATCH_PARENT,
@@ -138,21 +140,28 @@ public class FormPagerActivity extends FragmentActivity {
 					}
 				} );
 				rootView.addView( ok );
-			} else {
+				break;
+			case SINGLE_CHOICE:
 				m_input = new ListView( context );
-				Options options = m_item.getOptions();
-				if( options.getChoiceType() == ChoiceType.single ) {
-					((ListView) m_input).setAdapter( new ArrayAdapter<String>( context, android.R.layout.simple_list_item_single_choice, options ) );
-					((ListView) m_input).setChoiceMode( ListView.CHOICE_MODE_SINGLE );
-				} else
-				if( options.getChoiceType() == ChoiceType.multiple ) {
-					((ListView) m_input).setAdapter( new ArrayAdapter<String>( context, android.R.layout.simple_list_item_multiple_choice, options ) );
-					((ListView) m_input).setChoiceMode( ListView.CHOICE_MODE_MULTIPLE );
-				}
+				List<String> optionsSingle = m_item.getOptions();
+				((ListView) m_input).setAdapter( new ArrayAdapter<String>( context, android.R.layout.simple_list_item_single_choice, optionsSingle ) );
+				((ListView) m_input).setChoiceMode( ListView.CHOICE_MODE_SINGLE );
 				for( int i = 0; i < m_answer.size(); i++ ) {
 					((ListView) m_input).setItemChecked( Integer.parseInt(m_answer.get(i)), true );
 				}
 				rootView.addView( m_input );
+				break;
+			case MULTIPLE_CHOICE:
+				m_input = new ListView( context );
+				List<String> optionsMultiple = m_item.getOptions();
+				((ListView) m_input).setAdapter( new ArrayAdapter<String>( context, android.R.layout.simple_list_item_multiple_choice, optionsMultiple ) );
+				((ListView) m_input).setChoiceMode( ListView.CHOICE_MODE_MULTIPLE );
+				for( int i = 0; i < m_answer.size(); i++ ) {
+					((ListView) m_input).setItemChecked( Integer.parseInt(m_answer.get(i)), true );
+				}
+				rootView.addView( m_input );
+				break;
+				default:
 			}
 
 			return rootView;
