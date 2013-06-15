@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,9 +12,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import br.ufrj.softwaresmartphone.geform.ListFormsFragment.ListFormsListener;
-import br.ufrj.softwaresmartphone.util.Form;
-import br.ufrj.softwaresmartphone.util.FormXmlPull;
+import br.ufrj.del.geform.Constants;
+import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.app.ListFormsFragment.ListFormsListener;
+import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.database.DatabaseHelper;
+import br.ufrj.del.geform.xml.FormXmlPull;
 
 public class FillActivity extends FragmentActivity implements ListFormsListener {
 
@@ -34,7 +38,7 @@ public class FillActivity extends FragmentActivity implements ListFormsListener 
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.softwaresmartphone.geform.ListFormsFragment.ListFormsListener#onFormSelected(br.ufrj.softwaresmartphone.util.Form)
+	 * @see br.ufrj.del.geform.ListFormsFragment.ListFormsListener#onFormSelected(br.ufrj.softwaresmartphone.util.Form)
 	 */
 	@Override
 	public void onFormSelected( Form form ) {
@@ -48,7 +52,7 @@ public class FillActivity extends FragmentActivity implements ListFormsListener 
 
 	@Override
 	public void onFormDownloaded( Form form ) {
-		Long id = GeFormDatabase.getInstance( this.getApplicationContext() ).insertForm( form.title() );
+		Long id = DatabaseHelper.getInstance( this.getApplicationContext() ).insertForm( form.title() );
 		try {
 			FormXmlPull.serialize( form , new FileOutputStream( getDir( "forms", FragmentActivity.MODE_PRIVATE ) + File.separator + String.valueOf( id ) + Constants.extension ) );
 		} catch (IllegalArgumentException e) {
@@ -63,7 +67,7 @@ public class FillActivity extends FragmentActivity implements ListFormsListener 
 			Log.e( "FillActivity", e.getMessage() );
 		}
 
-		m_fragment.m_adapter.changeCursor( GeFormDatabase.getInstance( this ).fetchAllForms() );
+		m_fragment.m_adapter.changeCursor( DatabaseHelper.getInstance( this ).fetchAllForms() );
 
 		this.onFormSelected( form );
 	}

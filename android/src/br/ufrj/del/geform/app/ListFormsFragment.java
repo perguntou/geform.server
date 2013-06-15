@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,8 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
-import br.ufrj.softwaresmartphone.util.Form;
-import br.ufrj.softwaresmartphone.util.FormXmlPull;
+import br.ufrj.del.geform.Constants;
+import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.database.DatabaseHelper;
+import br.ufrj.del.geform.net.DownloadTask;
+import br.ufrj.del.geform.xml.FormXmlPull;
 
 /**
  *
@@ -69,8 +73,8 @@ public class ListFormsFragment extends ListFragment {
 		m_adapter = new SimpleCursorAdapter(
 								getActivity().getBaseContext(),
 								android.R.layout.simple_list_item_1,
-								GeFormDatabase.getInstance( getActivity() ).fetchAllForms(),
-								new String[] { GeFormDatabase.COLUMN_TITLE },
+								DatabaseHelper.getInstance( getActivity() ).fetchAllForms(),
+								new String[] { DatabaseHelper.COLUMN_TITLE },
 								new int[] { android.R.id.text1 },
 								CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
 

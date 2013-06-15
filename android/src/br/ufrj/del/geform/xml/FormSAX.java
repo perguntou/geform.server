@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.util;
+package br.ufrj.del.geform.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +19,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
+
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.bean.Item;
+import br.ufrj.del.geform.bean.Type;
 
 /**
  * This class enables the conversion between a XML based stream

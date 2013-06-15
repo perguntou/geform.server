@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.net;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +9,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import br.ufrj.softwaresmartphone.util.Form;
-import br.ufrj.softwaresmartphone.util.FormXmlPull;
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.xml.FormXmlPull;
 
 /**
  * 

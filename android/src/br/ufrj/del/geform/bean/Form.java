@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.util;
+package br.ufrj.del.geform.bean;
 
 import java.util.ArrayList;
 import java.util.Collection;

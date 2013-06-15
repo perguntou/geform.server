@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.util.List;
 
@@ -13,8 +13,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import br.ufrj.softwaresmartphone.util.Item;
-import br.ufrj.softwaresmartphone.util.Type;
+import br.ufrj.del.geform.Constants;
+import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.bean.Item;
+import br.ufrj.del.geform.bean.Type;
 
 /**
  * 

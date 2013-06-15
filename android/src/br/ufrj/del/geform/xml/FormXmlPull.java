@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.util;
+package br.ufrj.del.geform.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
+
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.bean.Item;
+import br.ufrj.del.geform.bean.Type;
 
 /**
  * This class enables the conversion between a XML based stream

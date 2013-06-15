@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.ufrj.softwaresmartphone.geform"
+    package="br.ufrj.del.geform"
     android:installLocation="internalOnly"
     android:versionCode="1"
     android:versionName="1.0" >
@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.MainActivity"
+            android:name="br.ufrj.del.geform.app.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.EditActivity"
+            android:name="br.ufrj.del.geform.app.EditActivity"
             android:label="@string/title_activity_edit"
             android:parentActivityName="android.support.v4.app.FragmentActivity" >
             <meta-data
@@ -33,7 +33,7 @@
                 android:value="android.support.v4.app.FragmentActivity" />
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.EditFormActivity"
+            android:name="br.ufrj.del.geform.app.EditFormActivity"
             android:label="@string/title_activity_edit_form"
             android:parentActivityName="android.app.ListActivity" >
             <meta-data
@@ -41,7 +41,7 @@
                 android:value="android.app.ListActivity" />
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.EditItemActivity"
+            android:name="br.ufrj.del.geform.app.EditItemActivity"
             android:label="@string/title_activity_edit_item"
             android:parentActivityName="android.app.ListActivity" >
             <meta-data
@@ -49,7 +49,7 @@
                 android:value="android.app.ListActivity" />
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.FormPagerActivity"
+            android:name="br.ufrj.del.geform.app.FormPagerActivity"
             android:label="@string/title_activity_fill"
             android:parentActivityName="android.support.v4.app.FragmentActivity" >
             <meta-data
@@ -57,11 +57,11 @@
                 android:value="android.support.v4.app.FragmentActivity" />
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.FillActivity"
+            android:name="br.ufrj.del.geform.app.FillActivity"
             android:label="@string/title_activity_fill" >
         </activity>
         <activity
-            android:name="br.ufrj.softwaresmartphone.geform.FillFormActivity"
+            android:name="br.ufrj.del.geform.app.FillFormActivity"
             android:label="@string/title_activity_fill" >
         </activity>
     </application>

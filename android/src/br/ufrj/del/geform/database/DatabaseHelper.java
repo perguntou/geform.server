@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.util.Log;
 /**
  * 
  */
-public class GeFormDatabase extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "geform.db";
 	public static final int DATABASE_VERSION = 1;
@@ -26,25 +26,25 @@ public class GeFormDatabase extends SQLiteOpenHelper {
 			COLUMN_TITLE + " text not null" +
 			");";
 
-	private static GeFormDatabase m_instance;
+	private static DatabaseHelper m_instance;
 
 	/**
 	 * 
 	 * @param context to use to open or create the database.
 	 */
-	private GeFormDatabase( Context context ) {
+	private DatabaseHelper( Context context ) {
 		super( context, DATABASE_NAME, null, DATABASE_VERSION );
 	}
 
 	/**
-	 * Return the instance of a GeFormDatabase
+	 * Return the instance of a DatabaseHelper
 	 * that can be used to access the application's database.
 	 * @param context to use to open or create the database.
-	 * @return the GeFormDatabase instance.
+	 * @return the DatabaseHelper instance.
 	 */
-	public static GeFormDatabase getInstance( Context context) {
+	public static DatabaseHelper getInstance( Context context) {
 		if( m_instance == null ) {
-			m_instance = new GeFormDatabase( context.getApplicationContext() );
+			m_instance = new DatabaseHelper( context.getApplicationContext() );
 		}
 		return m_instance;
 	}
