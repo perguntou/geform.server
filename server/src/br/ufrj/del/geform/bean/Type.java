@@ -1,7 +1,7 @@
 /**
  * 
  */
-package br.ufrj.del.geform.util;
+package br.ufrj.del.geform.bean;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;

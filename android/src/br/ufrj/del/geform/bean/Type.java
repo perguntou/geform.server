@@ -1,7 +1,7 @@
 /**
  * 
  */
-package br.ufrj.softwaresmartphone.util;
+package br.ufrj.del.geform.bean;
 
 
 /**

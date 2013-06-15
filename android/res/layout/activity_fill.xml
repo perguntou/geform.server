@@ -6,7 +6,7 @@
 
 	<fragment
 		android:id="@+id/fragment_list_forms"
-		android:name="br.ufrj.softwaresmartphone.geform.ListFormsFragment"
+		android:name="br.ufrj.del.geform.app.ListFormsFragment"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		tools:layout="@layout/list_forms" />

@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import br.ufrj.del.geform.util.Type;
 
 
 /**

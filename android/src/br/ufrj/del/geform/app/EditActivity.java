@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,9 +15,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import br.ufrj.softwaresmartphone.geform.ListFormsFragment.ListFormsListener;
-import br.ufrj.softwaresmartphone.util.Form;
-import br.ufrj.softwaresmartphone.util.FormXmlPull;
+import br.ufrj.del.geform.Constants;
+import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.app.ListFormsFragment.ListFormsListener;
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.database.DatabaseHelper;
+import br.ufrj.del.geform.xml.FormXmlPull;
 
 /**
  * 
@@ -64,7 +67,7 @@ public class EditActivity extends FragmentActivity implements ListFormsListener 
 			case NEW_FORM_REQUEST_CODE:
 			case EDIT_FORM_REQUEST_CODE:
 				Form form = (Form) result.getParcelableExtra( "form" );
-				Long id = GeFormDatabase.getInstance( this.getApplicationContext() ).insertForm( form.title() );
+				Long id = DatabaseHelper.getInstance( this.getApplicationContext() ).insertForm( form.title() );
 				try {
 					FormXmlPull.serialize( form , new FileOutputStream( getDir( "forms", FragmentActivity.MODE_PRIVATE ) + File.separator + String.valueOf( id ) + Constants.extension ) );
 				} catch( IllegalArgumentException e ) {
@@ -84,7 +87,7 @@ public class EditActivity extends FragmentActivity implements ListFormsListener 
 					e.printStackTrace();
 				}
 
-				m_fragment.m_adapter.changeCursor( GeFormDatabase.getInstance( this ).fetchAllForms() );
+				m_fragment.m_adapter.changeCursor( DatabaseHelper.getInstance( this ).fetchAllForms() );
 				break;
 			}
 		}
@@ -92,7 +95,7 @@ public class EditActivity extends FragmentActivity implements ListFormsListener 
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.softwaresmartphone.geform.ListFormsFragment.ListFormsListener#onFormSelected(br.ufrj.softwaresmartphone.util.Form)
+	 * @see br.ufrj.del.geform.ListFormsFragment.ListFormsListener#onFormSelected(br.ufrj.softwaresmartphone.util.Form)
 	 */
 	@Override
 	public void onFormSelected( Form form ) {
@@ -104,7 +107,7 @@ public class EditActivity extends FragmentActivity implements ListFormsListener 
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.softwaresmartphone.geform.ListFormsFragment.ListFormsListener#onFormDownloaded(br.ufrj.softwaresmartphone.util.Form)
+	 * @see br.ufrj.del.geform.ListFormsFragment.ListFormsListener#onFormDownloaded(br.ufrj.softwaresmartphone.util.Form)
 	 */
 	@Override
 	public void onFormDownloaded(Form form) { this.onFormSelected( form ); }

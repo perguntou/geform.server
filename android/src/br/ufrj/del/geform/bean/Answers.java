@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.bean;
 
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ public class Answers extends SparseArray< ArrayList<String> > {
 		super();
 	}
 
-	static Answers getInstance() {
+	public static Answers getInstance() {
 		if( m_instance == null ) {
 			m_instance = new Answers();
 		}

@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
+import br.ufrj.del.geform.R;
 
 /**
  *

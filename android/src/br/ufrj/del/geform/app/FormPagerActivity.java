@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
-import br.ufrj.softwaresmartphone.util.Form;
-import br.ufrj.softwaresmartphone.util.Item;
-import br.ufrj.softwaresmartphone.util.Type;
+import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.bean.Item;
+import br.ufrj.del.geform.bean.Type;
 
 public class FormPagerActivity extends FragmentActivity {
 

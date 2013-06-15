@@ -1,4 +1,4 @@
-package br.ufrj.softwaresmartphone.geform;
+package br.ufrj.del.geform.app;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import br.ufrj.del.geform.R;
 
 /**
  *
@@ -55,7 +56,7 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.softwaresmartphone.geform.EditDialog.EditDialogListener#onDialogPositiveClick(android.support.v4.app.DialogFragment)
+	 * @see br.ufrj.del.geform.EditDialog.EditDialogListener#onDialogPositiveClick(android.support.v4.app.DialogFragment)
 	 */
 	@Override
 	public void onDialogPositiveClick( DialogFragment dialog ) {
@@ -73,7 +74,7 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.softwaresmartphone.geform.EditDialog.EditDialogListener#onDialogNegativeClick(android.support.v4.app.DialogFragment)
+	 * @see br.ufrj.del.geform.EditDialog.EditDialogListener#onDialogNegativeClick(android.support.v4.app.DialogFragment)
 	 */
 	@Override
 	public void onDialogNegativeClick( DialogFragment dialog ) {}

@@ -56,7 +56,7 @@
 
 	<fragment
 		android:id="@+id/fragment_edit_options"
-		android:name="br.ufrj.softwaresmartphone.geform.EditOptionsFragment"
+		android:name="br.ufrj.del.geform.app.EditOptionsFragment"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		tools:layout="@layout/edit_options" />
