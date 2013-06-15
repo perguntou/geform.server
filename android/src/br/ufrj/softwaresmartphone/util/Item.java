@@ -1,5 +1,8 @@
 package br.ufrj.softwaresmartphone.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,7 +12,8 @@ import android.os.Parcelable;
 public class Item implements Parcelable {
 
 	private String m_question;
-	private Options m_options;
+	private Type m_type;
+	private List<String> m_options;
 
 	/**
 	 * Constructs a new Item instance with no question
@@ -25,7 +29,7 @@ public class Item implements Parcelable {
 	 * @param question the item's question.
 	 */
 	public Item( String question ) {
-		this( question, new Options() );
+		this( question, new ArrayList<String>() );
 	}
 
 	/**
@@ -34,9 +38,10 @@ public class Item implements Parcelable {
 	 * @param title the form title.
 	 * @param options the form's options.
 	 */
-	public Item( String question, Options options ) {
+	public Item( String question, List<String> options ) {
 		setQuestion( question );
 		setOptions( options );
+		setType( Type.TEXT );
 	}
 
 	/**
@@ -52,18 +57,26 @@ public class Item implements Parcelable {
 	public void setQuestion( String question )	{ m_question = question; }
 
 	/**
+	 * @return the m_type
+	 */
+	public Type getType() {	return m_type; }
+
+	/**
+	 * @param m_type the m_type to set
+	 */
+	public void setType(Type type) { m_type = type; }
+
+	/**
 	 * Returns the item's options.
 	 * @return the item's options.
-	 * @see Options
 	 */
-	public Options getOptions( ) { return m_options; }
+	public List<String> getOptions( ) { return m_options; }
 
 	/**
 	 * Sets the item's options.
 	 * @param options the item's options.
-	 * @see Options
 	 */
-	public void setOptions( Options options ) { m_options = options; }
+	public void setOptions( List<String> options ) { m_options = options; }
 
 	/**
 	 * Returns if this Item has options.
@@ -87,7 +100,8 @@ public class Item implements Parcelable {
 	@Override
 	public void writeToParcel( Parcel out, int flags ) {
 		out.writeString( this.getQuestion() );
-		out.writeParcelable( this.getOptions(), flags );
+		out.writeString( this.getType().toString() );
+		out.writeStringList( this.getOptions() );
 	}
 
 	public static final Parcelable.Creator<Item> CREATOR
@@ -115,8 +129,11 @@ public class Item implements Parcelable {
 	 * @param in the Parcel
 	 */
 	private Item( Parcel in ) {
+		this();
 		this.m_question = in.readString();
-		this.m_options = in.readParcelable( Options.class.getClassLoader() );
+		final String typeString = in.readString();
+		this.m_type = Type.fromValue( typeString );
+		in.readStringList( this.m_options );
 	}
 
 }

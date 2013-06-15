@@ -3,14 +3,14 @@ package br.ufrj.softwaresmartphone.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
-
-import br.ufrj.softwaresmartphone.util.Options.ChoiceType;
 
 /**
  * This class enables the conversion between a XML based stream
@@ -139,6 +139,13 @@ public final class FormXmlPull {
 		Item item = new Item();
 
 		parser.require( XmlPullParser.START_TAG, ns, "item" );
+		String att = parser.getAttributeValue( ns, "type" );
+		if( att.equals( "single" ) ) {
+			item.setType( Type.SINGLE_CHOICE );
+		} else
+		if( att.equals( "multiple" ) ) {
+			item.setType( Type.MULTIPLE_CHOICE );
+		}
 		while( parser.next() != XmlPullParser.END_TAG ) {
 			if( parser.getEventType() != XmlPullParser.START_TAG ) {
 				continue;
@@ -167,8 +174,9 @@ public final class FormXmlPull {
 	 */
 	private static void writeItem( Item item, XmlSerializer serializer ) throws XmlPullParserException, IOException {
 		serializer.startTag( ns, "item" );
+		serializer.attribute( ns, "type", String.valueOf( item.getType() ) );
 		serializer.startTag( ns, "question" );
-		serializer.text( item.getQuestion() );
+			serializer.text( item.getQuestion() );
 		serializer.endTag( ns, "question" );
 		if( item.hasOptions() ) {
 			writeOptions( item.getOptions(), serializer );
@@ -183,19 +191,11 @@ public final class FormXmlPull {
 	 * @throws XmlPullParserException
 	 * @throws IOException
 	 * @see XmlPullParser
-	 * @see Options
 	 */
-	private static Options readOptions( XmlPullParser parser ) throws XmlPullParserException, IOException {
-		Options options = new Options();
+	private static List<String> readOptions( XmlPullParser parser ) throws XmlPullParserException, IOException {
+		List<String> options = new ArrayList<String>();
 
 		parser.require( XmlPullParser.START_TAG, ns, "options" );
-		String att = parser.getAttributeValue( ns, "choice" );
-		if( att.equals( "single" ) ) {
-			options.setChoiceType( ChoiceType.single );
-		} else
-		if( att.equals( "multiple" ) ) {
-			options.setChoiceType( ChoiceType.multiple );
-		}
 		while( parser.next() != XmlPullParser.END_TAG ) {
 			if( parser.getEventType() != XmlPullParser.START_TAG ) {
 				continue;
@@ -217,12 +217,10 @@ public final class FormXmlPull {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 * @throws IOException
-	 * @see Options
 	 * @see XmlSerializer
 	 */
-	private static void writeOptions( Options options, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException {
+	private static void writeOptions( List<String> options, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException {
 		serializer.startTag( ns, "options" );
-		serializer.attribute( ns, "choice", String.valueOf( options.getChoiceType() ) );
 		Iterator<String> it = options.iterator();
 		while( it.hasNext() ) {
 			writeOption( it.next(), serializer );

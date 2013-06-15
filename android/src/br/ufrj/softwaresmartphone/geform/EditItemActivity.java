@@ -1,5 +1,7 @@
 package br.ufrj.softwaresmartphone.geform;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import br.ufrj.softwaresmartphone.util.Item;
-import br.ufrj.softwaresmartphone.util.Options;
-import br.ufrj.softwaresmartphone.util.Options.ChoiceType;
+import br.ufrj.softwaresmartphone.util.Type;
 
 /**
  * 
@@ -41,17 +42,8 @@ public class EditItemActivity extends FragmentActivity {
 
 		positionEditText.setText( String.valueOf( getIntent().getIntExtra( "requestPosition", 1 ) ) );
 		questionEditText.setText( m_item.getQuestion() );
-		int type = Constants.TYPE_TEXT;
-		if( m_item.hasOptions() ) {
-			ChoiceType mode = m_item.getOptions().getChoiceType();
-			if( mode.equals( ChoiceType.single ) ) {
-				type = Constants.TYPE_SINGLE_CHOICE;
-			} else
-			if( mode.equals( ChoiceType.multiple ) ) {
-				type = Constants.TYPE_MULTIPLE_CHOICE;
-			}
-		}
-		itemTypeSpinner.setSelection( type );
+		final Type type = m_item.getType();
+		itemTypeSpinner.setSelection( type.ordinal() );
 
 		itemTypeSpinner.setOnItemSelectedListener( new OnItemSelectedListener() {
 			@Override
@@ -75,19 +67,11 @@ public class EditItemActivity extends FragmentActivity {
 				m_item.setQuestion( questionEditText.getText().toString().trim() );
 
 				if( !(m_item.getQuestion().equals("")) ) {
+					List<String> options = editOptionsFragment.getOptions();
+					final int typeOrdinal = itemTypeSpinner.getSelectedItemPosition();
+					final Type type = Type.values()[typeOrdinal];
+					m_item.setType( type );
 					if( editOptionsFragment.isVisible() ) {
-						Options options = editOptionsFragment.getOptions();
-						switch( itemTypeSpinner.getSelectedItemPosition() ) {
-//						case Constants.TYPE_TEXT:
-//							options.clear();
-//							break;
-						case Constants.TYPE_SINGLE_CHOICE:
-							options.setChoiceType( ChoiceType.single );
-							break;
-						case Constants.TYPE_MULTIPLE_CHOICE:
-							options.setChoiceType( ChoiceType.multiple );
-							break;
-						}
 						m_item.setOptions( options );
 					} else {
 						m_item.getOptions().clear();

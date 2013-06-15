@@ -1,5 +1,8 @@
 package br.ufrj.softwaresmartphone.geform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
@@ -10,14 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import br.ufrj.softwaresmartphone.util.Options;
 
 /**
  *
  */
 public class EditOptionsFragment extends ListFragment implements EditDialog.EditDialogListener {
 
-	private Options m_options;
+	private List<String> m_options;
 
 	/*
 	 * (non-Javadoc)
@@ -25,8 +27,8 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 	 */
 	@Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		Options options = ((EditItemActivity) getActivity()).getItem().getOptions();
-		m_options = (options != null) ? options : new Options();
+		List<String> options = ((EditItemActivity) getActivity()).getItem().getOptions();
+		m_options = (options != null) ? options : new ArrayList<String>();
 
 		View view = inflater.inflate( R.layout.edit_options, container, false );
 
@@ -95,7 +97,7 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 	 * Returns the edited options
 	 * @return the options
 	 */
-	public Options getOptions() {
+	public List<String> getOptions() {
 		return m_options;
 	}
 
