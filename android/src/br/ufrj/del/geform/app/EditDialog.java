@@ -15,25 +15,11 @@ import br.ufrj.del.geform.R;
  */
 public class EditDialog extends DialogFragment {
 
-	/**
-	 * 
-	 */
-	public interface EditDialogListener {
-		/**
-		 * 
-		 * @param dialog
-		 */
-		public void onDialogPositiveClick( DialogFragment dialog );
+	public static final String ARGUMENT_TITLE = "title";
+	public static final String ARGUMENT_VALUE = "value";
 
-		/**
-		 * 
-		 * @param dialog
-		 */
-		public void onDialogNegativeClick( DialogFragment dialog );
-	}
-
-	EditDialogListener m_listener;
-	private String m_inputValue = new String("");
+	private EditDialogListener m_listener;
+	private EditText m_input;
 
 	/*
 	 * (non-Javadoc)
@@ -56,18 +42,36 @@ public class EditDialog extends DialogFragment {
 	 */
 	@Override
 	public Dialog onCreateDialog( Bundle savedInstanceState ) {
-		AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
 
-		builder.setTitle( R.string.dialog_edit );
-		
-		final EditText input = new EditText( getActivity().getApplicationContext() );
-		input.setText( new StringBuilder( getArguments().getString( "value" ) ) );
-		builder.setView( input );
+		final AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
+
+		final CharSequence title;
+		final CharSequence value;
+		final Bundle args = getArguments();
+
+		final CharSequence defaultTitle = getString( R.string.dialog_edit );
+		final CharSequence defaultValue = "";
+
+		if( args != null ) {
+			final CharSequence candidateTitle = args.getString( ARGUMENT_TITLE );  
+			title = candidateTitle == null ? defaultTitle :  candidateTitle;
+
+			final CharSequence candidateValue = args.getString( ARGUMENT_VALUE );
+			value = candidateTitle == null ? defaultValue :  candidateValue;
+		} else {
+			title = defaultTitle;
+			value = defaultValue;
+		}
+
+		builder.setTitle( title );
+
+		m_input = new EditText( getActivity().getApplicationContext() );
+		m_input.setText( value );
+		builder.setView( m_input );
 
 		builder.setPositiveButton( android.R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick( DialogInterface dialog, int which ) {
-				m_inputValue = input.getText().toString().trim();
 				m_listener.onDialogPositiveClick( EditDialog.this );
 			}
 		} );
@@ -87,6 +91,7 @@ public class EditDialog extends DialogFragment {
 	 * @return the input value
 	 */
 	public String getInputValue() {
-		return m_inputValue;
+		return m_input.getText().toString().trim();
 	}
+
 }

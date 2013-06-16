@@ -28,6 +28,7 @@
 	<string name="button_new_option">Add Option</string>
 	<string name="message_index_invalid">Index out of bounds. Inserted at the end.</string>
 	<string name="dialog_edit">Edit</string>
+	<string name="dialog_edit_option">Option</string>
 	<string name="title_activity_fill">Fill</string>
 	<string name="menu_fromURL">From URL</string>
 	<string name="message_download_error">Error downloading form from URL</string>
