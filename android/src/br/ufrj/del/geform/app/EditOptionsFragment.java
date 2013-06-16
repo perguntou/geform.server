@@ -18,7 +18,10 @@ import br.ufrj.del.geform.R;
 /**
  *
  */
-public class EditOptionsFragment extends ListFragment implements EditDialog.EditDialogListener {
+public class EditOptionsFragment extends ListFragment implements EditDialogListener {
+
+	public static final String FRAGMENT_TAG = "edit_option";
+	public static final String ARGUMENT_INDEX = "index";
 
 	private List<String> m_options;
 
@@ -56,12 +59,13 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.del.geform.EditDialog.EditDialogListener#onDialogPositiveClick(android.support.v4.app.DialogFragment)
+	 * @see br.ufrj.del.geform.app.EditDialogListener#onDialogPositiveClick(android.support.v4.app.DialogFragment)
 	 */
 	@Override
 	public void onDialogPositiveClick( DialogFragment dialog ) {
 		String inputValue = ((EditDialog) dialog).getInputValue();
-		int position = dialog.getArguments().getInt( "index" );
+		final Bundle args = dialog.getArguments();
+		final int position = args.getInt( ARGUMENT_INDEX );
 		if( !inputValue.equals("") ) {
 			if( position < m_options.size() ) {
 				m_options.set( position, inputValue );
@@ -74,7 +78,7 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 
 	/*
 	 * (non-Javadoc)
-	 * @see br.ufrj.del.geform.EditDialog.EditDialogListener#onDialogNegativeClick(android.support.v4.app.DialogFragment)
+	 * @see br.ufrj.del.geform.app.EditDialogListener#onDialogNegativeClick(android.support.v4.app.DialogFragment)
 	 */
 	@Override
 	public void onDialogNegativeClick( DialogFragment dialog ) {}
@@ -88,10 +92,12 @@ public class EditOptionsFragment extends ListFragment implements EditDialog.Edit
 	public void editOptionDialog( String option, int position ) {
 		DialogFragment newFragment = new EditDialog();
 		Bundle args = new Bundle();
-		args.putString( "value", option );
-		args.putInt( "index", position );
-		newFragment.setArguments( args );  
-		newFragment.show( getFragmentManager(), "option" );
+		final String title = getString( R.string.dialog_edit_option );
+		args.putString( EditDialog.ARGUMENT_TITLE, title );
+		args.putString( EditDialog.ARGUMENT_VALUE, option );
+		args.putInt( ARGUMENT_INDEX, position );
+		newFragment.setArguments( args );
+		newFragment.show( getFragmentManager(), FRAGMENT_TAG );
 	}
 
 	/**
