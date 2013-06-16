@@ -54,14 +54,20 @@ public class EditFormActivity extends ListActivity {
 			public void onClick( View view ) {
 				m_form.setTitle( ((EditText) findViewById( R.id.form_name )).getText().toString().trim() );
 
-				if( !m_form.title().equals("") && m_form.size() > 0 ) {
-					Intent intent = getIntent();
-					intent.putExtra( "form", (Parcelable) m_form );
-					setResult( Activity.RESULT_OK,  intent );
-					finish();
-				} else {
-					Toast.makeText( EditFormActivity.this, R.string.message_form_error, Toast.LENGTH_LONG ).show();
+				final String title = m_form.title();
+				if( title.equals("") ) {
+					Toast.makeText( EditFormActivity.this, R.string.message_title_missing, Toast.LENGTH_LONG ).show();
+					return;
 				}
+				if( m_form.size() <= 0 ) {
+					Toast.makeText( EditFormActivity.this, R.string.message_number_items_invalid, Toast.LENGTH_LONG ).show();
+					return;
+				}
+
+				Intent intent = getIntent();
+				intent.putExtra( "form", (Parcelable) m_form );
+				setResult( Activity.RESULT_OK,  intent );
+				finish();
 			}
 		} );
 	}
