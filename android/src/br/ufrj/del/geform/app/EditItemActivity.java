@@ -13,7 +13,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import br.ufrj.del.geform.Constants;
 import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Item;
 import br.ufrj.del.geform.bean.Type;
@@ -51,11 +50,7 @@ public class EditItemActivity extends FragmentActivity {
 			@Override
 			public void onItemSelected( AdapterView<?> adapter, View view, int position, long id ) {
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-				if( position == Constants.TYPE_TEXT ) {
-					transaction.hide( editOptionsFragment );
-				} else {
-					transaction.show( editOptionsFragment );
-				}
+				transaction = Type.values()[position] != Type.TEXT ? transaction.show( editOptionsFragment ) : transaction.hide( editOptionsFragment );
 				transaction.commit();
 			}
 
