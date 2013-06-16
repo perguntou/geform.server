@@ -13,6 +13,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+import br.ufrj.del.geform.Constants;
 import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Item;
 import br.ufrj.del.geform.bean.Type;
@@ -63,22 +65,31 @@ public class EditItemActivity extends FragmentActivity {
 			public void onClick( View view ) {
 				m_item.setQuestion( questionEditText.getText().toString().trim() );
 
-				if( !(m_item.getQuestion().equals("")) ) {
-					List<String> options = editOptionsFragment.getOptions();
-					final int typeOrdinal = itemTypeSpinner.getSelectedItemPosition();
-					final Type type = Type.values()[typeOrdinal];
-					m_item.setType( type );
-					if( editOptionsFragment.isVisible() ) {
-						m_item.setOptions( options );
-					} else {
-						m_item.getOptions().clear();
-					}
-					Intent intent = getIntent();
-					intent.putExtra( "resultPosition", Integer.parseInt( positionEditText.getText().toString() ) );
-					intent.putExtra( "item", m_item );
-					setResult( Activity.RESULT_OK,  intent );
-					finish();
+				final String question = m_item.getQuestion();
+				if( question.equals("") ) {
+					Toast.makeText( getApplicationContext(),  R.string.message_question_missing, Toast.LENGTH_LONG ).show();
+					return;
 				}
+				List<String> options = editOptionsFragment.getOptions();
+				final int typeOrdinal = itemTypeSpinner.getSelectedItemPosition();
+				final Type type = Type.values()[typeOrdinal];
+				m_item.setType( type );
+				if( editOptionsFragment.isVisible() ) {
+					if( options.size() < Constants.MIN_NUMBER_OPTIONS ) {
+						final String format = getString( R.string.message_number_options_invalid );
+						Toast.makeText( getApplicationContext(),  String.format( format, Constants.MIN_NUMBER_OPTIONS ), Toast.LENGTH_LONG ).show();
+						return;
+					}
+					m_item.setOptions( options );
+				} else {
+					m_item.getOptions().clear();
+				}
+
+				Intent intent = getIntent();
+				intent.putExtra( "resultPosition", Integer.parseInt( positionEditText.getText().toString() ) );
+				intent.putExtra( "item", m_item );
+				setResult( Activity.RESULT_OK,  intent );
+				finish();
 			}
 		} );
 
