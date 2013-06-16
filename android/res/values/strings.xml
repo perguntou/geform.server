@@ -11,7 +11,6 @@
 	<string name="label_list_forms">My Forms:</string>
 	<string name="title_activity_edit_form">Edit Form</string>
 	<string name="button_save">Done</string>
-	<string name="message_form_error">Missing fields. Creates them to complete form.</string>
 	<string name="button_new_item">New Item</string>
 	<string name="title_activity_edit_item">Edit Item</string>
 	<string name="label_question">Question:</string>
@@ -26,13 +25,18 @@
 
 	<string name="button_item_ok">OK</string>
 	<string name="button_new_option">Add Option</string>
-	<string name="message_index_invalid">Index out of bounds. Inserted at the end.</string>
-	<string name="message_question_missing">The Question field is missing.</string>
-	<string name="message_number_options_invalid">The item must have at least %s options to choose.</string>
 	<string name="dialog_edit">Edit</string>
 	<string name="dialog_edit_option">Option</string>
 	<string name="title_activity_fill">Fill</string>
 	<string name="menu_fromURL">From URL</string>
-	<string name="message_download_error">Error downloading form from URL</string>
 
+	<!-- ERROR MESSAGES -->
+	<string name="message_title_missing">The Title field is missing.</string>
+	<string name="message_number_items_invalid">At least one item must be inserted.</string>
+	<string name="message_index_invalid">Index out of bounds. Inserted at the end.</string>
+
+	<string name="message_question_missing">The Question field is missing.</string>
+	<string name="message_number_options_invalid">The item must have at least %s options to choose.</string>
+
+	<string name="message_download_error">Error downloading form from URL</string>
 </resources>
