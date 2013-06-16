@@ -27,6 +27,8 @@
 	<string name="button_item_ok">OK</string>
 	<string name="button_new_option">Add Option</string>
 	<string name="message_index_invalid">Index out of bounds. Inserted at the end.</string>
+	<string name="message_question_missing">The Question field is missing.</string>
+	<string name="message_number_options_invalid">The item must have at least %s options to choose.</string>
 	<string name="dialog_edit">Edit</string>
 	<string name="dialog_edit_option">Option</string>
 	<string name="title_activity_fill">Fill</string>
