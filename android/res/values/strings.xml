@@ -30,13 +30,4 @@
 	<string name="title_activity_fill">Fill</string>
 	<string name="menu_fromURL">From URL</string>
 
-	<!-- ERROR MESSAGES -->
-	<string name="message_title_missing">The Title field is missing.</string>
-	<string name="message_number_items_invalid">At least one item must be inserted.</string>
-	<string name="message_index_invalid">Index out of bounds. Inserted at the end.</string>
-
-	<string name="message_question_missing">The Question field is missing.</string>
-	<string name="message_number_options_invalid">The item must have at least %s options to choose.</string>
-
-	<string name="message_download_error">Error downloading form from URL</string>
 </resources>
