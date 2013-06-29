@@ -3,17 +3,22 @@ package br.ufrj.del.geform.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.bean.Item;
 
 /**
  *
@@ -24,6 +29,7 @@ public class EditOptionsFragment extends ListFragment implements EditDialogListe
 	public static final String ARGUMENT_INDEX = "index";
 
 	private List<String> m_options;
+	private MenuItem m_menuItem;
 
 	/*
 	 * (non-Javadoc)
@@ -31,21 +37,46 @@ public class EditOptionsFragment extends ListFragment implements EditDialogListe
 	 */
 	@Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		List<String> options = ((EditItemActivity) getActivity()).getItem().getOptions();
+		final Item item = ((EditItemActivity) getActivity()).getItem();
+		List<String> options = item.getOptions();
 		m_options = (options != null) ? options : new ArrayList<String>();
 
 		View view = inflater.inflate( R.layout.edit_options, container, false );
 
+		setHasOptionsMenu( true );
+
 		setListAdapter( new ArrayAdapter<String>( view.getContext(), android.R.layout.simple_list_item_1, m_options ) );
 
-		view.findViewById( R.id.button_new_option ).setOnClickListener( new OnClickListener() {
-			@Override
-			public void onClick( View view ) {
-				editOptionDialog( new String(), m_options.size() );
-			}
-		} );
-
 		return view;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreateOptionsMenu(android.view.Menu, android.view.MenuInflater)
+	 */
+	@SuppressLint("NewApi")
+	@Override
+	public void onCreateOptionsMenu( Menu menu, MenuInflater inflater) {
+		m_menuItem = menu.add( R.string.menu_add_option );
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			m_menuItem.setShowAsAction( MenuItem.SHOW_AS_ACTION_ALWAYS );
+		}
+		m_menuItem.setIcon( R.drawable.ic_menu_plus );
+		super.onCreateOptionsMenu( menu, inflater );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		final int menuItemId = m_menuItem.getItemId();
+		if( item.getItemId() == menuItemId ) {
+			editOptionDialog( new String(), m_options.size() );
+			return true;
+		}
+		return false;
 	}
 
 	/*
@@ -91,11 +122,13 @@ public class EditOptionsFragment extends ListFragment implements EditDialogListe
 	 */
 	public void editOptionDialog( String option, int position ) {
 		DialogFragment newFragment = new EditDialog();
+
 		Bundle args = new Bundle();
 		final String title = getString( R.string.dialog_edit_option );
 		args.putString( EditDialog.ARGUMENT_TITLE, title );
 		args.putString( EditDialog.ARGUMENT_VALUE, option );
 		args.putInt( ARGUMENT_INDEX, position );
+
 		newFragment.setArguments( args );
 		newFragment.show( getFragmentManager(), FRAGMENT_TAG );
 	}

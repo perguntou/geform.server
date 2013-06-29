@@ -35,7 +35,7 @@ public class EditFormActivity extends ListActivity {
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_edit_form );
-		
+
 		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
 			getActionBar().setDisplayHomeAsUpEnabled( true );
 		}
@@ -46,7 +46,7 @@ public class EditFormActivity extends ListActivity {
 
 		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, m_form ) );
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
