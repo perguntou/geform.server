@@ -67,6 +67,8 @@ public class EditDialog extends DialogFragment {
 
 		m_input = new EditText( getActivity().getApplicationContext() );
 		m_input.setText( value );
+		final int textColor = getResources().getColor( android.R.color.primary_text_light );
+		m_input.setTextColor( textColor );
 		builder.setView( m_input );
 
 		builder.setPositiveButton( android.R.string.ok, new DialogInterface.OnClickListener() {
