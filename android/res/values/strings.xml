@@ -16,6 +16,7 @@
     <string name="label_title">Title:</string>
     <string name="label_question">Question:</string>
     <string name="label_position">Position:</string>
+    <string name="label_type">Type:</string>
     <string name="label_type_select">Choose the question type</string>
 
     <string-array name="type_options">
