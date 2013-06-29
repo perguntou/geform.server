@@ -1,12 +1,14 @@
 package br.ufrj.del.geform.app;
 
+import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import br.ufrj.del.geform.R;
@@ -25,24 +27,50 @@ public class FillFormActivity extends ListActivity {
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_fill_form );
 
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			getActionBar().setDisplayHomeAsUpEnabled( true );
+		}
+
 		m_form = getIntent().getParcelableExtra( "form" );
-		
+
 		((TextView) findViewById( R.id.text_form_name )).setText( m_form.title() );
 
-
 		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, m_form ) );
+	}
 
-		((Button) findViewById( R.id.button_save )).setOnClickListener( new OnClickListener() {
-			@Override
-			public void onClick( View view ) {
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		getMenuInflater().inflate( R.menu.menu_fill_form, menu );
+		return true;
+	}
 
-			}
-		} );
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+		case android.R.id.home:
+			onBackPressed();
+			break;
+		case R.id.menu_commit:
+
+			break;
+		default:
+			return false;
+		}
+		return true;
 	}
 
 	/*
