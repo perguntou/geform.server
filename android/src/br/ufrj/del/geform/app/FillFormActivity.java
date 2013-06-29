@@ -5,23 +5,21 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import br.ufrj.del.geform.R;
+import br.ufrj.del.geform.bean.Answers;
 import br.ufrj.del.geform.bean.Form;
 
 /**
  *
  */
 public class FillFormActivity extends ListActivity {
-	final int ADD_ITEM_REQUEST_CODE = 0;
-	final int EDIT_ITEM_REQUEST_CODE = 1;
 
-	private Form m_form;
+	private Answers m_answers;
 
 	/*
 	 * (non-Javadoc)
@@ -37,11 +35,12 @@ public class FillFormActivity extends ListActivity {
 			getActionBar().setDisplayHomeAsUpEnabled( true );
 		}
 
-		m_form = getIntent().getParcelableExtra( "form" );
+		m_answers = getIntent().getParcelableExtra( "answers" );
 
-		((TextView) findViewById( R.id.text_form_name )).setText( m_form.title() );
+		final Form form = m_answers.getReference();
+		((TextView) findViewById( R.id.text_form_name )).setText( form.title() );
 
-		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, m_form ) );
+		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, form ) );
 	}
 
 	/*
@@ -82,7 +81,7 @@ public class FillFormActivity extends ListActivity {
 		super.onListItemClick( listView, view, position, id );
 
 		Intent intent = new Intent( FillFormActivity.this, FormPagerActivity.class );
-		intent.putExtra( "form", (Parcelable) m_form );
+		intent.putExtra( "answers", m_answers );
 		intent.putExtra( "position", position );
 		startActivity( intent );
 	}

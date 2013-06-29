@@ -85,10 +85,9 @@ public class FormsActivity extends ListActivity {
 			e.printStackTrace();
 		}
 
+		final Answers answers = new Answers( form );
 		Intent intent = new Intent( getApplicationContext(), FillFormActivity.class );
-		intent.putExtra( "form", (Parcelable) form );
-
-		Answers.getInstance().clear();
+		intent.putExtra( "answers", answers );
 
 		startActivity( intent );
 	}

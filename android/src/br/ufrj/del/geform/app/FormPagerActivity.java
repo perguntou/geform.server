@@ -1,5 +1,8 @@
 package br.ufrj.del.geform.app;
 
+import java.util.ArrayList;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,21 +19,22 @@ public class FormPagerActivity extends FragmentActivity {
 
 	private FormPagerAdapter m_pagerAdapter;
 	private ViewPager m_viewPager;
-	private Form m_form;
+	private Answers m_answers;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_form_pager );
 
-		m_pagerAdapter = new FormPagerAdapter( getSupportFragmentManager() );
+		final Intent intent = getIntent();
+		m_answers = intent.getParcelableExtra( "answers" );
 
-		m_form = getIntent().getParcelableExtra( "form" );
+		m_pagerAdapter = new FormPagerAdapter( getSupportFragmentManager() );
 
 		m_viewPager = (ViewPager) findViewById( R.id.pager );
 		m_viewPager.setAdapter( m_pagerAdapter );
 
-		m_viewPager.setCurrentItem( getIntent().getIntExtra( "position", 0 ) );
+		m_viewPager.setCurrentItem( intent.getIntExtra( "position", 0 ) );
 	}
 
 	public class FormPagerAdapter extends FragmentStatePagerAdapter {
@@ -41,10 +45,21 @@ public class FormPagerActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem( int index ) {
+			final Form form = m_answers.getReference();
+			@SuppressWarnings("unchecked")
+			ArrayList<String> answer = (ArrayList<String>) m_answers.get( index, new ArrayList<String>() );
+
 			Fragment fragment = new ItemFragment() {
 				@Override
 				public void onPause() {
-					if( m_item.hasOptions() ) {
+					switch( m_item.getType() ) {
+					case TEXT:
+						if( m_answer.get(0).equals("") ) {
+							m_answer.clear();
+						}
+						break;
+					case SINGLE_CHOICE:
+					case MULTIPLE_CHOICE:
 						m_answer.clear();
 						SparseBooleanArray checkedItems = ((ListView) m_input).getCheckedItemPositions();
 						for( int i = 0; i < checkedItems.size(); i++ ) {
@@ -52,31 +67,31 @@ public class FormPagerActivity extends FragmentActivity {
 								m_answer.add( String.valueOf( checkedItems.keyAt( i ) ) );
 							}
 						}
-					} else {
-						if( m_answer.get(0).equals("") ) {
-							m_answer.clear();
-						}
+						break;
+					default:
 					}
 					if( !m_answer.isEmpty() ) {
-						Answers.getInstance().put( m_position, m_answer );
+						m_answers.put( m_position, m_answer );
 					} else {
-						Answers.getInstance().delete( m_position );
+						m_answers.delete( m_position );
 					}
 					super.onPause();
 				}
 
 			};
+
 			Bundle args = new Bundle();
 			args.putInt( ItemFragment.ARG_POSITION, index );
-			args.putStringArrayList( ItemFragment.ARG_ANSWER, Answers.getInstance().get( index ) );
-			args.putParcelable( ItemFragment.ARG_ITEM, m_form.get(index) );
+			args.putStringArrayList( ItemFragment.ARG_ANSWER, answer );
+			args.putParcelable( ItemFragment.ARG_ITEM, form.get(index) );
 			fragment.setArguments( args );
 			return fragment;
 		}
 
 		@Override
 		public int getCount() {
-			return m_form.size();
+			final Form form = m_answers.getReference();
+			return form.size();
 		}
 
 		@Override

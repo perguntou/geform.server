@@ -58,12 +58,12 @@ public class Item implements Parcelable {
 	public void setQuestion( String question )	{ m_question = question; }
 
 	/**
-	 * @return the m_type
+	 * @return the type
 	 */
 	public Type getType() {	return m_type; }
 
 	/**
-	 * @param m_type the m_type to set
+	 * @param type the type to set
 	 */
 	public void setType(Type type) { m_type = type; }
 
