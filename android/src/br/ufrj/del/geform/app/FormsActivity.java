@@ -99,7 +99,7 @@ public class FormsActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.activity_forms, menu );
+		getMenuInflater().inflate( R.menu.menu_forms, menu );
 		return true;
 	}
 

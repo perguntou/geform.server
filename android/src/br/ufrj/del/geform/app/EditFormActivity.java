@@ -53,7 +53,7 @@ public class EditFormActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.activity_edit_form, menu );
+		getMenuInflater().inflate( R.menu.menu_edit_form, menu );
 		return true;
 	}
 
