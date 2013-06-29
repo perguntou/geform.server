@@ -1,13 +1,15 @@
 package br.ufrj.del.geform.app;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -28,48 +30,31 @@ public class EditFormActivity extends ListActivity {
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_edit_form );
+		
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			getActionBar().setDisplayHomeAsUpEnabled( true );
+		}
 
 		m_form = getIntent().getParcelableExtra( "form" );
 
 		((EditText) findViewById( R.id.form_name )).setText( m_form.title() );
 
-		((Button) findViewById( R.id.button_new_item )).setOnClickListener( new OnClickListener() {
-			@Override
-			public void onClick( View view ) {
-				Intent intent = new Intent( EditFormActivity.this, EditItemActivity.class );
-				intent.putExtra( "item", new Item() );
-				intent.putExtra( "requestPosition", m_form.size() + 1 );
-				startActivityForResult( intent, ADD_ITEM_REQUEST_CODE );
-			}
-		} );
-
 		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, m_form ) );
-
-		((Button) findViewById( R.id.button_save )).setOnClickListener( new OnClickListener() {
-			@Override
-			public void onClick( View view ) {
-				m_form.setTitle( ((EditText) findViewById( R.id.form_name )).getText().toString().trim() );
-
-				final String title = m_form.title();
-				if( title.equals("") ) {
-					Toast.makeText( EditFormActivity.this, R.string.message_title_missing, Toast.LENGTH_LONG ).show();
-					return;
-				}
-				if( m_form.size() <= 0 ) {
-					Toast.makeText( EditFormActivity.this, R.string.message_number_items_invalid, Toast.LENGTH_LONG ).show();
-					return;
-				}
-
-				Intent intent = getIntent();
-				intent.putExtra( "form", (Parcelable) m_form );
-				setResult( Activity.RESULT_OK,  intent );
-				finish();
-			}
-		} );
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		getMenuInflater().inflate( R.menu.activity_edit_form, menu );
+		return true;
 	}
 
 	/*
@@ -84,6 +69,51 @@ public class EditFormActivity extends ListActivity {
 		intent.putExtra( "item", (Item) listView.getItemAtPosition( position ) );
 		intent.putExtra( "requestPosition", position + 1 );
 		startActivityForResult( intent, EDIT_ITEM_REQUEST_CODE );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+		case android.R.id.home:
+			onBackPressed();
+			break;
+		case R.id.menu_item_add:
+		{
+			
+			final Intent intent = new Intent( EditFormActivity.this, EditItemActivity.class );
+			intent.putExtra( "item", new Item() );
+			intent.putExtra( "requestPosition", m_form.size() + 1 );
+			startActivityForResult( intent, ADD_ITEM_REQUEST_CODE );
+			break;
+		}
+		case R.id.menu_item_accept:
+		{
+			m_form.setTitle( ((EditText) findViewById( R.id.form_name )).getText().toString().trim() );
+
+			final String title = m_form.title();
+			if( title.equals("") ) {
+				Toast.makeText( EditFormActivity.this, R.string.message_title_missing, Toast.LENGTH_LONG ).show();
+				return false;
+			}
+			if( m_form.size() <= 0 ) {
+				Toast.makeText( EditFormActivity.this, R.string.message_number_items_invalid, Toast.LENGTH_LONG ).show();
+				return false;
+			}
+
+			final Intent intent = getIntent();
+			intent.putExtra( "form", (Parcelable) m_form );
+			setResult( Activity.RESULT_OK,  intent );
+			finish();
+			break;
+		}
+		default:
+			return false;
+		}
+		return true;
 	}
 
 	/*
