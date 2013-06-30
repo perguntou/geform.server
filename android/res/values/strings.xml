@@ -28,5 +28,6 @@
     <string name="menu_add_item">Add Item</string>
     <string name="menu_add_option">Add Option</string>
     <string name="menu_commit">Commit</string>
+    <string name="menu_items_list">Items List</string>
 
 </resources>
