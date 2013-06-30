@@ -19,6 +19,8 @@ import br.ufrj.del.geform.bean.Form;
  */
 public class FillFormActivity extends ListActivity {
 
+	public static final int COLLECT_REQUEST_CODE = 0;
+
 	private Answers m_answers;
 
 	/*
@@ -83,7 +85,21 @@ public class FillFormActivity extends ListActivity {
 		Intent intent = new Intent( FillFormActivity.this, FormPagerActivity.class );
 		intent.putExtra( "answers", m_answers );
 		intent.putExtra( "position", position );
-		startActivity( intent );
+		startActivityForResult( intent, COLLECT_REQUEST_CODE );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent result ) {
+		super.onActivityResult( requestCode, resultCode, result );
+
+		if( resultCode == RESULT_OK && requestCode == COLLECT_REQUEST_CODE ) {
+			final Answers answers = result.getParcelableExtra( "answers" );
+			m_answers = answers;
+		}
 	}
 
 }
