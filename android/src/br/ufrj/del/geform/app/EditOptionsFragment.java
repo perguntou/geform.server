@@ -121,15 +121,16 @@ public class EditOptionsFragment extends ListFragment implements EditDialogListe
 	 * @see EditDialog
 	 */
 	public void editOptionDialog( String option, int position ) {
-		DialogFragment newFragment = new EditDialog();
+		final EditDialog newFragment = new EditDialog();
+		newFragment.setListener( this );
 
-		Bundle args = new Bundle();
+		final Bundle args = new Bundle();
 		final String title = getString( R.string.dialog_edit_option );
 		args.putString( EditDialog.ARGUMENT_TITLE, title );
 		args.putString( EditDialog.ARGUMENT_VALUE, option );
 		args.putInt( ARGUMENT_INDEX, position );
-
 		newFragment.setArguments( args );
+
 		newFragment.show( getFragmentManager(), FRAGMENT_TAG );
 	}
 

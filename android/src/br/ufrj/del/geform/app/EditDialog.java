@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 import br.ufrj.del.geform.R;
 
@@ -29,10 +28,11 @@ public class EditDialog extends DialogFragment {
 	public void onAttach( Activity activity ) {
 		super.onAttach( activity );
 
-		try {
-			m_listener = (EditDialogListener) ((FragmentActivity) activity).getSupportFragmentManager().findFragmentById( R.id.fragment_edit_options );
-		} catch( ClassCastException e ) {
-			throw new ClassCastException( activity.toString() + " must implement EditDialogListener" );
+		if( m_listener == null ) {
+			final String msg = String.format( "Be sure that a listener is set for this %s. Use %s.setListener(...).",
+												EditDialog.class.getSimpleName(),
+												EditDialog.class.getName() );
+			throw new NullPointerException( msg );
 		}
 	}
 
@@ -71,20 +71,35 @@ public class EditDialog extends DialogFragment {
 		m_input.setTextColor( textColor );
 		builder.setView( m_input );
 
-		builder.setPositiveButton( android.R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick( DialogInterface dialog, int which ) {
-				m_listener.onDialogPositiveClick( EditDialog.this );
-			}
-		} );
+		builder.setPositiveButton(
+				android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					/*
+					 * (non-Javadoc)
+					 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+					 */
+					@Override
+					public void onClick( DialogInterface dialog, int which ) {
+						m_listener.onDialogPositiveClick( EditDialog.this );
+					}
+				}
+		);
 
-		builder.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick( DialogInterface dialog, int which ) {
-				m_listener.onDialogNegativeClick( EditDialog.this );
-				dialog.dismiss();
-			}
-		} );
+		builder.setNegativeButton(
+				android.R.string.cancel,
+				new DialogInterface.OnClickListener() {
+					/*
+					 * (non-Javadoc)
+					 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+					 */
+					@Override
+					public void onClick( DialogInterface dialog, int which ) {
+						m_listener.onDialogNegativeClick( EditDialog.this );
+						dialog.dismiss();
+					}
+				}
+		);
+
 		return builder.create();
 	}
 
@@ -94,6 +109,28 @@ public class EditDialog extends DialogFragment {
 	 */
 	public String getInputValue() {
 		return m_input.getText().toString().trim();
+	}
+
+	/**
+	 * 
+	 * @param listener the listener to set.
+	 * @see EditDialogListener
+	 */
+	public void setListener( final Object listener ) {
+		try {
+			m_listener = (EditDialogListener) listener;
+		} catch( ClassCastException e ) {
+			throw new ClassCastException( listener + " must implement EditDialogListener" );
+		}
+	}
+
+	/**
+	 * 
+	 * @return the listener.
+	 * @see EditDialogListener
+	 */
+	public EditDialogListener getListener() {
+		return m_listener;
 	}
 
 }
