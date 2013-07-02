@@ -30,4 +30,6 @@
     <string name="menu_commit">Commit</string>
     <string name="menu_items_list">Items List</string>
 
+    <string name="no_options">No options</string>
+
 </resources>
