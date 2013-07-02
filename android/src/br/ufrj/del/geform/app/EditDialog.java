@@ -57,7 +57,7 @@ public class EditDialog extends DialogFragment {
 			title = candidateTitle == null ? defaultTitle :  candidateTitle;
 
 			final CharSequence candidateValue = args.getString( ARGUMENT_VALUE );
-			value = candidateTitle == null ? defaultValue :  candidateValue;
+			value = candidateValue == null ? defaultValue :  candidateValue;
 		} else {
 			title = defaultTitle;
 			value = defaultValue;
