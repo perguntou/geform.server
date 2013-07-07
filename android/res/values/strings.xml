@@ -31,5 +31,6 @@
     <string name="menu_items_list">Items List</string>
 
     <string name="no_options">No options</string>
+    <string name="no_answer">Your answer goes here</string>
 
 </resources>
