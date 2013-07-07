@@ -61,6 +61,10 @@ public class EditItemActivity extends FragmentActivity {
 
 		itemTypeSpinner.setOnItemSelectedListener(
 				new OnItemSelectedListener() {
+					/*
+					 * (non-Javadoc)
+					 * @see android.widget.AdapterView.OnItemSelectedListener#onItemSelected(android.widget.AdapterView, android.view.View, int, long)
+					 */
 					@Override
 					public void onItemSelected( AdapterView<?> adapter, View view, int position, long id ) {
 						final Type selectedType = Type.values()[position]; 
@@ -68,6 +72,10 @@ public class EditItemActivity extends FragmentActivity {
 
 						changeFragmentVisibility( isVisible );
 					}
+					/*
+					 * (non-Javadoc)
+					 * @see android.widget.AdapterView.OnItemSelectedListener#onNothingSelected(android.widget.AdapterView)
+					 */
 					@Override
 					public void onNothingSelected( AdapterView<?> adapter ) {}
 				}
