@@ -1,7 +1,9 @@
 package br.ufrj.del.geform.app;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -16,10 +18,19 @@ public class FormPagerActivity extends FragmentActivity {
 	private ViewPager m_viewPager;
 	private Answers m_answers;
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+	 */
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_form_pager );
+
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			getActionBar().setDisplayHomeAsUpEnabled( true );
+		}
 
 		final Intent intent = getIntent();
 		m_answers = intent.getParcelableExtra( "answers" );
@@ -49,8 +60,12 @@ public class FormPagerActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch( item.getItemId() ) {
+		case android.R.id.home:
+			onBackPressed();
+			break;
 		case R.id.menu_items_list:
 			final Intent intent = getIntent();
+			m_answers = m_pagerAdapter.getAnswers();
 			intent.putExtra( "answers", m_answers );
 			setResult( Activity.RESULT_OK,  intent );
 			finish();

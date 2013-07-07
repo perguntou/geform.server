@@ -66,7 +66,7 @@ public class FillFormActivity extends ListActivity {
 			onBackPressed();
 			break;
 		case R.id.menu_commit:
-
+			//TODO insert answers in the local database
 			break;
 		default:
 			return false;
@@ -95,10 +95,8 @@ public class FillFormActivity extends ListActivity {
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent result ) {
 		super.onActivityResult( requestCode, resultCode, result );
-
 		if( resultCode == RESULT_OK && requestCode == COLLECT_REQUEST_CODE ) {
-			final Answers answers = result.getParcelableExtra( "answers" );
-			m_answers = answers;
+			m_answers = result.getParcelableExtra( "answers" );
 		}
 	}
 
