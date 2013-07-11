@@ -18,6 +18,6 @@ public class FormsTable implements BaseColumns {
 			COLUMN_TITLE + " text not null" +
 			");";
 
-	public static final String DROP = "drop table if exists" + TABLE_FORMS;
+	public static final String DROP = "drop table if exists " + TABLE_FORMS;
 
 }
