@@ -28,6 +28,7 @@ import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Answers;
 import br.ufrj.del.geform.bean.Form;
 import br.ufrj.del.geform.database.DatabaseHelper;
+import br.ufrj.del.geform.database.FormsTable;
 import br.ufrj.del.geform.net.DownloadTask;
 import br.ufrj.del.geform.xml.FormXmlPull;
 
@@ -51,7 +52,7 @@ public class FormsActivity extends ListActivity {
 				getBaseContext(),
 				android.R.layout.simple_list_item_1,
 				DatabaseHelper.getInstance( this.getBaseContext() ).fetchAllForms(),
-				new String[] { DatabaseHelper.COLUMN_TITLE },
+				new String[] { FormsTable.COLUMN_TITLE },
 				new int[] { android.R.id.text1 },
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
 

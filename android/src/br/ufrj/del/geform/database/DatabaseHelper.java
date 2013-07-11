@@ -16,16 +16,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String DATABASE_NAME = "geform.db";
 	public static final int DATABASE_VERSION = 1;
 
-	public static final String TABLE_FORMS = "forms";
-	public static final String COLUMN_ID = "_id";
-	public static final String COLUMN_TITLE = "title";
-
-	private static final String TABLE_FORMS_CREATE = "create table if not exists " +
-			TABLE_FORMS + " (" +
-			COLUMN_ID + " integer primary key, " +
-			COLUMN_TITLE + " text not null" +
-			");";
-
 	private static DatabaseHelper m_instance;
 
 	/**
@@ -55,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate( SQLiteDatabase database ) {
-		database.execSQL( TABLE_FORMS_CREATE );
+		database.execSQL( FormsTable.CREATE );
 	}
 
 	/*
@@ -65,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
 		Log.w( "database", "Upgrading database from version " + oldVersion	+ " to " + newVersion + ", which will destroy all old data" );
-		db.execSQL( "drop table if exists " + TABLE_FORMS );
+		db.execSQL( FormsTable.DROP );
 		onCreate( db );
 	}
 
@@ -77,14 +67,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public long insertForm ( String title ) throws SQLException {
 		ContentValues content = new ContentValues();
-		content.putNull( COLUMN_ID );
-		content.put( COLUMN_TITLE, title );
+		content.putNull( FormsTable._ID );
+		content.put( FormsTable.COLUMN_TITLE, title );
 
 		SQLiteDatabase db = m_instance.getWritableDatabase();
 		db.beginTransaction();
 		long id = -1;
 		try {
-			id = db.insertOrThrow( TABLE_FORMS, null, content );
+			id = db.insertOrThrow( FormsTable.TABLE_FORMS, null, content );
 			db.setTransactionSuccessful();
 		} finally {
 			db.endTransaction();
@@ -99,10 +89,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public String formTitle( Long id ) {
 		SQLiteDatabase db = m_instance.getReadableDatabase();
-		Cursor cursor = db.query( TABLE_FORMS, new String[] { COLUMN_TITLE }, COLUMN_ID + " = ?", new String[] { String.valueOf( id ) }, null, null, null );
+		Cursor cursor = db.query( FormsTable.TABLE_FORMS, new String[] { FormsTable.COLUMN_TITLE }, FormsTable._ID + " = ?", new String[] { String.valueOf( id ) }, null, null, null );
 		cursor.moveToFirst();
 
-		return cursor.getString( cursor.getColumnIndexOrThrow( COLUMN_TITLE ) );
+		return cursor.getString( cursor.getColumnIndexOrThrow( FormsTable.COLUMN_TITLE ) );
 	}
 
 	/**
@@ -111,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public Cursor fetchAllForms() {
 		SQLiteDatabase db = m_instance.getReadableDatabase();
-		Cursor cursor = db.query( TABLE_FORMS, new String[] { COLUMN_ID, COLUMN_TITLE }, null, null, null, null, null, null );
+		Cursor cursor = db.query( FormsTable.TABLE_FORMS, new String[] { FormsTable._ID, FormsTable.COLUMN_TITLE }, null, null, null, null, null, null );
 		cursor.moveToFirst();
 
 		return cursor;
