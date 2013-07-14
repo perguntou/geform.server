@@ -69,6 +69,19 @@ public class ItemFragment extends ListFragment implements EditDialogListener {
 			case TEXT:
 				Assert.assertTrue( m_answer.size() <= 1 );
 				adapter = new ArrayAdapter<String>( view.getContext(), android.R.layout.simple_list_item_1, m_answer );
+				final TextView empty = (TextView) view.findViewById( android.R.id.empty );
+				empty.setOnClickListener(
+						new View.OnClickListener() {
+							/*
+							 * (non-Javadoc)
+							 * @see android.view.View.OnClickListener#onClick(android.view.View)
+							 */
+							@Override
+							public void onClick( View v ) {
+								editTextAnswerDialog( new String() );
+							}
+						}
+				);
 				break;
 			case SINGLE_CHOICE:
 				List<String> optionsSingle = item.getOptions();
@@ -106,19 +119,6 @@ public class ItemFragment extends ListFragment implements EditDialogListener {
 			switch( type ) {
 			case TEXT:
 				listView.setChoiceMode( ListView.CHOICE_MODE_NONE );
-				final TextView empty = (TextView) view.findViewById( android.R.id.empty );
-				empty.setOnClickListener(
-						new View.OnClickListener() {
-							/*
-							 * (non-Javadoc)
-							 * @see android.view.View.OnClickListener#onClick(android.view.View)
-							 */
-							@Override
-							public void onClick( View v ) {
-								editTextAnswerDialog( new String() );
-							}
-						}
-				);
 				break;
 			case SINGLE_CHOICE:
 				listView.setChoiceMode( ListView.CHOICE_MODE_SINGLE );
