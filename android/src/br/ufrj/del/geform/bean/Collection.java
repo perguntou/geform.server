@@ -5,18 +5,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.SparseArray;
 
-public class Answers implements Parcelable {
+public class Collection implements Parcelable {
 
 	private Form m_reference;
-	private SparseArray<Answer> m_answers;
+	private SparseArray<Answer> m_collection;
 
 	/**
 	 * 
 	 * @param reference
 	 */
-	public Answers( Form reference ) {
+	public Collection( Form reference ) {
 		setReference( reference );
-		setAnswers( new SparseArray<Answer>() );
+		setCollection( new SparseArray<Answer>() );
 	}
 
 	/**
@@ -35,18 +35,18 @@ public class Answers implements Parcelable {
 
 	/**
 	 * 
-	 * @param answers the answers to set
+	 * @param collection the collection to set
 	 */
-	private void setAnswers( SparseArray<Answer> answers ) {
-		m_answers = answers;
+	private void setCollection( SparseArray<Answer> collection ) {
+		m_collection = collection;
 	}
 
 	/**
 	 * 
-	 * @return the answers
+	 * @return the collection
 	 */
-	public SparseArray<Answer> getAnswers() {
-		return m_answers;
+	public SparseArray<Answer> getCollection() {
+		return m_collection;
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class Answers implements Parcelable {
 	 * @return
 	 */
 	public Answer get( int key ) {
-		return m_answers.get( key, new Answer() );
+		return m_collection.get( key, new Answer() );
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class Answers implements Parcelable {
 	 * @param value
 	 */
 	public void put( int key, Answer value ) {
-		m_answers.put( key, value );
+		m_collection.put( key, value );
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class Answers implements Parcelable {
 	 * @param key
 	 */
 	public void delete( int key ) {
-		m_answers.delete( key );
+		m_collection.delete( key );
 	}
 
 	/*
@@ -92,18 +92,18 @@ public class Answers implements Parcelable {
 	public void writeToParcel( Parcel out, int flags ) {
 		out.writeParcelable( this.m_reference, flags );
 		final Bundle bundle = new Bundle( Answer.class.getClassLoader() );
-		bundle.putSparseParcelableArray( "answers", this.m_answers );
+		bundle.putSparseParcelableArray( "collection", this.m_collection );
 		out.writeBundle( bundle );
 	}
 
-	public static final Parcelable.Creator<Answers> CREATOR
-	= new Parcelable.Creator<Answers>() {
+	public static final Parcelable.Creator<Collection> CREATOR
+	= new Parcelable.Creator<Collection>() {
 		/*
 		 * (non-Javadoc)
 		 * @see android.os.Parcelable.Creator#createFromParcel(android.os.Parcel)
 		 */
-		public Answers createFromParcel( Parcel in ) {
-			return new Answers( in );
+		public Collection createFromParcel( Parcel in ) {
+			return new Collection( in );
 		}
 
 		/*
@@ -111,20 +111,20 @@ public class Answers implements Parcelable {
 		 * @see android.os.Parcelable.Creator#newArray(int)
 		 */
 		@Override
-		public Answers[] newArray( int size ) {
-			return new Answers[ size ];
+		public Collection[] newArray( int size ) {
+			return new Collection[ size ];
 		}
 	};
 
 	/**
- 	 * Constructs a new Answer instance from a {@link Parcel}.
+ 	 * Constructs a new Collection instance from a {@link Parcel}.
 	 * @param in the Parcel
 	 */
-	private Answers( Parcel in ) {
+	private Collection( Parcel in ) {
 		m_reference = in.readParcelable( Form.class.getClassLoader() );
 		final Bundle bundle = in.readBundle();
 		bundle.setClassLoader( Answer.class.getClassLoader() );
-		m_answers = bundle.getSparseParcelableArray( "answers" );
+		m_collection = bundle.getSparseParcelableArray( "collection" );
 	}
 
 }

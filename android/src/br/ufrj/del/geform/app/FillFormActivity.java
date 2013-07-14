@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import br.ufrj.del.geform.R;
-import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
 
 /**
@@ -21,7 +21,7 @@ public class FillFormActivity extends ListActivity {
 
 	public static final int COLLECT_REQUEST_CODE = 0;
 
-	private Answers m_answers;
+	private Collection m_collection;
 
 	/*
 	 * (non-Javadoc)
@@ -37,9 +37,9 @@ public class FillFormActivity extends ListActivity {
 			getActionBar().setDisplayHomeAsUpEnabled( true );
 		}
 
-		m_answers = getIntent().getParcelableExtra( "answers" );
+		m_collection = getIntent().getParcelableExtra( "collection" );
 
-		final Form form = m_answers.getReference();
+		final Form form = m_collection.getReference();
 		((TextView) findViewById( R.id.text_form_name )).setText( form.title() );
 
 		setListAdapter( new ItemAdapter( this, android.R.layout.simple_list_item_1, form ) );
@@ -66,7 +66,7 @@ public class FillFormActivity extends ListActivity {
 			onBackPressed();
 			break;
 		case R.id.menu_commit:
-			//TODO insert answers in the local database
+			//TODO insert collection in the local database
 			break;
 		default:
 			return false;
@@ -83,7 +83,7 @@ public class FillFormActivity extends ListActivity {
 		super.onListItemClick( listView, view, position, id );
 
 		Intent intent = new Intent( FillFormActivity.this, FormPagerActivity.class );
-		intent.putExtra( "answers", m_answers );
+		intent.putExtra( "collection", m_collection );
 		intent.putExtra( "position", position );
 		startActivityForResult( intent, COLLECT_REQUEST_CODE );
 	}
@@ -96,7 +96,7 @@ public class FillFormActivity extends ListActivity {
 	protected void onActivityResult( int requestCode, int resultCode, Intent result ) {
 		super.onActivityResult( requestCode, resultCode, result );
 		if( resultCode == RESULT_OK && requestCode == COLLECT_REQUEST_CODE ) {
-			m_answers = result.getParcelableExtra( "answers" );
+			m_collection = result.getParcelableExtra( "collection" );
 		}
 	}
 

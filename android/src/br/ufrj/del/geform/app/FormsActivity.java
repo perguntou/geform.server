@@ -25,7 +25,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import br.ufrj.del.geform.Constants;
 import br.ufrj.del.geform.R;
-import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
 import br.ufrj.del.geform.database.DatabaseHelper;
 import br.ufrj.del.geform.database.FormsTable;
@@ -86,9 +86,9 @@ public class FormsActivity extends ListActivity {
 			e.printStackTrace();
 		}
 
-		final Answers answers = new Answers( form );
+		final Collection collection = new Collection( form );
 		Intent intent = new Intent( getApplicationContext(), FillFormActivity.class );
-		intent.putExtra( "answers", answers );
+		intent.putExtra( "collection", collection );
 
 		startActivity( intent );
 	}

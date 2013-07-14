@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ListView;
 import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Answer;
-import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
 
 /**
@@ -20,23 +20,23 @@ import br.ufrj.del.geform.bean.Form;
  */
 public class FormPagerAdapter extends FragmentStatePagerAdapter {
 
-	private Answers m_answers;
+	private Collection m_collection;
 
 	/**
 	 * 
 	 * @param manager
-	 * @param answers
+	 * @param collection
 	 */
-	FormPagerAdapter( FragmentManager manager, Answers answers ) {
+	FormPagerAdapter( FragmentManager manager, Collection collection ) {
 		super( manager );
-		m_answers = answers;
+		m_collection = collection;
 	}
 
 	/**
-	 * @return the answers
+	 * @return the collection
 	 */
-	public Answers getAnswers() {
-		return m_answers;
+	public Collection getCollection() {
+		return m_collection;
 	}
 
 	/*
@@ -45,8 +45,8 @@ public class FormPagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	@Override
 	public Fragment getItem( int index ) {
-		final Form form = m_answers.getReference();
-		final Answer answer = m_answers.get( index );
+		final Form form = m_collection.getReference();
+		final Answer answer = m_collection.get( index );
 
 		final Fragment fragment = new ItemFragment() {
 			/*
@@ -56,7 +56,7 @@ public class FormPagerAdapter extends FragmentStatePagerAdapter {
 			@Override
 			public void onListItemClick( ListView listView, View view, int position, long id ) {
 				super.onListItemClick( listView, view, position, id );
-				updateAnswersFromItemFragment( this );
+				updateCollectionFromItemFragment( this );
 			}
 			/*
 			 * (non-Javadoc)
@@ -65,7 +65,7 @@ public class FormPagerAdapter extends FragmentStatePagerAdapter {
 			@Override
 			public void onDialogPositiveClick( DialogFragment dialog ) {
 				super.onDialogPositiveClick( dialog );
-				updateAnswersFromItemFragment( this );
+				updateCollectionFromItemFragment( this );
 			}
 		};
 
@@ -84,7 +84,7 @@ public class FormPagerAdapter extends FragmentStatePagerAdapter {
 	 */
 	@Override
 	public int getCount() {
-		final Form form = m_answers.getReference();
+		final Form form = m_collection.getReference();
 		return form.size();
 	}
 
@@ -101,14 +101,14 @@ public class FormPagerAdapter extends FragmentStatePagerAdapter {
 	 * 
 	 * @param fragment
 	 */
-	private void updateAnswersFromItemFragment( ItemFragment fragment ) {
+	private void updateCollectionFromItemFragment( ItemFragment fragment ) {
 		Bundle args = fragment.getArguments();
 		final int position = args.getInt( ItemFragment.ARG_POSITION );
 		final Answer answer = fragment.getAnswer();
 		if( !answer.isEmpty() ) {
-			m_answers.put( position, answer );
+			m_collection.put( position, answer );
 		} else {
-			m_answers.delete( position );
+			m_collection.delete( position );
 		}
 	}
 
