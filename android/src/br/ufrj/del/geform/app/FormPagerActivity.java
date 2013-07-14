@@ -10,13 +10,13 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import br.ufrj.del.geform.R;
-import br.ufrj.del.geform.bean.Answers;
+import br.ufrj.del.geform.bean.Collection;
 
 public class FormPagerActivity extends FragmentActivity {
 
 	private FormPagerAdapter m_pagerAdapter;
 	private ViewPager m_viewPager;
-	private Answers m_answers;
+	private Collection m_collection;
 
 	/*
 	 * (non-Javadoc)
@@ -33,9 +33,9 @@ public class FormPagerActivity extends FragmentActivity {
 		}
 
 		final Intent intent = getIntent();
-		m_answers = intent.getParcelableExtra( "answers" );
+		m_collection = intent.getParcelableExtra( "collection" );
 
-		m_pagerAdapter = new FormPagerAdapter( getSupportFragmentManager(), m_answers );
+		m_pagerAdapter = new FormPagerAdapter( getSupportFragmentManager(), m_collection );
 
 		m_viewPager = (ViewPager) findViewById( R.id.pager );
 		m_viewPager.setAdapter( m_pagerAdapter );
@@ -65,8 +65,8 @@ public class FormPagerActivity extends FragmentActivity {
 			break;
 		case R.id.menu_items_list:
 			final Intent intent = getIntent();
-			m_answers = m_pagerAdapter.getAnswers();
-			intent.putExtra( "answers", m_answers );
+			m_collection = m_pagerAdapter.getCollection();
+			intent.putExtra( "collection", m_collection );
 			setResult( Activity.RESULT_OK,  intent );
 			finish();
 			break;

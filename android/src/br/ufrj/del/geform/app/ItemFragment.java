@@ -198,7 +198,7 @@ public class ItemFragment extends ListFragment implements EditDialogListener {
 		public void onDialogNegativeClick( DialogFragment dialog ) {}
 
 		/**
-		 * Creates an edit dialog to change an text answer
+		 * Creates an edit dialog to change a text answer
 		 * @param text the initial value
 		 * @see EditDialog
 		 */
