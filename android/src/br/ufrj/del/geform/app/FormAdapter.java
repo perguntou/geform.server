@@ -52,9 +52,8 @@ public class FormAdapter extends CursorAdapter {
 
 		final TextView textViewCounterCollections = (TextView) view.findViewById( android.R.id.text2 );
 		final int counterCollectionsColumnIndex = cursor.getColumnIndex( CollectionsTable._COUNT );
-		final String text2 = cursor.getString( counterCollectionsColumnIndex );
-		final String textArg = ( text2 != null ) ? text2 : context.getString( R.string.no_collections );
-		textViewCounterCollections.setText( context.getString( R.string.counter_collections, textArg ) );
+		final int counter = cursor.getInt( counterCollectionsColumnIndex );
+		textViewCounterCollections.setText( context.getString( R.string.counter_collections, counter ) );
 	}
 
 	/*
