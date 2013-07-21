@@ -7,6 +7,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import br.ufrj.del.geform.bean.Answer;
+import br.ufrj.del.geform.bean.Collection;
+import br.ufrj.del.geform.bean.Form;
 
 /**
  * 
@@ -14,7 +17,9 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public static final String DATABASE_NAME = "geform.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
+
+	public static final String FOREIGN_KEY_ENABLE = "PRAGMA foreign_keys = ON;";
 
 	private static DatabaseHelper m_instance;
 
@@ -46,6 +51,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate( SQLiteDatabase database ) {
 		database.execSQL( FormsTable.CREATE );
+		database.execSQL( CollectionsTable.CREATE );
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.database.sqlite.SQLiteOpenHelper#onOpen(android.database.sqlite.SQLiteDatabase)
+	 */
+	@Override
+	public void onOpen( SQLiteDatabase database ) {
+		if( !database.isReadOnly() ) {
+			database.execSQL( FOREIGN_KEY_ENABLE );
+		}
+		super.onOpen( database );
 	}
 
 	/*
@@ -53,10 +71,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
 	 */
 	@Override
-	public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ) {
+	public void onUpgrade( SQLiteDatabase database, int oldVersion, int newVersion ) {
 		Log.w( "database", "Upgrading database from version " + oldVersion	+ " to " + newVersion + ", which will destroy all old data" );
-		db.execSQL( FormsTable.DROP );
-		onCreate( db );
+		database.execSQL( CollectionsTable.DROP );
+		database.execSQL( FormsTable.DROP );
+		onCreate( database );
 	}
 
 	/**
@@ -72,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = m_instance.getWritableDatabase();
 		db.beginTransaction();
-		long id = -1;
+		long id = Form.NO_ID;
 		try {
 			id = db.insertOrThrow( FormsTable.TABLE_FORMS, null, content );
 			db.setTransactionSuccessful();
@@ -80,6 +99,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			db.endTransaction();
 		}
 		return id; 
+	}
+
+	public void insertCollection ( Collection collection ) throws SQLException {
+		final Form reference = collection.getReference();
+		final Long formId = reference.id();
+		final int count = getCollectionCount( formId );
+
+		SQLiteDatabase db = m_instance.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			for( int item = 0; item < reference.size(); item++ ) {
+				final Answer answer = collection.get( item );
+				if( answer == null ) {
+
+				}
+				for( final String singleAnswer : answer ) {
+					final ContentValues content = new ContentValues();
+					content.putNull( CollectionsTable._ID );
+					content.put( CollectionsTable.COLUMN_FORM_ID, formId );
+					content.put( CollectionsTable._COUNT, count + 1 );
+					content.put( CollectionsTable.COLUMN_ITEM, item );
+					content.put( CollectionsTable.COLUMN_ANSWER, singleAnswer );
+
+					db.insertOrThrow( CollectionsTable.TABLE_COLLECTION, null, content );
+				}
+			}
+			db.setTransactionSuccessful();
+		} finally {
+			db.endTransaction();
+		}
+	}
+
+	/**
+	 * 
+	 * @param referenceId
+	 * @return
+	 */
+	public int getCollectionCount( final Long referenceId ) {
+		SQLiteDatabase db = m_instance.getReadableDatabase();
+		final String columnMaxCollectionCount = String.format( "max(%s)", CollectionsTable._COUNT );
+		Cursor cursor = db.query( CollectionsTable.TABLE_COLLECTION,
+				new String[] { columnMaxCollectionCount },
+				CollectionsTable.COLUMN_FORM_ID + " = ?",
+				new String[] { String.valueOf( referenceId ) },
+				null,
+				null,
+				null );
+		cursor.moveToFirst();
+
+		final int count = (cursor.getCount() != 0) ? cursor.getInt( cursor.getColumnIndexOrThrow( columnMaxCollectionCount ) ) : 0;
+		return count;
 	}
 
 	/**

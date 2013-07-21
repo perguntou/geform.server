@@ -13,6 +13,7 @@ import android.widget.TextView;
 import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
+import br.ufrj.del.geform.database.DatabaseHelper;
 
 /**
  *
@@ -66,7 +67,8 @@ public class FillFormActivity extends ListActivity {
 			onBackPressed();
 			break;
 		case R.id.menu_commit:
-			//TODO insert collection in the local database
+			final DatabaseHelper db = DatabaseHelper.getInstance( this.getBaseContext() );
+			db.insertCollection( m_collection );
 			break;
 		default:
 			return false;
