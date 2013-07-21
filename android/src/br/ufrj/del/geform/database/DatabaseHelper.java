@@ -153,6 +153,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	public Cursor getFormsTitleAndCounter() {
+		SQLiteDatabase db = m_instance.getReadableDatabase();
+		final String query = String.format( "select f.%s, f.%s, c.%s from %s f left join %s c on f.%s = c.%s group by %s;",
+				FormsTable._ID,
+				FormsTable.COLUMN_TITLE,
+				CollectionsTable._COUNT,
+				FormsTable.TABLE_FORMS,
+				CollectionsTable.TABLE_COLLECTION,
+				FormsTable._ID,
+				CollectionsTable.COLUMN_FORM_ID,
+				FormsTable.COLUMN_TITLE );
+		Cursor cursor = db.rawQuery( query, null );
+		cursor.moveToFirst();
+
+		return cursor;
+	}
+
+	/**
 	 * Gets the form title associated to specified ID.
 	 * @param id the form ID.
 	 * @return the form title.
@@ -171,7 +192,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public Cursor fetchAllForms() {
 		SQLiteDatabase db = m_instance.getReadableDatabase();
-		Cursor cursor = db.query( FormsTable.TABLE_FORMS, new String[] { FormsTable._ID, FormsTable.COLUMN_TITLE }, null, null, null, null, null, null );
+		Cursor cursor = db.query( FormsTable.TABLE_FORMS, new String[] { FormsTable._ID, FormsTable.COLUMN_TITLE }, null, null, null, null, null, FormsTable.COLUMN_TITLE );
 		cursor.moveToFirst();
 
 		return cursor;
