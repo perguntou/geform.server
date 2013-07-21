@@ -69,6 +69,8 @@ public class FillFormActivity extends ListActivity {
 		case R.id.menu_commit:
 			final DatabaseHelper db = DatabaseHelper.getInstance( this.getBaseContext() );
 			db.insertCollection( m_collection );
+			setResult( RESULT_OK );
+			finish();
 			break;
 		default:
 			return false;

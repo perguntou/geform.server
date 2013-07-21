@@ -14,8 +14,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +26,14 @@ import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
 import br.ufrj.del.geform.database.DatabaseHelper;
-import br.ufrj.del.geform.database.FormsTable;
 import br.ufrj.del.geform.net.DownloadTask;
 import br.ufrj.del.geform.xml.FormXmlPull;
 
 
 public class FormsActivity extends ListActivity {
+
+	private static final int COLLECT_DATA = 0;
+	private static final int CREATE_FORM = 1;
 
 	/*
 	 * (non-Javadoc)
@@ -48,16 +48,10 @@ public class FormsActivity extends ListActivity {
 		final View header = getLayoutInflater().inflate( R.layout.header_forms, null );
 		getListView().addHeaderView( header );
 
-		final ListAdapter adapter = new SimpleCursorAdapter(
-				getBaseContext(),
-				android.R.layout.simple_list_item_1,
-				DatabaseHelper.getInstance( this.getBaseContext() ).fetchAllForms(),
-				new String[] { FormsTable.COLUMN_TITLE },
-				new int[] { android.R.id.text1 },
-				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
+		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( this.getBaseContext() );
+		final ListAdapter adapter = new FormAdapter( getBaseContext(), dbHelper.getFormsTitleAndCounter() );
 
 		setListAdapter( adapter );
-
 	}
 
 	/*
@@ -90,7 +84,7 @@ public class FormsActivity extends ListActivity {
 		Intent intent = new Intent( getApplicationContext(), FillFormActivity.class );
 		intent.putExtra( "collection", collection );
 
-		startActivity( intent );
+		startActivityForResult( intent, COLLECT_DATA );
 	}
 
 	/*
@@ -113,7 +107,7 @@ public class FormsActivity extends ListActivity {
 		case R.id.menu_form_add:
 			Intent intent = new Intent( getApplicationContext(), EditFormActivity.class );
 			intent.putExtra( "form", (Parcelable) new Form() );
-			startActivityForResult( intent, 0 );
+			startActivityForResult( intent, CREATE_FORM );
 			break;
 		case R.id.menu_form_download:
 			try {
@@ -123,7 +117,8 @@ public class FormsActivity extends ListActivity {
 					Toast.makeText( getBaseContext(), getString( R.string.message_download_error ), Toast.LENGTH_LONG ).show();
 					return false;
 				}
-				insertAndUpdate( form );
+				insertForm( form );
+				updateAdapter();
 			} catch( InterruptedException e ) {
 				Log.e( "Download", e.getMessage() );
 			} catch( ExecutionException e ) {
@@ -145,13 +140,27 @@ public class FormsActivity extends ListActivity {
 		super.onActivityResult( requestCode, resultCode, result );
 
 		if( resultCode == RESULT_OK ) {
-			Form form = (Form) result.getParcelableExtra( "form" );
-			insertAndUpdate( form );
+			switch( requestCode ) {
+			case COLLECT_DATA:
+				updateAdapter();
+				break;
+			case CREATE_FORM:
+				Form form = (Form) result.getParcelableExtra( "form" );
+				insertForm( form );
+				updateAdapter();
+				break;
+			default:
+			}
 		}
 	}
 
-	private void insertAndUpdate( Form form ) {
-		Long id = DatabaseHelper.getInstance( this.getApplicationContext() ).insertForm( form.title() );
+	/**
+	 * 
+	 * @param form
+	 */
+	private void insertForm( Form form ) {
+		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( this.getApplicationContext() );
+		final Long id = dbHelper.insertForm( form.title() );
 		try {
 			FormXmlPull.serialize( form , new FileOutputStream( getDir( "forms", FragmentActivity.MODE_PRIVATE ) + File.separator + String.valueOf( id ) + Constants.extension ) );
 		} catch (IllegalArgumentException e) {
@@ -165,9 +174,15 @@ public class FormsActivity extends ListActivity {
 		} catch (IOException e) {
 			Log.e( "FillActivity", e.getMessage() );
 		}
+	}
 
-		final SimpleCursorAdapter adapter = (SimpleCursorAdapter) getListAdapter();
-		adapter.changeCursor( DatabaseHelper.getInstance( this ).fetchAllForms() );
+	/**
+	 * 
+	 */
+	private void updateAdapter() {
+		final FormAdapter adapter = (FormAdapter) getListAdapter();
+		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( this );
+		adapter.changeCursor( dbHelper.getFormsTitleAndCounter() );
 	}
 
 }
