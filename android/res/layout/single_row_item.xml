@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@android:id/text1"
         android:layout_below="@android:id/text1"
-        android:text="@string/counter_collections"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </TwoLineListItem>

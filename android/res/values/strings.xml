@@ -34,6 +34,5 @@
     <string name="no_answer">Your answer goes here</string>
 
     <string name="counter_collections">%s collected</string>
-    <string name="no_collections">0</string>
-    
+
 </resources>
