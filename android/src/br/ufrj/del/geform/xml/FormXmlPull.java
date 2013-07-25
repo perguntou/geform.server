@@ -3,18 +3,25 @@ package br.ufrj.del.geform.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
+import android.util.Log;
 import br.ufrj.del.geform.bean.Form;
 import br.ufrj.del.geform.bean.Item;
 import br.ufrj.del.geform.bean.Type;
+import br.ufrj.del.geform.xml.XmlElements.Attribute;
+import br.ufrj.del.geform.xml.XmlElements.Tag;
 
 /**
  * This class enables the conversion between a XML based stream
@@ -27,6 +34,8 @@ import br.ufrj.del.geform.bean.Type;
  */
 public final class FormXmlPull {
 
+	private static final String FEATURE_INDENT_OUTPUT = "http://xmlpull.org/v1/doc/features.html#indent-output";
+
 	private static final String ns = XmlPullParser.NO_NAMESPACE;
 	private static final String encoding = "utf-8";
 
@@ -37,8 +46,9 @@ public final class FormXmlPull {
 	 * @return the resultant form from parsing.
 	 * @throws XmlPullParserException
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
-	public static Form parse( InputStream in ) throws XmlPullParserException, IOException  {
+	public static Form parse( InputStream in ) throws XmlPullParserException, IOException, ParseException  {
 		try {
 			XmlPullParserFactory parserFactory = XmlPullParserFactory.newInstance();
 			XmlPullParser parser = parserFactory.newPullParser();
@@ -46,7 +56,8 @@ public final class FormXmlPull {
 			parser.setInput( in, encoding );
 			parser.nextTag();
 
-			return readForm( parser );
+			final Form form = readForm( parser );
+			return form;
 		} finally {
 			in.close();
 		}
@@ -68,7 +79,7 @@ public final class FormXmlPull {
 			parserFactory.setNamespaceAware( true );
 			XmlSerializer serializer = parserFactory.newSerializer();
 			serializer.setOutput( out, encoding );
-			serializer.setFeature( "http://xmlpull.org/v1/doc/features.html#indent-output", true );
+			serializer.setFeature( FEATURE_INDENT_OUTPUT, true );
 
 			serializer.startDocument( encoding, null );
 			writeForm( form, serializer );
@@ -84,25 +95,50 @@ public final class FormXmlPull {
 	 * @return the resultant form from parse.
 	 * @throws XmlPullParserException
 	 * @throws IOException
+	 * @throws ParseException 
 	 * @see XmlPullParser
 	 * @see Form
 	 */
-	private static Form readForm( XmlPullParser parser ) throws XmlPullParserException, IOException {
+	private static Form readForm( XmlPullParser parser ) throws XmlPullParserException, IOException, ParseException {
 		Form form = new Form();
 
-		parser.require( XmlPullParser.START_TAG, ns, "form" );
+		parser.require( XmlPullParser.START_TAG, ns, Tag.FORM.toString() );
 		while( parser.next() != XmlPullParser.END_TAG ) {
-			if( parser.getEventType() != XmlPullParser.START_TAG ) {
+			final int eventType = parser.getEventType();
+			if( eventType != XmlPullParser.START_TAG ) {
 				continue;
 			}
-			String name = parser.getName();
-			if( name.equals( "title" ) ) {
-				form.setTitle( readText( parser ) );
-			} else
-			if( name.equals("item") ) {
-				form.add( readItem( parser ) );
-//			} else {
-//				skip( parser );
+			final String name = parser.getName();
+			final Tag tag = Tag.fromString( name );
+			switch( tag ) {
+			case TITLE:
+				final String textTitle = readText( parser );
+				form.setTitle( textTitle );
+				break;
+			case AUTHOR:
+				final String textAuthor = readText( parser );
+				form.setAuthor( textAuthor );
+				break;
+			case DESCRIPTION:
+				final String textDescription = readText( parser );
+				form.setDescription( textDescription );
+				break;
+			case TIMESTAMP:
+				final String textTimestamp = readText( parser );
+				final SimpleDateFormat dateFormat = new SimpleDateFormat( XmlElements.DATE_FORMAT, Locale.US );
+				final Date timestamp = dateFormat.parse( textTimestamp );
+				form.setTimestamp( timestamp );
+				break;
+			case ITEM:
+				final Item item = readItem( parser );
+				form.add( item );
+				break;
+			default:
+				final String logTag = String.format( "%s.%s", FormXmlPull.class.getName(), FormXmlPull.class.getEnclosingMethod().getName() );
+				if( Log.isLoggable( logTag, Log.WARN ) ) {
+					final String message = String.format( "Case %s not handled in this switch.", tag );
+					Log.w( logTag, message );
+				}
 			}
 		}
 		return form;
@@ -120,14 +156,29 @@ public final class FormXmlPull {
 	 * @see XmlSerializer
 	 */
 	private static void writeForm( Form form, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException, XmlPullParserException {
-		serializer.startTag( ns, "form" );
-		serializer.startTag( ns, "title" );
-			serializer.text( form.title() );
-		serializer.endTag( ns, "title" );
+		serializer.startTag( ns, Tag.FORM.toString() );
+
+		final Date timestamp = form.getTimestamp();
+		if( timestamp != null ) {
+			final SimpleDateFormat dateFormat = new SimpleDateFormat( XmlElements.DATE_FORMAT, Locale.US );
+			final String stringTs = dateFormat.format( timestamp );
+			serializeSimpleTextElement( stringTs, Tag.TIMESTAMP, serializer );
+		}
+		final String author = form.getAuthor();
+		if( author != null ) {
+			serializeSimpleTextElement( author, Tag.AUTHOR, serializer );
+		}
+		final String title = form.title();
+		serializeSimpleTextElement( title, Tag.TITLE, serializer );
+		final String description = form.getDescription();
+		if( description != null ) {
+			serializeSimpleTextElement( description, Tag.DESCRIPTION, serializer );
+		}
 		for( Item item : form ) {
 			writeItem( item, serializer );
 		}
-		serializer.endTag( ns, "form" );
+
+		serializer.endTag( ns, Tag.FORM.toString() );
 	}
 
 	/**
@@ -142,28 +193,34 @@ public final class FormXmlPull {
 	private static Item readItem( XmlPullParser parser ) throws XmlPullParserException, IOException {
 		Item item = new Item();
 
-		parser.require( XmlPullParser.START_TAG, ns, "item" );
-		String att = parser.getAttributeValue( ns, "type" );
-		if( att.equals( "single" ) ) {
-			item.setType( Type.SINGLE_CHOICE );
-		} else
-		if( att.equals( "multiple" ) ) {
-			item.setType( Type.MULTIPLE_CHOICE );
-		}
+		parser.require( XmlPullParser.START_TAG, ns, Tag.ITEM.toString() );
+		final String att = parser.getAttributeValue( ns, Attribute.TYPE.toString() );
+		final Type type = Type.fromValue( att );
+		item.setType( type );
 		while( parser.next() != XmlPullParser.END_TAG ) {
 			if( parser.getEventType() != XmlPullParser.START_TAG ) {
 				continue;
 			}
 			String name = parser.getName();
-			if( name.equals( "question" ) ) {
-				item.setQuestion( readText( parser ) );
-			} else
-			if( name.equals("options") ) {
-				item.setOptions( readOptions( parser ) );
-//			} else {
-//				skip( parser );
+			final Tag tag = Tag.fromString( name );
+			switch( tag ) {
+			case QUESTION:
+				final String textQuestion = readText( parser );
+				item.setQuestion( textQuestion );
+				break;
+			case OPTIONS:
+				final List<String> options = readOptions( parser );
+				item.setOptions( options );
+				break;
+			default:
+				final String logTag = String.format( "%s.%s", FormXmlPull.class.getName(), FormXmlPull.class.getEnclosingMethod().getName() );
+				if( Log.isLoggable( logTag, Log.WARN ) ) {
+					final String message = String.format( "Case %s not handled in this switch.", tag );
+					Log.w( logTag, message );
+				}
 			}
 		}
+
 		return item;
 	}
 
@@ -177,15 +234,14 @@ public final class FormXmlPull {
 	 * @see XmlSerializer
 	 */
 	private static void writeItem( Item item, XmlSerializer serializer ) throws XmlPullParserException, IOException {
-		serializer.startTag( ns, "item" );
-		serializer.attribute( ns, "type", String.valueOf( item.getType() ) );
-		serializer.startTag( ns, "question" );
-			serializer.text( item.getQuestion() );
-		serializer.endTag( ns, "question" );
+		serializer.startTag( ns, Tag.ITEM.toString() );
+		final Type type = item.getType();
+		serializer.attribute( ns, Attribute.TYPE.toString(), type.toString() );
+		serializeSimpleTextElement( item.getQuestion(), Tag.QUESTION, serializer );
 		if( item.hasOptions() ) {
 			writeOptions( item.getOptions(), serializer );
 		}
-		serializer.endTag( ns, "item" );
+		serializer.endTag( ns, Tag.ITEM.toString() );
 	}
 
 	/**
@@ -199,17 +255,27 @@ public final class FormXmlPull {
 	private static List<String> readOptions( XmlPullParser parser ) throws XmlPullParserException, IOException {
 		List<String> options = new ArrayList<String>();
 
-		parser.require( XmlPullParser.START_TAG, ns, "options" );
+		parser.require( XmlPullParser.START_TAG, ns, Tag.OPTIONS.toString() );
 		while( parser.next() != XmlPullParser.END_TAG ) {
 			if( parser.getEventType() != XmlPullParser.START_TAG ) {
 				continue;
 			}
 			String name = parser.getName();
-			if( name.equals( "option" ) ) {
-				options.add( readOption(parser) );
+			final Tag tag = Tag.fromString( name );
+			switch( tag ) {
+			case OPTION:
+				final String option = readOption(parser);
+				options.add( option );
+				break;
+			default:
+				final String logTag = String.format( "%s.%s", FormXmlPull.class.getName(), FormXmlPull.class.getEnclosingMethod().getName() );
+				if( Log.isLoggable( logTag, Log.WARN ) ) {
+					final String message = String.format( "Case %s not handled in this switch.", tag );
+					Log.w( logTag, message );
+				}
 			}
 		}
-		parser.require(XmlPullParser.END_TAG, ns, "options");
+		parser.require(XmlPullParser.END_TAG, ns, Tag.OPTIONS.toString() );
 
 		return options;
 	}
@@ -224,12 +290,13 @@ public final class FormXmlPull {
 	 * @see XmlSerializer
 	 */
 	private static void writeOptions( List<String> options, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException {
-		serializer.startTag( ns, "options" );
+		serializer.startTag( ns, Tag.OPTIONS.toString() );
 		Iterator<String> it = options.iterator();
 		while( it.hasNext() ) {
-			writeOption( it.next(), serializer );
+			final String option = it.next();
+			writeOption( option, serializer );
 		}
-		serializer.endTag( ns, "options" );
+		serializer.endTag( ns, Tag.OPTIONS.toString() );
 	}
 
 	/**
@@ -241,10 +308,12 @@ public final class FormXmlPull {
 	 */
 	private static String readOption( XmlPullParser parser ) throws XmlPullParserException, IOException
 	{
-		parser.require( XmlPullParser.START_TAG, ns, "option" );
-		String value = readText( parser ).trim();
-		parser.require( XmlPullParser.END_TAG, ns, "option" );
-		return value;
+		parser.require( XmlPullParser.START_TAG, ns, Tag.OPTION.toString() );
+		final String value = readText( parser );
+		final String option = value.trim();
+		parser.require( XmlPullParser.END_TAG, ns, Tag.OPTION.toString() );
+
+		return option;
 	}
 
 	/**
@@ -257,9 +326,7 @@ public final class FormXmlPull {
 	 */
 	private static void writeOption( String option, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException
 	{
-		serializer.startTag( ns, "option" );
-		serializer.text( option );
-		serializer.endTag( ns, "option" );
+		serializeSimpleTextElement( option, Tag.OPTION, serializer );
 	}
 	
 	/**
@@ -271,12 +338,27 @@ public final class FormXmlPull {
 	 * @see XmlPullParser
 	 */
 	private static String readText( XmlPullParser parser ) throws XmlPullParserException, IOException {
-		String text = "";
+		String text = new String();
 		if( parser.next() == XmlPullParser.TEXT ) {
 			text = parser.getText();
 			parser.nextTag();
 		}
 		return text;
+	}
+
+	/**
+	 * Internal method that serializes a simple text element.
+	 * @param value the value associated to the element.
+	 * @param tag the tag element.
+	 * @param serializer the responsible for serialize.
+	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	private static void serializeSimpleTextElement( String value, Tag tag, XmlSerializer serializer ) throws IllegalArgumentException, IllegalStateException, IOException {
+		serializer.startTag( ns, tag.toString() );
+			serializer.text( value );
+		serializer.endTag( ns, tag.toString() );
 	}
 
 //	/**
