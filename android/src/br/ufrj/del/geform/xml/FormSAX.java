@@ -32,6 +32,7 @@ import br.ufrj.del.geform.bean.Type;
  * @see SAXTransformerFactory
  * @see TransformerHandler
  */
+@Deprecated
 public final class FormSAX {
 	
 	/**

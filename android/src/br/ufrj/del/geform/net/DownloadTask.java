@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,6 +31,8 @@ public class DownloadTask extends AsyncTask<String, Void, Form> {
 			Log.e( "DownloadTask", e.getMessage() );
 		} catch( XmlPullParserException e ) {
 			Log.e( "DownloadTask", e.getMessage() );
+		} catch( ParseException e ) {
+			e.printStackTrace();
 		}
 
 		return form;
@@ -41,8 +44,9 @@ public class DownloadTask extends AsyncTask<String, Void, Form> {
 	 * @return
 	 * @throws XmlPullParserException
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
-	private Form loadFromNetwork( String urlString ) throws XmlPullParserException, IOException {
+	private Form loadFromNetwork( String urlString ) throws XmlPullParserException, IOException, ParseException {
 		InputStream stream = null;
 		Form form = null;
 

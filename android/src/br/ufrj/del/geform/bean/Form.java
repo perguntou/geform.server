@@ -2,6 +2,7 @@ package br.ufrj.del.geform.bean;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,6 +32,12 @@ public class Form extends ArrayList<Item> implements Parcelable {
 	 * the form's unique identifier
 	 */
 	private Long m_id = Long.valueOf( NO_ID );
+
+	private String m_author;
+
+	private String m_description;
+
+	private Date m_timestamp;
 
 	/**
 	 * Constructs a new Form instance with zero initial capacity
@@ -90,6 +97,48 @@ public class Form extends ArrayList<Item> implements Parcelable {
 		//when clone() is called.
 //		Assert.assertTrue( , m_id == NO_ID );
 		m_id = id;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return m_author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor( String author ) {
+		m_author = author;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return m_description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription( String description ) {
+		m_description = description;
+	}
+
+	/**
+	 * @return the timestamp
+	 */
+	public Date getTimestamp() {
+		return m_timestamp;
+	}
+
+	/**
+	 * @param timestamp the timestamp to set
+	 */
+	public void setTimestamp( Date timestamp ) {
+		m_timestamp = timestamp;
 	}
 
 	/**
