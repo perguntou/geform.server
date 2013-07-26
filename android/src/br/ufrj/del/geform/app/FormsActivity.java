@@ -11,12 +11,14 @@ import java.util.concurrent.ExecutionException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,11 +49,16 @@ public class FormsActivity extends ListActivity {
 
 		setContentView( R.layout.activity_forms );
 
-		final View header = getLayoutInflater().inflate( R.layout.header_forms, null );
-		getListView().addHeaderView( header );
+		final LayoutInflater layoutInflater = getLayoutInflater();
+		final View header = layoutInflater.inflate( R.layout.header_forms, null );
+		final ListView listView = getListView();
+		listView.addHeaderView( header, null, false );
 
-		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( this.getBaseContext() );
-		final ListAdapter adapter = new FormAdapter( getBaseContext(), dbHelper.getFormsTitleAndCounter() );
+		final Context applicationContext = getApplicationContext();
+		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( applicationContext );
+
+		final Context context = getBaseContext();
+		final ListAdapter adapter = new FormAdapter( context, dbHelper.getFormsTitleAndCounter() );
 
 		setListAdapter( adapter );
 	}
@@ -68,8 +75,9 @@ public class FormsActivity extends ListActivity {
 		try {
 			long identifier = listView.getItemIdAtPosition( position );
 			final File directory = getDir( "forms", FragmentActivity.MODE_PRIVATE );
-			final String path = directory + File.separator + Long.toString( identifier ) + Constants.extension;
-			form = FormXmlPull.parse( new FileInputStream( path ) );
+			final String path = String.format( "%s%s%s%s", directory, File.separator, identifier, Constants.extension );
+			final FileInputStream in = new FileInputStream( path );
+			form = FormXmlPull.parse( in );
 			form.setId( identifier );
 		} catch( FileNotFoundException e ) {
 			Log.e( "FormParse", e.getMessage() );
@@ -85,7 +93,8 @@ public class FormsActivity extends ListActivity {
 		}
 
 		final Collection collection = new Collection( form );
-		Intent intent = new Intent( getApplicationContext(), FillFormActivity.class );
+		final Context context = getBaseContext();
+		Intent intent = new Intent( context, FillFormActivity.class );
 		intent.putExtra( "collection", collection );
 
 		startActivityForResult( intent, COLLECT_DATA );
@@ -107,9 +116,10 @@ public class FormsActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
+		final Context context = getBaseContext();
 		switch( item.getItemId() ) {
 		case R.id.menu_form_add:
-			Intent intent = new Intent( getApplicationContext(), EditFormActivity.class );
+			Intent intent = new Intent( context, EditFormActivity.class );
 			intent.putExtra( "form", (Parcelable) new Form() );
 			startActivityForResult( intent, CREATE_FORM );
 			break;
@@ -120,7 +130,7 @@ public class FormsActivity extends ListActivity {
 				final AsyncTask<String, Void, Form> task = downloadTask.execute( Constants.SERVER_URL );
 				final Form form = task.get();
 				if( form == null ) {
-					Toast.makeText( getBaseContext(), getString( R.string.message_download_error ), Toast.LENGTH_LONG ).show();
+					Toast.makeText( context, getString( R.string.message_download_error ), Toast.LENGTH_LONG ).show();
 					return false;
 				}
 				insertForm( form );
@@ -168,7 +178,10 @@ public class FormsActivity extends ListActivity {
 		final DatabaseHelper dbHelper = DatabaseHelper.getInstance( this.getApplicationContext() );
 		final Long id = dbHelper.insertForm( form.title() );
 		try {
-			FormXmlPull.serialize( form , new FileOutputStream( getDir( "forms", FragmentActivity.MODE_PRIVATE ) + File.separator + String.valueOf( id ) + Constants.extension ) );
+			final File directory = getDir( "forms", FragmentActivity.MODE_PRIVATE );
+			final String path = String.format( "%s%s%s%s", directory, File.separator, id, Constants.extension );
+			final FileOutputStream out = new FileOutputStream( path );
+			FormXmlPull.serialize( form , out );
 		} catch (IllegalArgumentException e) {
 			Log.e( "FillActivity", e.getMessage() );
 		} catch (IllegalStateException e) {
