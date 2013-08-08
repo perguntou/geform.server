@@ -6,14 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.concurrent.ExecutionException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
@@ -30,7 +28,7 @@ import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
 import br.ufrj.del.geform.database.DatabaseHelper;
-import br.ufrj.del.geform.net.DownloadTask;
+import br.ufrj.del.geform.net.NetworkHelper;
 import br.ufrj.del.geform.xml.FormXmlPull;
 
 
@@ -124,22 +122,14 @@ public class FormsActivity extends ListActivity {
 			startActivityForResult( intent, CREATE_FORM );
 			break;
 		case R.id.menu_form_download:
-			try {
-				//TODO get the URL to download the form from user input.
-				final DownloadTask downloadTask = new DownloadTask();
-				final AsyncTask<String, Void, Form> task = downloadTask.execute( Constants.SERVER_URL );
-				final Form form = task.get();
-				if( form == null ) {
-					Toast.makeText( context, getString( R.string.message_download_error ), Toast.LENGTH_LONG ).show();
-					return false;
-				}
-				insertForm( form );
-				updateAdapter();
-			} catch( InterruptedException e ) {
-				Log.e( "Download", e.getMessage() );
-			} catch( ExecutionException e ) {
-				Log.e( "Download", e.getMessage() );
+			//TODO get the URL to download the form from user input.
+			final Form form = NetworkHelper.downloadForm( Form.NO_ID );
+			if( form == null ) {
+				Toast.makeText( context, getString( R.string.message_download_error ), Toast.LENGTH_LONG ).show();
+				return false;
 			}
+			insertForm( form );
+			updateAdapter();
 			break;
 		default:
 			return false;
