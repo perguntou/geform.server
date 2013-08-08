@@ -26,7 +26,8 @@ public class DownloadTask extends AsyncTask<String, Void, Form> {
 	protected Form doInBackground( String... urls ) {
 		Form form = null;
 		try {
-			form = loadFromNetwork( urls[0] );
+			final String urlString = urls[0];
+			form = download( urlString );
 		} catch( IOException e ) {
 			Log.e( "DownloadTask", e.getMessage() );
 		} catch( XmlPullParserException e ) {
@@ -44,14 +45,14 @@ public class DownloadTask extends AsyncTask<String, Void, Form> {
 	 * @return
 	 * @throws XmlPullParserException
 	 * @throws IOException
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
-	private Form loadFromNetwork( String urlString ) throws XmlPullParserException, IOException, ParseException {
+	private Form download( String urlString ) throws XmlPullParserException, IOException, ParseException {
 		InputStream stream = null;
 		Form form = null;
 
 		try {
-			stream = downloadUrl( urlString );
+			stream = inputStreamFromURL( urlString );
 			form = FormXmlPull.parse( stream );
 		} finally {
 			if( stream != null ) {
@@ -68,7 +69,7 @@ public class DownloadTask extends AsyncTask<String, Void, Form> {
 	 * @return
 	 * @throws IOException
 	 */
-	private InputStream downloadUrl( String urlString ) throws IOException {
+	private InputStream inputStreamFromURL( String urlString ) throws IOException {
 		URL url = new URL( urlString );
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
