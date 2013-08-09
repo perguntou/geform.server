@@ -75,6 +75,17 @@ public class Collection implements Parcelable {
 		m_collection.delete( key );
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isAllAnswered() {
+		final int numItems = m_reference.size();
+		final int numAnswers = m_collection.size();
+		final boolean hasSameSize = numItems == numAnswers;
+		return hasSameSize;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.os.Parcelable#describeContents()

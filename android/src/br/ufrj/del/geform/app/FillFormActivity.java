@@ -2,6 +2,7 @@ package br.ufrj.del.geform.app;
 
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import br.ufrj.del.geform.R;
 import br.ufrj.del.geform.bean.Collection;
 import br.ufrj.del.geform.bean.Form;
@@ -67,6 +69,14 @@ public class FillFormActivity extends ListActivity {
 			onBackPressed();
 			break;
 		case R.id.menu_commit:
+			final boolean hasAnswersMissing = !m_collection.isAllAnswered();
+			if( hasAnswersMissing ) {
+				final Context context = this.getBaseContext();
+				final String message = getString( R.string.message_answers_missing );
+				final Toast toast = Toast.makeText( context, message, Toast.LENGTH_LONG );
+				toast.show();
+				return false;
+			}
 			final DatabaseHelper db = DatabaseHelper.getInstance( this.getBaseContext() );
 			db.insertCollection( m_collection );
 			setResult( RESULT_OK );
