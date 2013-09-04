@@ -6,16 +6,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import br.ufrj.del.geform.db.model.Choice;
-import br.ufrj.del.geform.db.model.Collection;
-import br.ufrj.del.geform.db.model.Form;
-import br.ufrj.del.geform.db.model.FormCollection;
-import br.ufrj.del.geform.db.model.FormItem;
-import br.ufrj.del.geform.db.model.Item;
-import br.ufrj.del.geform.db.model.ItemOption;
-import br.ufrj.del.geform.db.model.Options;
-import br.ufrj.del.geform.db.model.Text;
-import br.ufrj.del.geform.db.model.Type;
+import br.ufrj.del.geform.dbmodel.Choice;
+import br.ufrj.del.geform.dbmodel.Collection;
+import br.ufrj.del.geform.dbmodel.Form;
+import br.ufrj.del.geform.dbmodel.FormCollection;
+import br.ufrj.del.geform.dbmodel.FormItem;
+import br.ufrj.del.geform.dbmodel.Item;
+import br.ufrj.del.geform.dbmodel.ItemOption;
+import br.ufrj.del.geform.dbmodel.Options;
+import br.ufrj.del.geform.dbmodel.Text;
+import br.ufrj.del.geform.dbmodel.Type;
 
 
 
