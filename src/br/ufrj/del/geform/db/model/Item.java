@@ -1,4 +1,4 @@
-package br.ufrj.del.geform.dbmodel;
+package br.ufrj.del.geform.db.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
