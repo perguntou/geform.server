@@ -23,7 +23,7 @@ public class Item {
 
 	@Column(name="type_id")
 	@ForeignKey(name="fk_Item_Type")
-	private Long typeId;
+	private int typeId;
 
 	/**
 	 * @return the id
@@ -56,14 +56,14 @@ public class Item {
 	/**
 	 * @return the typeId
 	 */
-	public Long getTypeId() {
+	public int getTypeId() {
 		return typeId;
 	}
 
 	/**
 	 * @param typeId the typeId to set
 	 */
-	public void setTypeId(Long typeId) {
+	public void setTypeId(int typeId) {
 		this.typeId = typeId;
 	}
 

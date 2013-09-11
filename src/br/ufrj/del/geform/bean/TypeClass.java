@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
  *
  */
 @XmlEnum
-public enum Type {
+public enum TypeClass {
 	@XmlEnumValue("text")
 	TEXT( "text" ),
 	@XmlEnumValue("single")
@@ -21,7 +21,7 @@ public enum Type {
 
 	private final String type;
 
-	Type( final String type ) {
+	TypeClass( final String type ) {
 		this.type = type;
 	}
 

@@ -18,18 +18,18 @@ import br.ufrj.del.geform.util.DateAdapter;
 */
 @XmlRootElement
 @XmlType(propOrder={"id","timestamp","author","title","description","items"})
-public class Form {
+public class FormClass {
 
 	private Long id;
 	private String title;
 	private String description;
 	private String author;
 	private Date timestamp;
-	private List<Item> items;
+	private List<ItemClass> items;
 
-	public Form() {}
+	public FormClass() {}
 
-	public Form( String title ) {
+	public FormClass( String title ) {
 		setTitle( title );
 	}
 
@@ -108,14 +108,14 @@ public class Form {
 	 * @return the items
 	 */
 	@XmlElement(name="item")
-	public List<Item> getItems() {
+	public List<ItemClass> getItems() {
 		return items;
 	}
 
 	/**
 	 * @param items the items to set
 	 */
-	public void setItems( List<Item> items ) {
+	public void setItems( List<ItemClass> items ) {
 		this.items = items;
 	}
 }

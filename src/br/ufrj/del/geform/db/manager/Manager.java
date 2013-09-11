@@ -1,10 +1,15 @@
 package br.ufrj.del.geform.db.manager;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import br.ufrj.del.geform.bean.FormClass;
+import br.ufrj.del.geform.bean.ItemClass;
+import br.ufrj.del.geform.bean.OptionClass;
 
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
@@ -23,134 +28,222 @@ private
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("geformdb");
 	EntityManager em = factory.createEntityManager();
 	
-public
-	void insertChoice(){
+// Insert functions
+
+	public void insertChoice(){
 		
 	}
-	void insertCollection(){
+	public void insertCollection(){
 		
 	}
-	void insertForm(){
+	public Long insertForm(FormClass form){
+		
+		Form formDB = new Form();
+		formDB.setCreator(form.getAuthor());
+		formDB.setDescription(form.getDescription());
+		formDB.setTitle(form.getTitle());
+		formDB.setTimestamp((Date) form.getTimestamp());
+		try{
+			em.getTransaction().begin();
+
+			em.persist(formDB);
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+		
+		return formDB.getId();
+	}
+	public void insertFormCollection(){
+		
 		
 	}
-	void insertFormCollection(){
+	public void insertFormItem(Long formId, List<ItemClass> items){
+		
+		for(int i = 0 ; i < items.size() ; i++){
+			FormItem form_item = new FormItem();
+			form_item.setFormId(formId);
+			form_item.setItemId(items.get(i).getId());
+			form_item.setIndex(i+1);
+			
+			try{
+				em.getTransaction().begin();
+
+				em.persist(form_item);
+
+				em.getTransaction().commit();
+			} catch( Exception e ) {
+				System.out.printf( "Erro: %s", e.getMessage() );
+			}
+		}
+	}
+	public Long insertItem(ItemClass item){
+		
+		Item itemDB = new Item();
+		itemDB.setQuestion(item.getQuestion());
+		itemDB.setTypeId(item.getType().ordinal());
+		
+		try{
+			em.getTransaction().begin();
+
+			em.persist(itemDB);
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+		
+		return itemDB.getId();
+	}
+	public void insertItemOption(Long itemId, List<OptionClass> options){
+		
+		for(int i = 0 ; i < options.size() ; i++){
+			ItemOption item_option = new ItemOption();
+			item_option.setItemId(itemId);
+			item_option.setOptionId(options.get(i).getId());
+			item_option.setIndex(i+1);
+			
+			try{
+				em.getTransaction().begin();
+
+				em.persist(item_option);
+
+				em.getTransaction().commit();
+			} catch( Exception e ) {
+				System.out.printf( "Erro: %s", e.getMessage() );
+			}
+		}
+	}
+	public Long insertOption(OptionClass option){
+		
+		Options optionBD = new Options();
+		optionBD.setValue(option.getOption());
+		
+		try{
+			em.getTransaction().begin();
+
+			em.persist(optionBD);
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+		
+		return optionBD.getId();
+	}
+	public void insertText(){
 		
 	}
-	void insertFormItem(){
+	public void insertType(){
 		
 	}
-	void insertItem(){
+
+// Update functions
+	
+	public void updateChoice(){
 		
 	}
-	void insertItemOption(){
+	public void updateCollection(){
 		
 	}
-	void insertOption(){
+	public void updateForm(){
 		
 	}
-	void insertText(){
+	public void updateFormCollection(){
 		
 	}
-	void insertType(){
+	public void updateFormItem(){
 		
 	}
-	void updateChoice(){
+	public void updateItem(){
 		
 	}
-	void updateCollection(){
+	public void updateItemOption(){
 		
 	}
-	void updateForm(){
+	public void updateOption(){
 		
 	}
-	void updateFormCollection(){
+	public void updateText(){
 		
 	}
-	void updateFormItem(){
+	public void updateType(){
 		
 	}
-	void updateItem(){
+	public void removeChoice(){
 		
 	}
-	void updateItemOption(){
+	
+// Remove functions
+	
+	public void removeCollection(){
 		
 	}
-	void updateOption(){
+	public void removeForm(){
 		
 	}
-	void updateText(){
+	public void removeFormCollection(){
 		
 	}
-	void updateType(){
+	public void removeFormItem(){
 		
 	}
-	void removeChoice(){
+	public void removeItem(){
 		
 	}
-	void removeCollection(){
+	public void removeItemOption(){
 		
 	}
-	void removeForm(){
+	public void removeOption(){
 		
 	}
-	void removeFormCollection(){
+	public void removeText(){
 		
 	}
-	void removeFormItem(){
+	public void removeType(){
 		
 	}
-	void removeItem(){
-		
-	}
-	void removeItemOption(){
-		
-	}
-	void removeOption(){
-		
-	}
-	void removeText(){
-		
-	}
-	void removeType(){
-		
-	}
-	List<Choice> selectChoice(){
+	
+// Select functions
+	
+	public List<Choice> selectChoice(){
 		return null;
 		
 	}
-	List<Collection> selectCollection(){
+	public List<Collection> selectCollection(){
 		return null;
 		
 	}
-	List<Form> selectForm(){
+	public List<Form> selectForm(){
 		return null;
 		
 	}
-	List<FormCollection> selectFormCollection(){
+	public List<FormCollection> selectFormCollection(){
 		return null;
 		
 	}
-	List<FormItem> selectFormItem(){
+	public List<FormItem> selectFormItem(){
 		return null;
 		
 	}
-	List<Item> selectItem(){
+	public List<Item> selectItem(){
 		return null;
 		
 	}
-	List<ItemOption> selectItemOption(){
+	public List<ItemOption> selectItemOption(){
 		return null;
 		
 	}
-	List<Options> selectOptions(){
+	public List<Options> selectOptions(){
 		return null;
 		
 	}
-	List<Text> selectText(){
+	public List<Text> selectText(){
 		return null;
 		
 	}
-	List<Type> selectType(){
+	public List<Type> selectType(){
 		return null;
 		
 	}

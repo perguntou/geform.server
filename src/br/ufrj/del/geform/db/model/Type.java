@@ -10,15 +10,15 @@ public class Type {
 	@Id
 	@GeneratedValue
 	@Column(name="id")
-	Long id_type;
+	int id_type;
 	@Column(name="value")
 	String value;
 
 
-	public Long getId() {
+	public int getId() {
 		return id_type;
 	}
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id_type = id;
 	}
 	public String getValue() {
