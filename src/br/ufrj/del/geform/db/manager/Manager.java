@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 import br.ufrj.del.geform.bean.FormClass;
 import br.ufrj.del.geform.bean.ItemClass;
 import br.ufrj.del.geform.bean.OptionClass;
+import br.ufrj.del.geform.bean.TypeClass;
 
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
@@ -137,6 +138,30 @@ private
 	}
 	public void insertType(){
 		
+	}
+	
+	public FormClass insertNewForm(FormClass form){
+		
+		form.setId( this.insertForm(form) );
+		
+		List<ItemClass> items2 = form.getItems();
+		for(int i = 0; i < items2.size(); i++){
+			ItemClass item = items2.get(i);
+			item.setId( this.insertItem(item) );
+			
+			if (item.getType() != TypeClass.TEXT){
+				List<OptionClass> options2 = item.getOptions();
+				for(int j = 0; j < options2.size(); j++){
+					OptionClass option = options2.get(j);
+					option.setId( this.insertOption(option) );
+			
+				}
+				this.insertItemOption(item.getId(), options2);
+			}
+		}
+		this.insertFormItem(form.getId(), items2);
+		
+		return form;
 	}
 
 // Update functions
