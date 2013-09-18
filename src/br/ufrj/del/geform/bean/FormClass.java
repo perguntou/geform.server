@@ -26,6 +26,7 @@ public class FormClass {
 	private String author;
 	private Date timestamp;
 	private List<ItemClass> items;
+	private List<AnswerClass> collection;
 
 	public FormClass() {}
 
@@ -117,5 +118,19 @@ public class FormClass {
 	 */
 	public void setItems( List<ItemClass> items ) {
 		this.items = items;
+	}
+
+	/**
+	 * @return the collection
+	 */
+	public List<AnswerClass> getCollection() {
+		return collection;
+	}
+
+	/**
+	 * @param collection the collection to set
+	 */
+	public void setCollection(List<AnswerClass> collection) {
+		this.collection = collection;
 	}
 }

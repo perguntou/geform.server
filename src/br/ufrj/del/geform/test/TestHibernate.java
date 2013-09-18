@@ -122,30 +122,7 @@ public class TestHibernate {
 		
 		Manager m = new Manager();
 		
-		form.setId( m.insertForm(form) );
-		
-		System.out.printf("%d", form.getId().intValue());
-		
-		List<ItemClass> items2 = form.getItems();
-		for(int i = 0; i < items2.size(); i++){
-			ItemClass item = items2.get(i);
-			item.setId( m.insertItem(item) );
-			
-			System.out.printf("%d", item.getId().intValue());
-			
-			if (item.getType() != TypeClass.TEXT){
-				List<OptionClass> options2 = item.getOptions();
-				for(int j = 0; j < options2.size(); j++){
-					OptionClass option = options2.get(j);
-					option.setId( m.insertOption(option) );
-					
-					System.out.printf("%d", option.getId().intValue());
-					
-				}
-				m.insertItemOption(item.getId(), options2);
-			}
-		}
-		m.insertFormItem(form.getId(), items2);
+		form = m.insertNewForm(form);
 		
 		
 		
