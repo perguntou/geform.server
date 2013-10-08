@@ -1,15 +1,15 @@
-package br.ufrj.del.geform.test;
+package br.ufrj.del.geform.db;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufrj.del.geform.bean.FormClass;
-import br.ufrj.del.geform.bean.ItemClass;
-import br.ufrj.del.geform.bean.OptionClass;
-import br.ufrj.del.geform.bean.TypeClass;
+import br.ufrj.del.geform.bean.FormBean;
+import br.ufrj.del.geform.bean.ItemBean;
+import br.ufrj.del.geform.bean.OptionBean;
+import br.ufrj.del.geform.bean.TypeBean;
 
-import br.ufrj.del.geform.db.manager.Manager;
+import br.ufrj.del.geform.db.DatabaseManager;
 
 //import javax.persistence.EntityManager;
 //import javax.persistence.EntityManagerFactory;
@@ -89,65 +89,40 @@ public class TestHibernate {
 //		text.setCollectionId(3L);
 //		text.setItemId(9L);
 //		text.setValue("Resposta");
-		
-		ItemClass item1 = new ItemClass();
+
+		ItemBean item1 = new ItemBean();
 		item1.setQuestion("Qual seu nome?");
-		item1.setType(TypeClass.TEXT);
-		
-		OptionClass opt1 = new OptionClass();
-		opt1.setOption("Option 1");
-		OptionClass opt2 = new OptionClass();
-		opt2.setOption("Option 2");
-		OptionClass opt3 = new OptionClass();
-		opt3.setOption("Option 3");
-		
-		ItemClass item2 = new ItemClass();
+		item1.setType(TypeBean.TEXT);
+
+		OptionBean opt1 = new OptionBean();
+		opt1.setValue("Option 1");
+		OptionBean opt2 = new OptionBean();
+		opt2.setValue("Option 2");
+		OptionBean opt3 = new OptionBean();
+		opt3.setValue("Option 3");
+
+		ItemBean item2 = new ItemBean();
 		item2.setQuestion("Quais suas preferências?");
-		List<OptionClass> options = new ArrayList<>();
+		List<OptionBean> options = new ArrayList<>();
 		options.add(opt1);
 		options.add(opt2);
 		options.add(opt3);
 		item2.setOptions(options);
-		item2.setType(TypeClass.MULTIPLE_CHOICE);
-		
-		FormClass form = new FormClass();
-		form.setAuthor("Diego");
+		item2.setType(TypeBean.MULTIPLE_CHOICE);
+
+		FormBean form = new FormBean();
+		form.setCreator("Diego");
 		form.setDescription("Teste de inserção.");
 		form.setTimestamp(Date.valueOf("2013-09-10"));
 		form.setTitle("Teste");
-		List<ItemClass> items = new ArrayList<>();
+		List<ItemBean> items = new ArrayList<>();
 		items.add(item1);
 		items.add(item2);
 		form.setItems(items);
-		
-		Manager m = new Manager();
-		
-		form = m.insertNewForm(form);
-		
-		
-		
-		
 
-//		try{
-//			em.getTransaction().begin();
-//			em.persist(t1);
-//			em.persist(t2);
-//			em.persist(f);
-//			em.persist(i1);
-//			em.persist(i2);
-//			em.persist(c);
-//			em.persist(o);
-//			em.persist(io);
-//			em.persist(fc);
-//			em.persist(fi1);
-//			em.persist(fi2);
-//			em.persist(choice);
-//			em.persist(text);
-//			
-//			em.getTransaction().commit();
-//		} catch( Exception e ) {
-//			System.out.printf( "Erro: %s", e.getMessage() );
-//		}
+		DatabaseManager m = new DatabaseManager();
+		m.insertNewForm( form );
 	}
+
 }
 

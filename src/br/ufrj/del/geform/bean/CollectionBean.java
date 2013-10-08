@@ -14,13 +14,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement
 @XmlType(propOrder={"id","answers"})
-public class CollectionClass {
+public class CollectionBean {
 
 	private Long m_id;
 
-	private List<AnswerClass> m_answers;
+	private List<AnswerBean> m_answers;
 
-	public CollectionClass() {}
+	public CollectionBean() {}
 
 	/**
 	 * @return the m_id
@@ -41,14 +41,14 @@ public class CollectionClass {
 	 * @return the m_answers
 	 */
 	@XmlElement(name="item")
-	public List<AnswerClass> getAnswers() {
+	public List<AnswerBean> getAnswers() {
 		return m_answers;
 	}
 
 	/**
 	 * @param m_answers the m_answers to set
 	 */
-	public void setAnswers( List<AnswerClass> answers ) {
+	public void setAnswers( List<AnswerBean> answers ) {
 		this.m_answers = answers;
 	}
 }

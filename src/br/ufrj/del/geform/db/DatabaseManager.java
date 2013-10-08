@@ -1,16 +1,17 @@
-package br.ufrj.del.geform.db.manager;
+package br.ufrj.del.geform.db;
 
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import br.ufrj.del.geform.bean.FormClass;
-import br.ufrj.del.geform.bean.ItemClass;
-import br.ufrj.del.geform.bean.OptionClass;
-import br.ufrj.del.geform.bean.TypeClass;
+import br.ufrj.del.geform.bean.FormBean;
+import br.ufrj.del.geform.bean.ItemBean;
+import br.ufrj.del.geform.bean.OptionBean;
+import br.ufrj.del.geform.bean.TypeBean;
 
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
@@ -23,27 +24,38 @@ import br.ufrj.del.geform.db.model.Options;
 import br.ufrj.del.geform.db.model.Text;
 import br.ufrj.del.geform.db.model.Type;
 
-public class Manager {
+public class DatabaseManager {
 
-private
-	EntityManagerFactory factory = Persistence.createEntityManagerFactory("geformdb");
-	EntityManager em = factory.createEntityManager();
+	private static final String DB_NAME = "geformdb";
+
+	private EntityManagerFactory factory;
+
+	private	EntityManager em;
 	
-// Insert functions
+	public DatabaseManager() {
+		factory = Persistence.createEntityManagerFactory(DB_NAME);
+		em = factory.createEntityManager();
+	}
 
-	public void insertChoice(){
+	// Insert functions
+
+	public void insertChoice() {
 		
 	}
-	public void insertCollection(){
+
+	public void insertCollection() {
 		
 	}
-	public Long insertForm(FormClass form){
-		
+
+	public void insertForm(FormBean form) {
 		Form formDB = new Form();
-		formDB.setCreator(form.getAuthor());
+		formDB.setCreator(form.getCreator());
 		formDB.setDescription(form.getDescription());
 		formDB.setTitle(form.getTitle());
-		formDB.setTimestamp((Date) form.getTimestamp());
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime( form.getTimestamp() );
+		final Date sqlDate = new Date( calendar.getTimeInMillis() );
+		formDB.setTimestamp( sqlDate );
 		try{
 			em.getTransaction().begin();
 
@@ -53,21 +65,22 @@ private
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
-		
-		return formDB.getId();
+		form.setId(formDB.getId());
 	}
-	public void insertFormCollection(){
-		
+
+	public void insertFormCollection() {
 		
 	}
-	public void insertFormItem(Long formId, List<ItemClass> items){
-		
-		for(int i = 0 ; i < items.size() ; i++){
+
+	public void insertFormItem( Long formId, List<ItemBean> items ) {
+		for( int i = 0; i < items.size(); i++ ){
 			FormItem form_item = new FormItem();
-			form_item.setFormId(formId);
-			form_item.setItemId(items.get(i).getId());
-			form_item.setIndex(i+1);
-			
+			form_item.setFormId( formId );
+			final ItemBean itemBean = items.get( i );
+			final Long itemId = itemBean.getId();
+			form_item.setItemId( itemId );
+			form_item.setIndex( i+1 );
+
 			try{
 				em.getTransaction().begin();
 
@@ -79,12 +92,13 @@ private
 			}
 		}
 	}
-	public Long insertItem(ItemClass item){
-		
+
+	public void insertItem( ItemBean item ) {
 		Item itemDB = new Item();
-		itemDB.setQuestion(item.getQuestion());
-		itemDB.setTypeId(item.getType().ordinal());
-		
+		itemDB.setQuestion( item.getQuestion() );
+		final TypeBean type = item.getType();
+		itemDB.setTypeId( type.ordinal() );
+
 		try{
 			em.getTransaction().begin();
 
@@ -95,16 +109,18 @@ private
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
 		
-		return itemDB.getId();
+		item.setId(itemDB.getId());
 	}
-	public void insertItemOption(Long itemId, List<OptionClass> options){
-		
-		for(int i = 0 ; i < options.size() ; i++){
+
+	public void insertItemOption( Long itemId, List<OptionBean> options ) {
+		for( int i = 0; i < options.size(); i++ ){
 			ItemOption item_option = new ItemOption();
-			item_option.setItemId(itemId);
-			item_option.setOptionId(options.get(i).getId());
-			item_option.setIndex(i+1);
-			
+			item_option.setItemId( itemId );
+			final OptionBean optionBean = options.get(i);
+			final Long optionId = optionBean.getId();
+			item_option.setOptionId( optionId );
+			item_option.setIndex( i+1 );
+
 			try{
 				em.getTransaction().begin();
 
@@ -116,11 +132,11 @@ private
 			}
 		}
 	}
-	public Long insertOption(OptionClass option){
-		
+
+	public void insertOption( OptionBean option ) {
 		Options optionBD = new Options();
-		optionBD.setValue(option.getOption());
-		
+		optionBD.setValue( option.getValue() );
+
 		try{
 			em.getTransaction().begin();
 
@@ -130,38 +146,34 @@ private
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
-		
-		return optionBD.getId();
+
+		option.setId(optionBD.getId());
 	}
-	public void insertText(){
-		
-	}
-	public void insertType(){
+
+	public void insertText() {
 		
 	}
-	
-	public FormClass insertNewForm(FormClass form){
+
+	public void insertType() {
 		
-		form.setId( this.insertForm(form) );
-		
-		List<ItemClass> items2 = form.getItems();
-		for(int i = 0; i < items2.size(); i++){
-			ItemClass item = items2.get(i);
-			item.setId( this.insertItem(item) );
+	}
+
+	public void insertNewForm( FormBean form ) {
+		insertForm(form);
+
+		List<ItemBean> items = form.getItems();
+		for(final ItemBean item : items) {
+			insertItem( item );
 			
-			if (item.getType() != TypeClass.TEXT){
-				List<OptionClass> options2 = item.getOptions();
-				for(int j = 0; j < options2.size(); j++){
-					OptionClass option = options2.get(j);
-					option.setId( this.insertOption(option) );
-			
+			if (item.getType() != TypeBean.TEXT){
+				List<OptionBean> options = item.getOptions();
+				for( final OptionBean option : options ) {
+					insertOption( option );
 				}
-				this.insertItemOption(item.getId(), options2);
+				insertItemOption( item.getId(), options );
 			}
 		}
-		this.insertFormItem(form.getId(), items2);
-		
-		return form;
+		insertFormItem( form.getId(), items );
 	}
 
 // Update functions

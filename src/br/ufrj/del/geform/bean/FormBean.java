@@ -17,20 +17,20 @@ import br.ufrj.del.geform.util.DateAdapter;
 *
 */
 @XmlRootElement
-@XmlType(propOrder={"id","timestamp","author","title","description","items"})
-public class FormClass {
+@XmlType(propOrder={"id","timestamp","creator","title","description","items","collection"})
+public class FormBean {
 
 	private Long id;
 	private String title;
 	private String description;
-	private String author;
+	private String creator;
 	private Date timestamp;
-	private List<ItemClass> items;
-	private List<AnswerClass> collection;
+	private List<ItemBean> items;
+	private List<AnswerBean> collection;
 
-	public FormClass() {}
+	public FormBean() {}
 
-	public FormClass( String title ) {
+	public FormBean( String title ) {
 		setTitle( title );
 	}
 
@@ -77,17 +77,17 @@ public class FormClass {
 	}
 
 	/**
-	 * @return the author
+	 * @return the creator
 	 */
-	public String getAuthor() {
-		return author;
+	public String getCreator() {
+		return creator;
 	}
 
 	/**
-	 * @param author the author to set
+	 * @param creator the creator to set
 	 */
-	public void setAuthor( String author ) {
-		this.author = author;
+	public void setCreator( String creator ) {
+		this.creator = creator;
 	}
 
 	/**
@@ -109,28 +109,28 @@ public class FormClass {
 	 * @return the items
 	 */
 	@XmlElement(name="item")
-	public List<ItemClass> getItems() {
+	public List<ItemBean> getItems() {
 		return items;
 	}
 
 	/**
 	 * @param items the items to set
 	 */
-	public void setItems( List<ItemClass> items ) {
+	public void setItems( List<ItemBean> items ) {
 		this.items = items;
 	}
 
 	/**
 	 * @return the collection
 	 */
-	public List<AnswerClass> getCollection() {
+	public List<AnswerBean> getCollection() {
 		return collection;
 	}
 
 	/**
 	 * @param collection the collection to set
 	 */
-	public void setCollection(List<AnswerClass> collection) {
+	public void setCollection(List<AnswerBean> collection) {
 		this.collection = collection;
 	}
 }
