@@ -17,17 +17,17 @@ import javax.xml.bind.annotation.XmlType;
 *
 */
 @XmlRootElement
-@XmlType(propOrder={"question","options"})
-public class ItemClass {
+@XmlType(propOrder={"id","question","options"})
+public class ItemBean {
 
 	private Long id;
 	private String question;
-	private List<OptionClass> options;
-	private TypeClass type;
+	private List<OptionBean> options;
+	private TypeBean type;
 
-	public ItemClass() {}
+	public ItemBean() {}
 
-	public ItemClass( final String question ) {
+	public ItemBean( final String question ) {
 		setQuestion( question );
 	}
 
@@ -50,14 +50,14 @@ public class ItemClass {
 	 */
 	@XmlElementWrapper(name="options")
 	@XmlElement(name="option")
-	public List<OptionClass> getOptions() {
+	public List<OptionBean> getOptions() {
 		return options;
 	}
 
 	/**
 	 * @param options the options to set
 	 */
-	public void setOptions(List<OptionClass> options) {
+	public void setOptions(List<OptionBean> options) {
 		this.options = options;
 	}
 
@@ -65,14 +65,14 @@ public class ItemClass {
 	 * @return the type
 	 */
 	@XmlAttribute
-	public TypeClass getType() {
+	public TypeBean getType() {
 		return type;
 	}
 
 	/**
 	 * @param type the type to set
 	 */
-	public void setType(TypeClass type) {
+	public void setType(TypeBean type) {
 		this.type = type;
 	}
 

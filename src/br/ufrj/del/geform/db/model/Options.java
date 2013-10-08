@@ -8,12 +8,12 @@ import javax.persistence.Id;
 
 @Entity(name="options")
 public class Options {
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name="id")
 	private Long id;
-	
+
 	@Column(name="value")
 	private String value;
 
@@ -27,7 +27,7 @@ public class Options {
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
+	public void setId( Long id ) {
 		this.id = id;
 	}
 
@@ -41,7 +41,7 @@ public class Options {
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(String value) {
+	public void setValue( String value ) {
 		this.value = value;
 	}
 

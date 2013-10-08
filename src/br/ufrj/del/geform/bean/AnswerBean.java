@@ -12,11 +12,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class AnswerClass {
+public class AnswerBean {
 
 	List<String> m_answer;
 
-	public AnswerClass() {}
+	public AnswerBean() {}
 
 	/**
 	 * @return the answer
