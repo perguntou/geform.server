@@ -1,12 +1,14 @@
 package br.ufrj.del.geform.db;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
@@ -256,6 +258,24 @@ public class DatabaseManager {
 		return null;
 		
 	}
+	public Form selectFormById(Long formID){
+		Form form = new Form();
+		form = em.find(Form.class, formID);
+		return form;
+	}
+	public List<Item> selectFormItems(Long formID){
+		Query query = em.createQuery(" SELECT fi FROM form_item fi WHERE form_id = " + formID.toString());
+		List<FormItem> formItems  = query.getResultList();
+		
+		List<Item> items = new ArrayList<>();
+		Item i = new Item();
+		for(FormItem formItem : formItems){
+			i = this.selectItemById(formItem.getItemId());
+			items.add(i);
+		}
+		
+		return items;
+	}
 	public List<FormCollection> selectFormCollection(){
 		return null;
 		
@@ -268,6 +288,24 @@ public class DatabaseManager {
 		return null;
 		
 	}
+	public Item selectItemById(Long itemID){
+		Item item = new Item();
+		item = em.find(Item.class, itemID);
+		return item;
+	}
+	public List<Options> selectItemOptions(Long itemID){
+		Query query = em.createQuery(" SELECT io FROM item_option io WHERE item_id = " + itemID.toString());
+		List<ItemOption> itemOptions  = query.getResultList();
+		
+		List<Options> options = new ArrayList<>();
+		Options o = new Options();
+		for(ItemOption itemOption : itemOptions){
+			o = this.selectOptionsById(itemOption.getOptionId());
+			options.add(o);
+		}
+		
+		return options;
+	}
 	public List<ItemOption> selectItemOption(){
 		return null;
 		
@@ -275,6 +313,11 @@ public class DatabaseManager {
 	public List<Options> selectOptions(){
 		return null;
 		
+	}
+	public Options selectOptionsById(Long optionID){
+		Options option = new Options();
+		option = em.find(Options.class, optionID);
+		return option;
 	}
 	public List<Text> selectText(){
 		return null;
@@ -284,5 +327,46 @@ public class DatabaseManager {
 		return null;
 		
 	}
-
-}
+	public FormBean selectFormBean(Long formID){
+		FormBean formBean = new FormBean();
+		Form form = this.selectFormById(formID);
+		
+		formBean.setId(form.getId());
+		formBean.setTitle(form.getTitle());
+		formBean.setDescription(form.getDescription());
+		formBean.setCreator(form.getCreator());
+		formBean.setTimestamp(form.getTimestamp());
+		
+		List<Item> items;
+		List<ItemBean> itemsBean = new ArrayList<>();
+		
+		items = this.selectFormItems(formID);
+		
+		for(Item item : items){
+			ItemBean itemBean = new ItemBean();
+			
+			itemBean.setId(item.getId());
+			itemBean.setQuestion(item.getQuestion());
+			TypeBean typeBean = TypeBean.values()[item.getTypeId()];
+			itemBean.setType(typeBean);
+			
+			List<Options> options = this.selectItemOptions(item.getId());
+			List<OptionBean> optionsBean = new ArrayList<>();
+			
+			for(Options option : options){
+				OptionBean optionBean = new OptionBean();
+				
+				optionBean.setId(option.getId());
+				optionBean.setValue(option.getValue());
+				
+				optionsBean.add(optionBean);
+			}
+			itemBean.setOptions(optionsBean);
+			itemsBean.add(itemBean);
+		}
+		formBean.setItems(itemsBean);
+		
+		return formBean;
+	}
+		
+	}
