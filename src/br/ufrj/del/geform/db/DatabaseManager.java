@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
 import br.ufrj.del.geform.bean.OptionBean;
@@ -42,7 +43,23 @@ public class DatabaseManager {
 // Insert functions
 	public void insertChoice() {}
 
-	public void insertCollection() {}
+	public void insertCollection(CollectionBean collection) {
+		Collection collectionDB = new Collection();
+		collectionDB.setId( collection.getId() );
+		collectionDB.setCollector( collection.getCollector() );
+
+		try{
+			em.getTransaction().begin();
+
+			em.persist( collectionDB );
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+		
+		collection.setId( collectionDB.getId() );
+	}
 
 	public void insertForm( FormBean form ) {
 		Form formDB = new Form();
@@ -65,26 +82,38 @@ public class DatabaseManager {
 		form.setId( formDB.getId() );
 	}
 
-	public void insertFormCollection() {}
-
-	public void insertFormItem( Long formId, List<ItemBean> items ) {
-		for( int i = 0; i < items.size(); i++ ){
-			FormItem form_item = new FormItem();
-			form_item.setFormId( formId );
-			final ItemBean itemBean = items.get( i );
-			final Long itemId = itemBean.getId();
-			form_item.setItemId( itemId );
-			form_item.setIndex( i+1 );
-
+	public void insertFormCollection( Long formId, List<CollectionBean> collections ) {
+		for( CollectionBean collection : collections ){
+			FormCollection form_collection = new FormCollection();
+			form_collection.setFormId( formId );
+			form_collection.setCollectionId( collection.getId() );
+			
 			try{
 				em.getTransaction().begin();
 
-				em.persist( form_item );
+				em.persist( form_collection );
 
 				em.getTransaction().commit();
 			} catch( Exception e ) {
 				System.out.printf( "Erro: %s", e.getMessage() );
 			}
+		}
+	}
+
+	public void insertFormItem( Long formId, Long itemId, int index ) {
+		FormItem form_item = new FormItem();
+		form_item.setFormId( formId );
+		form_item.setItemId( itemId );
+		form_item.setIndex( index );
+
+		try{
+			em.getTransaction().begin();
+
+			em.persist( form_item );
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
 		}
 	}
 
@@ -107,24 +136,20 @@ public class DatabaseManager {
 		item.setId( itemDB.getId() );
 	}
 
-	public void insertItemOption( Long itemId, List<OptionBean> options ) {
-		for( int i = 0; i < options.size(); i++ ){
-			ItemOption item_option = new ItemOption();
-			item_option.setItemId( itemId );
-			final OptionBean optionBean = options.get(i);
-			final Long optionId = optionBean.getId();
-			item_option.setOptionId( optionId );
-			item_option.setIndex( i+1 );
+	public void insertItemOption( Long itemId, Long optionId, int index ) {
+		ItemOption item_option = new ItemOption();
+		item_option.setItemId( itemId );
+		item_option.setOptionId( optionId );
+		item_option.setIndex( index );
 
-			try{
-				em.getTransaction().begin();
+		try{
+			em.getTransaction().begin();
 
-				em.persist( item_option );
+			em.persist( item_option );
 
-				em.getTransaction().commit();
-			} catch( Exception e ) {
-				System.out.printf( "Erro: %s", e.getMessage() );
-			}
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
 		}
 	}
 
@@ -153,18 +178,22 @@ public class DatabaseManager {
 		insertForm( form );
 
 		List<ItemBean> items = form.getItems();
+		
+		int itemIndex = 1;
 		for(final ItemBean item : items) {
 			insertItem( item );
-
+			insertFormItem( form.getId(), item.getId(), itemIndex++ );
+			
 			if( item.getType() != TypeBean.TEXT ){
 				List<OptionBean> options = item.getOptions();
+				
+				int optionIndex = 1;
 				for( final OptionBean option : options ) {
 					insertOption( option );
+					insertItemOption( item.getId(), option.getId(), optionIndex++ );
 				}
-				insertItemOption( item.getId(), options );
 			}
 		}
-		insertFormItem( form.getId(), items );
 	}
 
 // Update functions
