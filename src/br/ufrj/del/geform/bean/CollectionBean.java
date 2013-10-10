@@ -19,6 +19,8 @@ public class CollectionBean {
 	private Long m_id;
 
 	private List<AnswerBean> m_answers;
+	
+	private String m_collector;
 
 	public CollectionBean() {}
 
@@ -50,5 +52,19 @@ public class CollectionBean {
 	 */
 	public void setAnswers( List<AnswerBean> answers ) {
 		this.m_answers = answers;
+	}
+
+	/**
+	 * @return the m_collector
+	 */
+	public String getCollector() {
+		return m_collector;
+	}
+
+	/**
+	 * @param m_collector the m_collector to set
+	 */
+	public void setCollector(String m_collector) {
+		this.m_collector = m_collector;
 	}
 }
