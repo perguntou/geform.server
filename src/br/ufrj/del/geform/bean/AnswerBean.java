@@ -14,26 +14,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AnswerBean {
 
-	List<String> m_answer;
-
+	List<String> m_answers;
+	
 	public AnswerBean() {}
 
 	/**
-	 * @return the answer
+	 * @return the answers
 	 */
-	public List<String> getAnswer() {
-		return m_answer;
+	public List<String> getAnswers() {
+		return m_answers;
 	}
 
 	/**
 	 * @param answer the answer to set
 	 */
-	public void setAnswer( List<String> answer ) {
-		this.m_answer = answer;
+	public void setAnswers( List<String> answers ) {
+		this.m_answers = answers;
 	}
 
-	public void setAnswer( String... strings ) {
-		this.m_answer = Arrays.asList( strings );
+	public void setAnswers( String... answers ) {
+		this.m_answers = Arrays.asList( answers );
 	}
 
 }

@@ -17,7 +17,7 @@ import br.ufrj.del.geform.util.DateAdapter;
 *
 */
 @XmlRootElement
-@XmlType(propOrder={"id","timestamp","creator","title","description","items","collection"})
+@XmlType(propOrder={"id","timestamp","creator","title","description","items","collections"})
 public class FormBean {
 
 	private Long id;
@@ -26,7 +26,7 @@ public class FormBean {
 	private String creator;
 	private Date timestamp;
 	private List<ItemBean> items;
-	private List<AnswerBean> collection;
+	private List<CollectionBean> collections;
 
 	public FormBean() {}
 
@@ -123,14 +123,15 @@ public class FormBean {
 	/**
 	 * @return the collection
 	 */
-	public List<AnswerBean> getCollection() {
-		return collection;
+	@XmlElement(name="collection")
+	public List<CollectionBean> getCollections() {
+		return collections;
 	}
 
 	/**
 	 * @param collection the collection to set
 	 */
-	public void setCollection(List<AnswerBean> collection) {
-		this.collection = collection;
+	public void setCollections(List<CollectionBean> collections) {
+		this.collections = collections;
 	}
 }

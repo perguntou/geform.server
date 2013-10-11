@@ -9,7 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder.Case;
 
+import br.ufrj.del.geform.bean.AnswerBean;
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
@@ -41,11 +43,25 @@ public class DatabaseManager {
 	}
 
 // Insert functions
-	public void insertChoice() {}
+	public void insertChoice( Long collectionID, Long itemID, Long optionID ) {
+		Choice choiceAnswer = new Choice();
+		choiceAnswer.setCollectionId( collectionID );
+		choiceAnswer.setItemId( itemID );
+		choiceAnswer.setOptionId( optionID );
+		
+		try{
+			em.getTransaction().begin();
+
+			em.persist( choiceAnswer );
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+	}
 
 	public void insertCollection(CollectionBean collection) {
 		Collection collectionDB = new Collection();
-		collectionDB.setId( collection.getId() );
 		collectionDB.setCollector( collection.getCollector() );
 
 		try{
@@ -82,21 +98,19 @@ public class DatabaseManager {
 		form.setId( formDB.getId() );
 	}
 
-	public void insertFormCollection( Long formId, List<CollectionBean> collections ) {
-		for( CollectionBean collection : collections ){
-			FormCollection form_collection = new FormCollection();
-			form_collection.setFormId( formId );
-			form_collection.setCollectionId( collection.getId() );
-			
-			try{
-				em.getTransaction().begin();
+	public void insertFormCollection( Long formId, Long collectionID ) {
+		FormCollection form_collection = new FormCollection();
+		form_collection.setFormId( formId );
+		form_collection.setCollectionId( collectionID );
 
-				em.persist( form_collection );
+		try{
+			em.getTransaction().begin();
 
-				em.getTransaction().commit();
-			} catch( Exception e ) {
-				System.out.printf( "Erro: %s", e.getMessage() );
-			}
+			em.persist( form_collection );
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
 		}
 	}
 
@@ -170,7 +184,22 @@ public class DatabaseManager {
 		option.setId( optionBD.getId() );
 	}
 
-	public void insertText() {}
+	public void insertText( Long collectionID, Long itemID, String answer ) {
+		Text textAnswer = new Text();
+		textAnswer.setCollectionId( collectionID );
+		textAnswer.setItemId( itemID);
+		textAnswer.setValue( answer );
+		
+		try{
+			em.getTransaction().begin();
+
+			em.persist( textAnswer );
+
+			em.getTransaction().commit();
+		} catch( Exception e ) {
+			System.out.printf( "Erro: %s", e.getMessage() );
+		}
+	}
 
 	public void insertType() {}
 
@@ -191,6 +220,38 @@ public class DatabaseManager {
 				for( final OptionBean option : options ) {
 					insertOption( option );
 					insertItemOption( item.getId(), option.getId(), optionIndex++ );
+				}
+			}
+		}
+	}
+	
+	public void insertCollections( FormBean form ) {
+		List<CollectionBean> collections = form.getCollections();
+		for( final CollectionBean collection : collections ) {
+			insertCollection( collection );
+			insertFormCollection( form.getId(), collection.getId() );
+			
+			List<AnswerBean> answersBean = collection.getAnswers();
+			int FirstElement = 0;
+			for( int i = FirstElement ; i < answersBean.size(); i++ ) {
+				AnswerBean answerBean = answersBean.get(i);
+				ItemBean item = form.getItems().get(i);
+				
+				List<String> answers = answerBean.getAnswers();
+				switch (item.getType()) {
+				case TEXT:
+					insertText( collection.getId(), item.getId(), answers.get(FirstElement) );
+					break;
+				case SINGLE_CHOICE:
+					final Long optionID1 = new Long(answers.get(FirstElement));
+					insertChoice(collection.getId(), item.getId(), optionID1);
+				case MULTIPLE_CHOICE:
+					for( final String answer : answers ){
+						final Long optionID2 = new Long(answer);
+						insertChoice(collection.getId(), item.getId(), optionID2);
+					}
+				default:
+					break;
 				}
 			}
 		}
