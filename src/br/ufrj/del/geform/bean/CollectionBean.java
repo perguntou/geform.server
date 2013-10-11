@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlRootElement
-@XmlType(propOrder={"id","answers"})
+@XmlType(propOrder={"id","answers","collector"})
 public class CollectionBean {
 
 	private Long m_id;
