@@ -16,7 +16,7 @@ import br.ufrj.del.geform.util.DateAdapter;
 /**
 *
 */
-@XmlRootElement
+@XmlRootElement(name="form")
 @XmlType(propOrder={"id","timestamp","creator","title","description","items","collections"})
 public class FormBean {
 
