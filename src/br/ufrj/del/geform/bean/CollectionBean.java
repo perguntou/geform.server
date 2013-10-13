@@ -12,14 +12,14 @@ import javax.xml.bind.annotation.XmlType;
 /**
  *
  */
-@XmlRootElement
+@XmlRootElement(name="collection")
 @XmlType(propOrder={"id","answers","collector"})
 public class CollectionBean {
 
 	private Long m_id;
 
 	private List<AnswerBean> m_answers;
-	
+
 	private String m_collector;
 
 	public CollectionBean() {}
@@ -67,4 +67,5 @@ public class CollectionBean {
 	public void setCollector(String m_collector) {
 		this.m_collector = m_collector;
 	}
+
 }
