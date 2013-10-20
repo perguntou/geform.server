@@ -53,11 +53,12 @@ var init = function() {
 								var attr = $(item).attr('@type');
 								if( attr != 'text' ) {
 									var $options = $(document.createElement('span'));
-									var each = function( optionIndex, option ) {
+									var insertOption = function( optionIndex, option ) {
 										var $input = $('<input type=' + INPUT_TYPE[attr] +' value=' + option.id + ' name=' + itemIndex + '>' + option.value +'</input>');
 										$options.append( $input );
 									};
-									$.each( item.options.option, each );
+									var optionArray = item.options.option.length > 1 ? item.options.option : [item.options.option];
+									$.each( optionArray, insertOption );
 									$itemView.append($options);
 								} else {
 									$itemView.append( $(document.createElement('textArea') ) );
@@ -68,7 +69,8 @@ var init = function() {
 								alert( msg );
 							}
 						};
-						$.each( result.item, insertItem );
+						var itemArray = result.item.length > 1 ? result.item : [result.item];
+						$.each( itemArray, insertItem );
 //						$template.find(':input').attr('disabled',true);
 						$content.html( $template );
 					} catch( exception ) {

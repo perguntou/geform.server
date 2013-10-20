@@ -12,6 +12,7 @@
 <body>
 	<div id="header">
 		<h1>GeForm Web Application</h1>
+		<hr/>
 	</div>
 	<div id="menu">
 		<input id='form' placeholder='Insert the form id' />
