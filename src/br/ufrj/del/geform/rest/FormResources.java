@@ -20,9 +20,8 @@ public class FormResources {
 	@Consumes( MediaType.APPLICATION_XML )
 	public final String create( FormBean form ) {
 		dbManager.insertNewForm( form );
-
-		final String result = String.format( "id = %s", form.getId() );
-		return result;
+		final Long id = form.getId();
+		return id.toString();
 	}
 
 	@GET
