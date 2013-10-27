@@ -1,19 +1,14 @@
 package br.ufrj.del.geform.db;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufrj.del.geform.bean.AnswerBean;
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
-import br.ufrj.del.geform.bean.ItemBean;
-import br.ufrj.del.geform.bean.OptionBean;
-import br.ufrj.del.geform.bean.TypeBean;
 
 public class TestHibernate {
 	public static void main(String[] args) {
-
 
 //		ItemBean item1 = new ItemBean();
 //		item1.setQuestion("Qual seu endereço?");
@@ -50,42 +45,41 @@ public class TestHibernate {
 
 		AnswerBean answer2 = new AnswerBean();
 		answer2.setAnswers("2","4");
-		
+
 		List<AnswerBean> answers1 = new ArrayList<>();
 		answers1.add(answer1);
 		answers1.add(answer2);
-		
+
 		CollectionBean collection1 = new CollectionBean();
 		collection1.setCollector("Diego");
-		collection1.setAnswers(answers1);
-		
+		collection1.setItems(answers1);
+
 		AnswerBean answer3 = new AnswerBean();
 		answer3.setAnswers("Teste");
 
 		AnswerBean answer4 = new AnswerBean();
 		answer4.setAnswers("2","3","4");
-		
+
 		List<AnswerBean> answers2 = new ArrayList<>();
 		answers2.add(answer3);
 		answers2.add(answer4);
-		
+
 		CollectionBean collection2 = new CollectionBean();
 		collection2.setCollector("Teste");
-		collection2.setAnswers(answers2);
-		
+		collection2.setItems(answers2);
+
 		List<CollectionBean> collections = new ArrayList<>();
 		collections.add(collection1);
 		collections.add(collection2);
-		
-		
+
 		DatabaseManager m = new DatabaseManager();
-		
+
 		FormBean form = m.selectFormBean(12L);
-		
+
 		form.setCollections(collections);
-		
+
 		m.insertCollections(form);
-		
+
 //		m.insertNewForm( form );
 
 //		FormBean f = m.selectFormBean(12L);
@@ -104,7 +98,6 @@ public class TestHibernate {
 //			for(OptionBean option : item.getOptions()){
 //				System.out.printf("ID %s\n", option.getId());
 //				System.out.printf("Valor %s\n", option.getValue());
-//				
 //			}
 //		}
 //

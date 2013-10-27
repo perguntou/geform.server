@@ -6,34 +6,36 @@ package br.ufrj.del.geform.bean;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  */
-@XmlRootElement
+@XmlRootElement(name="item")
 public class AnswerBean {
 
-	List<String> m_answers;
-	
+	List<String> answers;
+
 	public AnswerBean() {}
 
 	/**
 	 * @return the answers
 	 */
+	@XmlElement(name="answer")
 	public List<String> getAnswers() {
-		return m_answers;
+		return answers;
 	}
 
 	/**
 	 * @param answer the answer to set
 	 */
 	public void setAnswers( List<String> answers ) {
-		this.m_answers = answers;
+		this.answers = answers;
 	}
 
 	public void setAnswers( String... answers ) {
-		this.m_answers = Arrays.asList( answers );
+		this.answers = Arrays.asList( answers );
 	}
 
 }
