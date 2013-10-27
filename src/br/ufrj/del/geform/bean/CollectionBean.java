@@ -13,59 +13,59 @@ import javax.xml.bind.annotation.XmlType;
  *
  */
 @XmlRootElement(name="collection")
-@XmlType(propOrder={"id","answers","collector"})
+@XmlType(propOrder={"id","collector","items"})
 public class CollectionBean {
 
-	private Long m_id;
+	private Long id;
 
-	private List<AnswerBean> m_answers;
+	private List<AnswerBean> items;
 
-	private String m_collector;
+	private String collector;
 
 	public CollectionBean() {}
 
 	/**
-	 * @return the m_id
+	 * @return the id
 	 */
 	@XmlElement(name="form")
 	public Long getId() {
-		return m_id;
+		return id;
 	}
 
 	/**
-	 * @param m_id the m_id to set
+	 * @param id the id to set
 	 */
-	public void setId( Long id ) {
-		this.m_id = id;
+	public void setId( final Long id ) {
+		this.id = id;
 	}
 
 	/**
-	 * @return the m_answers
+	 * @return the answers
 	 */
 	@XmlElement(name="item")
-	public List<AnswerBean> getAnswers() {
-		return m_answers;
+	public List<AnswerBean> getItems() {
+		return items;
 	}
 
 	/**
-	 * @param m_answers the m_answers to set
+	 * @param answers the answers to set
 	 */
-	public void setAnswers( List<AnswerBean> answers ) {
-		this.m_answers = answers;
+	public void setItems( final List<AnswerBean> answers ) {
+		this.items = answers;
 	}
 
 	/**
-	 * @return the m_collector
+	 * @return the collector
 	 */
 	public String getCollector() {
-		return m_collector;
+		return collector;
 	}
 
 	/**
-	 * @param m_collector the m_collector to set
+	 * @param collector the collector to set
 	 */
-	public void setCollector(String m_collector) {
-		this.m_collector = m_collector;
+	public void setCollector( final String collector ) {
+		this.collector = collector;
 	}
 
 }

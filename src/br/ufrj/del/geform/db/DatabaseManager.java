@@ -7,9 +7,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder.Case;
 
 import br.ufrj.del.geform.bean.AnswerBean;
 import br.ufrj.del.geform.bean.CollectionBean;
@@ -17,7 +17,6 @@ import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
 import br.ufrj.del.geform.bean.OptionBean;
 import br.ufrj.del.geform.bean.TypeBean;
-
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
 import br.ufrj.del.geform.db.model.Form;
@@ -33,47 +32,47 @@ public class DatabaseManager {
 
 	private static final String DB_NAME = "geformdb";
 
-	private EntityManagerFactory factory;
+	private	EntityManager entityManager;
 
-	private	EntityManager em;
-	
 	public DatabaseManager() {
-		factory = Persistence.createEntityManagerFactory( DB_NAME );
-		em = factory.createEntityManager();
+		final EntityManagerFactory factory = Persistence.createEntityManagerFactory( DB_NAME );
+		this.entityManager = factory.createEntityManager();
 	}
 
-// Insert functions
+	// Insert functions
 	public void insertChoice( Long collectionID, Long itemID, Long optionID ) {
 		Choice choiceAnswer = new Choice();
 		choiceAnswer.setCollectionId( collectionID );
 		choiceAnswer.setItemId( itemID );
 		choiceAnswer.setOptionId( optionID );
-		
+
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( choiceAnswer );
+			this.entityManager.persist( choiceAnswer );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
 	}
 
-	public void insertCollection(CollectionBean collection) {
+	public void insertCollection( CollectionBean collection ) {
 		Collection collectionDB = new Collection();
 		collectionDB.setCollector( collection.getCollector() );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( collectionDB );
+			this.entityManager.persist( collectionDB );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
-		
+
 		collection.setId( collectionDB.getId() );
 	}
 
@@ -83,15 +82,15 @@ public class DatabaseManager {
 		formDB.setDescription( form.getDescription() );
 		formDB.setTitle( form.getTitle() );
 		final Calendar calendar = Calendar.getInstance();
-		calendar.setTime( form.getTimestamp() );
 		final Date sqlDate = new Date( calendar.getTimeInMillis() );
 		formDB.setTimestamp( sqlDate );
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( formDB );
+			this.entityManager.persist( formDB );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -104,11 +103,12 @@ public class DatabaseManager {
 		form_collection.setCollectionId( collectionID );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( form_collection );
+			this.entityManager.persist( form_collection );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -121,11 +121,12 @@ public class DatabaseManager {
 		form_item.setIndex( index );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( form_item );
+			this.entityManager.persist( form_item );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -138,15 +139,16 @@ public class DatabaseManager {
 		itemDB.setTypeId( type.ordinal() );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( itemDB );
+			this.entityManager.persist( itemDB );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
-		
+
 		item.setId( itemDB.getId() );
 	}
 
@@ -157,11 +159,12 @@ public class DatabaseManager {
 		item_option.setIndex( index );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( item_option );
+			this.entityManager.persist( item_option );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -172,11 +175,12 @@ public class DatabaseManager {
 		optionBD.setValue( option.getValue() );
 
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( optionBD );
+			this.entityManager.persist( optionBD );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -187,15 +191,16 @@ public class DatabaseManager {
 	public void insertText( Long collectionID, Long itemID, String answer ) {
 		Text textAnswer = new Text();
 		textAnswer.setCollectionId( collectionID );
-		textAnswer.setItemId( itemID);
+		textAnswer.setItemId( itemID );
 		textAnswer.setValue( answer );
-		
+
 		try{
-			em.getTransaction().begin();
+			final EntityTransaction transaction = this.entityManager.getTransaction();
+			transaction.begin();
 
-			em.persist( textAnswer );
+			this.entityManager.persist( textAnswer );
 
-			em.getTransaction().commit();
+			transaction.commit();
 		} catch( Exception e ) {
 			System.out.printf( "Erro: %s", e.getMessage() );
 		}
@@ -207,15 +212,15 @@ public class DatabaseManager {
 		insertForm( form );
 
 		List<ItemBean> items = form.getItems();
-		
+
 		int itemIndex = 1;
 		for(final ItemBean item : items) {
 			insertItem( item );
 			insertFormItem( form.getId(), item.getId(), itemIndex++ );
-			
+
 			if( item.getType() != TypeBean.TEXT ){
 				List<OptionBean> options = item.getOptions();
-				
+
 				int optionIndex = 1;
 				for( final OptionBean option : options ) {
 					insertOption( option );
@@ -224,32 +229,39 @@ public class DatabaseManager {
 			}
 		}
 	}
-	
+
 	public void insertCollections( FormBean form ) {
 		List<CollectionBean> collections = form.getCollections();
+		final Long formId = form.getId();
 		for( final CollectionBean collection : collections ) {
 			insertCollection( collection );
-			insertFormCollection( form.getId(), collection.getId() );
-			
-			List<AnswerBean> answersBean = collection.getAnswers();
-			int FirstElement = 0;
-			for( int i = FirstElement ; i < answersBean.size(); i++ ) {
-				AnswerBean answerBean = answersBean.get(i);
-				ItemBean item = form.getItems().get(i);
-				
-				List<String> answers = answerBean.getAnswers();
-				switch (item.getType()) {
+			final Long collectionId = collection.getId();
+			insertFormCollection( formId, collectionId );
+
+			final List<AnswerBean> answersBean = collection.getItems();
+			final List<ItemBean> items = form.getItems();
+			for( int index = 0; index < answersBean.size(); index++ ) {
+				final AnswerBean answerBean = answersBean.get( index );
+				final ItemBean item = items.get( index );
+
+				final List<String> answers = answerBean.getAnswers();
+				final Long itemId = item.getId();
+				switch( item.getType() ) {
 				case TEXT:
-					insertText( collection.getId(), item.getId(), answers.get(FirstElement) );
+					insertText( collectionId, itemId, answers.get( 0 ) );
 					break;
 				case SINGLE_CHOICE:
-					final Long optionID1 = new Long(answers.get(FirstElement));
-					insertChoice(collection.getId(), item.getId(), optionID1);
+				{
+					final Long optionId = new Long( answers.get( 0 ) );
+					insertChoice( collectionId, itemId, optionId );
+				}
 				case MULTIPLE_CHOICE:
+				{
 					for( final String answer : answers ){
-						final Long optionID2 = new Long(answer);
-						insertChoice(collection.getId(), item.getId(), optionID2);
+						final Long optionId = new Long( answer );
+						insertChoice( collectionId, itemId, optionId );
 					}
+				}
 				default:
 					break;
 				}
@@ -257,7 +269,7 @@ public class DatabaseManager {
 		}
 	}
 
-// Update functions
+	// Update functions
 	public void updateChoice() {}
 
 	public void updateCollection() {}
@@ -280,7 +292,7 @@ public class DatabaseManager {
 
 	public void removeChoice() {}
 
-// Remove functions
+	// Remove functions
 	public void removeCollection() {}
 
 	public void removeForm() {}
@@ -299,7 +311,7 @@ public class DatabaseManager {
 
 	public void removeType() {}
 
-// Select functions
+	// Select functions
 	public List<Choice> selectChoice() {
 		return null;
 	}
@@ -314,13 +326,13 @@ public class DatabaseManager {
 
 	public Form selectFormById( Long formID ) {
 		Form form = new Form();
-		form = em.find( Form.class, formID );
+		form = this.entityManager.find( Form.class, formID );
 		return form;
 	}
 
 	public List<Item> selectFormItems( Long formID ) {
 		final String queryString = String.format( "SELECT fi FROM form_item fi WHERE form_id = %s", formID );
-		Query query = em.createQuery( queryString );
+		Query query = this.entityManager.createQuery( queryString );
 		@SuppressWarnings("unchecked")
 		List<FormItem> formItems  = query.getResultList();
 
@@ -348,13 +360,13 @@ public class DatabaseManager {
 
 	public Item selectItemById( Long itemID ) {
 		Item item = new Item();
-		item = em.find( Item.class, itemID );
+		item = this.entityManager.find( Item.class, itemID );
 		return item;
 	}
 
 	public List<Options> selectItemOptions( Long itemID ) {
 		final String queryString = String.format( "SELECT io FROM item_option io WHERE item_id = %s", itemID );
-		Query query = em.createQuery(queryString);
+		Query query = this.entityManager.createQuery(queryString);
 		@SuppressWarnings("unchecked")
 		List<ItemOption> itemOptions  = query.getResultList();
 
@@ -378,7 +390,7 @@ public class DatabaseManager {
 
 	public Options selectOptionsById( Long optionID ) {
 		Options option = new Options();
-		option = em.find( Options.class, optionID );
+		option = this.entityManager.find( Options.class, optionID );
 		return option;
 	}
 
@@ -393,6 +405,10 @@ public class DatabaseManager {
 	public FormBean selectFormBean( Long formID ) {
 		FormBean formBean = new FormBean();
 		Form form = this.selectFormById( formID );
+
+		if( form == null ) {
+			return null;
+		}
 
 		formBean.setId( form.getId() );
 		formBean.setTitle( form.getTitle() );
