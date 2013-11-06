@@ -2,9 +2,9 @@
  * 
  */
 var INPUT_TYPE = {
-	text : 'text',
-	multiple : 'checkbox',
-	single : 'radio',
+	TEXT : 'text',
+	MULTIPLE_CHOICE : 'checkbox',
+	SINGLE_CHOICE : 'radio',
 };
 
 var init = function() {
@@ -50,16 +50,15 @@ var init = function() {
 							try {
 								var $itemView = $('[id=template] .item').clone();
 								insertFieldContent( $itemView.find('.question'), item.question );
-								var attr = $(item).attr('@type');
-								if( attr != 'text' ) {
+								var attr = $(item).attr('type');
+								if( attr != 'TEXT' ) {
 									var $options = $(document.createElement('span'));
 									var insertOption = function( optionIndex, option ) {
 										var $input = $('<input type=' + INPUT_TYPE[attr] +' value=' + option.id + ' name=' + itemIndex + '>' + option.value +'</input>');
 										$options.append( $input );
 									};
-									var optionArray = item.options.option.length > 1 ? item.options.option : [item.options.option];
-									$.each( optionArray, insertOption );
-									$itemView.append($options);
+									$.each( item.options, insertOption );
+									$itemView.append( $options );
 								} else {
 									$itemView.append( $(document.createElement('textArea') ) );
 								}
@@ -69,8 +68,7 @@ var init = function() {
 								alert( msg );
 							}
 						};
-						var itemArray = result.item.length > 1 ? result.item : [result.item];
-						$.each( itemArray, insertItem );
+						$.each( result.item, insertItem );
 //						$template.find(':input').attr('disabled',true);
 						$content.html( $template );
 					} catch( exception ) {
