@@ -247,20 +247,27 @@ public class DatabaseManager {
 				final List<String> answers = answerBean.getAnswers();
 				final Long itemId = item.getId();
 				switch( item.getType() ) {
-				case TEXT:
+				case TEXT: {
 					insertText( collectionId, itemId, answers.get( 0 ) );
 					break;
-				case SINGLE_CHOICE:
-				{
-					final Long optionId = new Long( answers.get( 0 ) );
-					insertChoice( collectionId, itemId, optionId );
 				}
-				case MULTIPLE_CHOICE:
-				{
+				case SINGLE_CHOICE:	{
+					final List<OptionBean> options = item.getOptions();
+					final int idx = Integer.parseInt( answers.get(0) );
+					final OptionBean option = options.get( idx );
+					final Long optionId = option.getId();
+					insertChoice( collectionId, itemId, optionId );
+					break;
+				}
+				case MULTIPLE_CHOICE: {
 					for( final String answer : answers ){
-						final Long optionId = new Long( answer );
+						final List<OptionBean> options = item.getOptions();
+						final int idx = Integer.parseInt( answer );
+						final OptionBean option = options.get( idx );
+						final Long optionId = option.getId();
 						insertChoice( collectionId, itemId, optionId );
 					}
+					break;
 				}
 				default:
 					break;
