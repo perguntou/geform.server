@@ -29,7 +29,7 @@ public class FormResources {
 	}
 
 	@GET
-	@Produces( {MediaType.TEXT_XML, MediaType.APPLICATION_XML} )
+	@Produces( {MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
 	@Path("{id}")
 	public final FormBean get( @PathParam("id") long id ) {
 		final FormBean form = dbManager.selectFormBean( id );
