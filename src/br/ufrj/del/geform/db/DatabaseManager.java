@@ -17,6 +17,7 @@ import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
 import br.ufrj.del.geform.bean.OptionBean;
 import br.ufrj.del.geform.bean.TypeBean;
+
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
 import br.ufrj.del.geform.db.model.Form;
@@ -319,14 +320,40 @@ public class DatabaseManager {
 	public void removeType() {}
 
 	// Select functions
-	public List<Choice> selectChoice() {
-		return null;
+	public List<Choice> selectChoiceAnswerList( Long collectionID, Long itemID ) {
+		final String queryString = String.format( "SELECT c FROM choice c WHERE (collection_id = %s) AND (item_id = %s)", collectionID,itemID );
+		Query query = this.entityManager.createQuery(queryString);
+		@SuppressWarnings("unchecked")
+		List<Choice> choiceAnswerList  = query.getResultList();
+
+		return choiceAnswerList;
 	}
 
 	public List<Collection> selectCollection() {
 		return null;
 	}
+	
+	public Collection selectCollectionById( Long collectionID ) {
+		Collection collection = new Collection();
+		collection = this.entityManager.find( Collection.class, collectionID );
+		return collection;
+	}
 
+	public List<Collection> selectFormCollections( Long formID ) {
+		final String queryString = String.format( "SELECT fc FROM form_collection fc WHERE form_id = %s", formID );
+		Query query = this.entityManager.createQuery( queryString );
+		@SuppressWarnings("unchecked")
+		List<FormCollection> formCollections  = query.getResultList();
+
+		List<Collection> collections = new ArrayList<>();
+		Collection c = new Collection();
+		for( FormCollection formCollection : formCollections ){
+			c = this.selectCollectionById( formCollection.getCollectionId() );
+			collections.add( c );
+		}
+		return collections;
+	}
+	
 	public List<Form> selectForm() {
 		return null;
 	}
@@ -404,6 +431,16 @@ public class DatabaseManager {
 	public List<Text> selectText() {
 		return null;
 	}
+	
+	public Text selectTextAnswer( Long collectionID, Long itemID ) {
+		final String queryString = String.format( "SELECT t FROM text t WHERE (collection_id = %s) AND (item_id = %s)", collectionID,itemID );
+		Query query = this.entityManager.createQuery(queryString);
+		@SuppressWarnings("unchecked")
+		List<Text> texts  = query.getResultList();
+		Text textAnswer = texts.get(0);
+		
+		return textAnswer;
+	}
 
 	public List<Type> selectType() {
 		return null;
@@ -453,6 +490,60 @@ public class DatabaseManager {
 		formBean.setItems( itemsBean );
 
 		return formBean;
+	}
+	
+	public List<CollectionBean> selectCollectionBeanList( Long formID ) {
+		FormBean formBean = this.selectFormBean(formID);
+
+		List<CollectionBean> collectionBeanList = new ArrayList<>();
+		
+		List<Collection> collections;
+		collections = this.selectFormCollections(formID);
+		
+		for( Collection collection: collections ){
+			CollectionBean collectionBean = new CollectionBean();
+			
+			collectionBean.setId(collection.getId());
+			collectionBean.setCollector(collection.getCollector());
+			
+			List<AnswerBean> answerBeanList = new ArrayList<>();
+
+			List<ItemBean> itemBeanList;
+			itemBeanList = formBean.getItems();
+	
+			for( ItemBean itemBean : itemBeanList ) {
+				AnswerBean answerBean = new AnswerBean();
+				List<String> stringAnswer = new ArrayList<>();
+					
+				switch (itemBean.getType()) {
+				case TEXT:
+					Text textAnswer = this.selectTextAnswer(collectionBean.getId(), itemBean.getId());
+					stringAnswer.add(textAnswer.getValue());
+					break;
+				case SINGLE_CHOICE:
+					List<Choice> singleChoiceAnswerList = this.selectChoiceAnswerList(collectionBean.getId(), itemBean.getId());
+					//Colocar uma validação - Caso tenha mais de um item no array
+					Choice singlechoiceAnswer = singleChoiceAnswerList.get(0);
+					stringAnswer.add(singlechoiceAnswer.getOptionId().toString());
+					break;
+				case MULTIPLE_CHOICE:
+					List<Choice> MultipleChoiceAnswerList = this.selectChoiceAnswerList(collectionBean.getId(), itemBean.getId());
+					for( Choice multipleChoiceAnswer : MultipleChoiceAnswerList ){
+						stringAnswer.add(multipleChoiceAnswer.getOptionId().toString());
+					}
+					break;
+				default:
+					break;
+				}
+
+				answerBean.setAnswers( stringAnswer );
+				answerBeanList.add(answerBean);
+			}
+			collectionBean.setItems(answerBeanList);
+			collectionBeanList.add(collectionBean);
+		}
+
+		return collectionBeanList;
 	}
 
 }
