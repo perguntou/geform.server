@@ -20,7 +20,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class TestFormPost {
 
-	private final static String uri = "http://localhost:8080/GeFormWS";
+	private final static String uri = "http://localhost:8080/GeForm";
 	private final static String pattern = "rest";
 	private final static String resource = "forms";
 
