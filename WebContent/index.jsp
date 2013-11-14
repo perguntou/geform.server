@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -7,7 +7,16 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<!-- Highcharts -->
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://code.highcharts.com/adapters/mootools-adapter.js"></script>
+<script src="http://code.highcharts.com/adapters/prototype-adapter.js"></script>
+
 <script src="js/form.js"></script>
+<script src="js/report.js"></script>
 </head>
 <body>
 	<div id="header">
@@ -17,6 +26,7 @@
 	<div id="menu">
 		<input id='form' placeholder='Insert the form id' />
 		<button id='search'>Search</button>
+		<button id='report'>Report</button>
 	</div>
 	<div id="content"></div>
 
