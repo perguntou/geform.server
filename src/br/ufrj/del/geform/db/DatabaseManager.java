@@ -3,7 +3,9 @@ package br.ufrj.del.geform.db;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,7 +19,6 @@ import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.bean.ItemBean;
 import br.ufrj.del.geform.bean.OptionBean;
 import br.ufrj.del.geform.bean.TypeBean;
-
 import br.ufrj.del.geform.db.model.Choice;
 import br.ufrj.del.geform.db.model.Collection;
 import br.ufrj.del.geform.db.model.Form;
@@ -332,7 +333,7 @@ public class DatabaseManager {
 	public List<Collection> selectCollection() {
 		return null;
 	}
-	
+
 	public Collection selectCollectionById( Long collectionID ) {
 		Collection collection = new Collection();
 		collection = this.entityManager.find( Collection.class, collectionID );
@@ -353,7 +354,7 @@ public class DatabaseManager {
 		}
 		return collections;
 	}
-	
+
 	public List<Form> selectForm() {
 		return null;
 	}
@@ -491,56 +492,83 @@ public class DatabaseManager {
 
 		return formBean;
 	}
-	
+
 	public List<CollectionBean> selectCollectionBeanList( Long formID ) {
-		FormBean formBean = this.selectFormBean(formID);
+		final FormBean formBean = this.selectFormBean( formID );
 
-		List<CollectionBean> collectionBeanList = new ArrayList<>();
-		
-		List<Collection> collections;
-		collections = this.selectFormCollections(formID);
-		
+		final List<CollectionBean> collectionBeanList = new ArrayList<>();
+
+		final List<Collection> collections = selectFormCollections( formID );
+
+		//Map< ItemId, Map< OptionId, OptionValue > >
+		final Map<Long,Map<Long,String>> map = new HashMap<Long,Map<Long,String>>();
+		for( ItemBean item : formBean.getItems() ) {
+			final List<OptionBean> options = item.getOptions();
+			if( options == null ) {
+				continue;
+			}
+			final Long itemId = item.getId();
+			final Map<Long,String> innerMap = new HashMap<Long,String>();
+			for( final OptionBean option : options ) {
+				final Long key = option.getId();
+				final String value = option.getValue();
+				innerMap.put( key, value );
+			}
+			map.put( itemId, innerMap );
+		}
+
 		for( Collection collection: collections ){
-			CollectionBean collectionBean = new CollectionBean();
-			
-			collectionBean.setId(collection.getId());
-			collectionBean.setCollector(collection.getCollector());
-			
-			List<AnswerBean> answerBeanList = new ArrayList<>();
+			final CollectionBean collectionBean = new CollectionBean();
 
-			List<ItemBean> itemBeanList;
-			itemBeanList = formBean.getItems();
-	
+			final Long collectionId = collection.getId();
+			collectionBean.setId( collectionId );
+			collectionBean.setCollector( collection.getCollector() );
+
+			final List<AnswerBean> answerBeanList = new ArrayList<>();
+
+			final List<ItemBean> itemBeanList = formBean.getItems();
 			for( ItemBean itemBean : itemBeanList ) {
+				final Long itemId = itemBean.getId();
 				AnswerBean answerBean = new AnswerBean();
-				List<String> stringAnswer = new ArrayList<>();
-					
-				switch (itemBean.getType()) {
-				case TEXT:
-					Text textAnswer = this.selectTextAnswer(collectionBean.getId(), itemBean.getId());
-					stringAnswer.add(textAnswer.getValue());
+				List<String> stringAnswer = new ArrayList<String>();
+
+				final TypeBean type = itemBean.getType();
+				switch( type ) {
+				case TEXT: {
+					Text textAnswer = this.selectTextAnswer( collectionId, itemId );
+					final String value = textAnswer.getValue();
+					stringAnswer.add( value );
 					break;
-				case SINGLE_CHOICE:
-					List<Choice> singleChoiceAnswerList = this.selectChoiceAnswerList(collectionBean.getId(), itemBean.getId());
-					//Colocar uma validação - Caso tenha mais de um item no array
-					Choice singlechoiceAnswer = singleChoiceAnswerList.get(0);
-					stringAnswer.add(singlechoiceAnswer.getOptionId().toString());
+				}
+				case SINGLE_CHOICE:	{
+					List<Choice> singleChoiceAnswerList = this.selectChoiceAnswerList( collectionId, itemId);
+					//Colocar uma validaÃ§Ã£o - Caso tenha mais de um item no array
+					Choice singlechoiceAnswer = singleChoiceAnswerList.get( 0 );
+					final Long optionId = singlechoiceAnswer.getOptionId();
+					final Map<Long, String> optionsMap = map.get( itemId );
+					final String optionValue = optionsMap.get( optionId );
+					stringAnswer.add( optionValue );
 					break;
-				case MULTIPLE_CHOICE:
-					List<Choice> MultipleChoiceAnswerList = this.selectChoiceAnswerList(collectionBean.getId(), itemBean.getId());
-					for( Choice multipleChoiceAnswer : MultipleChoiceAnswerList ){
-						stringAnswer.add(multipleChoiceAnswer.getOptionId().toString());
+				}
+				case MULTIPLE_CHOICE: {
+					List<Choice> MultipleChoiceAnswerList = this.selectChoiceAnswerList( collectionId, itemId );
+					for( Choice multipleChoiceAnswer : MultipleChoiceAnswerList ) {
+						final Long optionId = multipleChoiceAnswer.getOptionId();
+						final Map<Long, String> optionsMap = map.get( itemId );
+						final String optionValue = optionsMap.get( optionId );
+						stringAnswer.add( optionValue );
 					}
 					break;
+				}
 				default:
 					break;
 				}
 
 				answerBean.setAnswers( stringAnswer );
-				answerBeanList.add(answerBean);
+				answerBeanList.add( answerBean );
 			}
-			collectionBean.setItems(answerBeanList);
-			collectionBeanList.add(collectionBean);
+			collectionBean.setItems( answerBeanList );
+			collectionBeanList.add( collectionBean );
 		}
 
 		return collectionBeanList;
