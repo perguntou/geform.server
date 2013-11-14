@@ -3,17 +3,24 @@ package br.ufrj.del.geform.rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.db.DatabaseManager;
+import br.ufrj.del.geform.report.Analyzer;
+import br.ufrj.del.geform.report.Report;
+
 
 @Path("/forms")
 public class FormResources {
@@ -29,11 +36,13 @@ public class FormResources {
 	}
 
 	@GET
-	@Produces( {MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
+	@Produces( {MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
 	@Path("{id}")
-	public final FormBean get( @PathParam("id") long id ) {
+	public final Response get( @PathParam("id") long id, @Context HttpServletRequest httpRequest ) {
 		final FormBean form = dbManager.selectFormBean( id );
-		return form;
+		final ResponseBuilder builder = form != null ? Response.ok(form) : Response.noContent();
+		final Response response = builder.build();
+		return response;
 	}
 
 	@POST
@@ -55,6 +64,25 @@ public class FormResources {
 		form.setCollections( collectionList );
 		dbManager.insertCollections( form );
 		return received.toString();
+	}
+
+	@GET
+	@Produces( MediaType.APPLICATION_JSON )
+	@Path("{id}/report")
+	public final Response generateReport( @PathParam("id") long id, @Context HttpServletRequest httpRequest ) {
+		final FormBean form = dbManager.selectFormBean( id );
+		final ResponseBuilder builder;
+		if( form == null ) {
+			builder = Response.noContent();
+		} else {
+			final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
+			form.setCollections( collections );
+			final Analyzer analyzer = new Analyzer( form );
+			final Report report = analyzer.process();
+			builder = Response.ok( report );
+		}
+		final Response response = builder.build();
+		return response;
 	}
 
 }
