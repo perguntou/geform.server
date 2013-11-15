@@ -473,19 +473,21 @@ public class DatabaseManager {
 			itemBean.setQuestion( item.getQuestion() );
 			TypeBean typeBean = TypeBean.values()[item.getTypeId()];
 			itemBean.setType( typeBean );
+			
+			if ( !TypeBean.TEXT.equals(typeBean) ){
+				List<Options> options = this.selectItemOptions( item.getId() );
+				List<OptionBean> optionsBean = new ArrayList<>();
 
-			List<Options> options = this.selectItemOptions( item.getId() );
-			List<OptionBean> optionsBean = new ArrayList<>();
+				for( Options option : options ) {
+					OptionBean optionBean = new OptionBean();
 
-			for( Options option : options ) {
-				OptionBean optionBean = new OptionBean();
+					optionBean.setId( option.getId() );
+					optionBean.setValue( option.getValue() );
 
-				optionBean.setId( option.getId() );
-				optionBean.setValue( option.getValue() );
-
-				optionsBean.add( optionBean );
+					optionsBean.add( optionBean );
+				}
+				itemBean.setOptions( optionsBean );
 			}
-			itemBean.setOptions( optionsBean );
 			itemsBean.add( itemBean );
 		}
 		formBean.setItems( itemsBean );
