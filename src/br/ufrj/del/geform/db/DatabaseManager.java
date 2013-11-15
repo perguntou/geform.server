@@ -1,8 +1,8 @@
 package br.ufrj.del.geform.db;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +84,8 @@ public class DatabaseManager {
 		formDB.setDescription( form.getDescription() );
 		formDB.setTitle( form.getTitle() );
 		final Calendar calendar = Calendar.getInstance();
-		final Date sqlDate = new Date( calendar.getTimeInMillis() );
-		formDB.setTimestamp( sqlDate );
+		final Date timestamp = calendar.getTime();
+		formDB.setTimestamp( timestamp );
 		try{
 			final EntityTransaction transaction = this.entityManager.getTransaction();
 			transaction.begin();
