@@ -70,12 +70,10 @@ public class Analyzer {
 		report.setItems( itemsReport );
 		report.setCollectors( collectorsReport );
 		report.setTotal( this.collections.size() );
-		final ListIterator<ItemBean> iterator = items.listIterator();
-		while( iterator.hasNext() ) {
-			final ItemBean item = iterator.next();
-			final int index = iterator.previousIndex();
-			final TypeBean type = item.getType();
+
+		for( final ItemBean item : items ) {
 			final String key = item.getQuestion();
+			final TypeBean type = item.getType();
 			switch( type ) {
 			case TEXT:
 				//itens de texto nao sao quantificados
@@ -91,14 +89,30 @@ public class Analyzer {
 					itemCounter.put( value, 0 );
 				}
 				itemsReport.put( key, itemCounter );
+				break;
+			}
+		}
 
-				//contabiliza as respostas dadas
-				final Map<String,Integer> counter = itemsReport.get( key );
-				for( final CollectionBean collection : this.collections ) {
-					final String collector = collection.getCollector();
-					Integer collectorCounter = collectorsReport.containsKey( collector ) ? collectorsReport.get( collector ) : 0;
-					collectorCounter++;
-					collectorsReport.put( collector, collectorCounter );
+		for( final CollectionBean collection : this.collections ) {
+
+			final String collector = collection.getCollector();
+			Integer collectorCounter = collectorsReport.containsKey( collector ) ? collectorsReport.get( collector ) : 0;
+			collectorCounter++;
+			collectorsReport.put( collector, collectorCounter );
+
+			final ListIterator<ItemBean> iterator = items.listIterator();
+			while( iterator.hasNext() ) {
+				final ItemBean item = iterator.next();
+				final int index = iterator.previousIndex();
+				final TypeBean type = item.getType();
+				final String key = item.getQuestion();
+				switch( type ) {
+				case TEXT:
+					//nada a fazer
+					break;
+				case MULTIPLE_CHOICE:
+				case SINGLE_CHOICE:
+					final Map<String,Integer> counter = itemsReport.get( key );
 					final List<AnswerBean> itemsAnswers = collection.getItems();
 					final AnswerBean answerBean = itemsAnswers.get( index );
 					for( final String answer : answerBean.getAnswers() ) {
@@ -106,8 +120,8 @@ public class Analyzer {
 						++count;
 						counter.put( answer, count );
 					}
+					break;
 				}
-				break;
 			}
 		}
 
