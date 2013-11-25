@@ -3,11 +3,13 @@
  */
 package br.ufrj.del.geform.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -134,4 +136,35 @@ public class FormBean {
 	public void setCollections(List<CollectionBean> collections) {
 		this.collections = collections;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int size() {
+		final List<ItemBean> items = getItems();
+		final int size = items != null ? items.size() : 0;
+		return size;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	@XmlTransient
+	public List<String> getQuestions() {
+		final List<ItemBean> items = getItems();
+		if( items == null ) {
+			return null;
+		}
+
+		final List<String> questions = new ArrayList<String>();
+		for( final ItemBean item : items ) {
+			final String question = item.getQuestion();
+			questions.add( question );
+		}
+
+		return questions;
+	}
+
 }
