@@ -1,9 +1,13 @@
 package br.ufrj.del.geform.rest;
 
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,6 +22,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
 import br.ufrj.del.geform.db.DatabaseManager;
+import br.ufrj.del.geform.export.Exporter;
 import br.ufrj.del.geform.report.Analyzer;
 import br.ufrj.del.geform.report.Report;
 
@@ -80,6 +85,29 @@ public class FormResources {
 			final Analyzer analyzer = new Analyzer( form );
 			final Report report = analyzer.process();
 			builder = Response.ok( report );
+		}
+		final Response response = builder.build();
+		return response;
+	}
+
+	@GET
+	@Path("{id}/export")
+	public final Response export(  @PathParam("id") long id, @Context HttpServletRequest httpRequest, @Context HttpServletResponse httpResponse ) {
+		final FormBean form = dbManager.selectFormBean( id );
+		final ResponseBuilder builder;
+		if( form == null ) {
+			builder = Response.noContent();
+		} else {
+			final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
+			form.setCollections( collections );
+			try {
+				final ServletOutputStream out = httpResponse.getOutputStream();
+				final OutputStreamWriter writer = new OutputStreamWriter( out, Charset.forName("UTF-16LE") );
+				Exporter.writeTsv( writer, form );
+			} catch( Exception e ) {
+				e.printStackTrace();
+			}
+			builder = Response.ok();
 		}
 		final Response response = builder.build();
 		return response;

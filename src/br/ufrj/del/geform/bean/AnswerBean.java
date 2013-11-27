@@ -9,6 +9,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  *
  */
@@ -17,7 +19,9 @@ public class AnswerBean {
 
 	List<String> answers;
 
-	public AnswerBean() {}
+	public AnswerBean() {
+		//do nothing
+	}
 
 	/**
 	 * @return the answers
@@ -36,6 +40,12 @@ public class AnswerBean {
 
 	public void setAnswers( String... answers ) {
 		this.answers = Arrays.asList( answers );
+	}
+
+	@Override
+	public String toString() {
+		final String toString = this.answers != null ? StringUtils.join( this.answers, "," ) : null ;
+		return toString;
 	}
 
 }
