@@ -1,19 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <title>GeForm</title>
 <link rel="stylesheet" href="css/style.css" />
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<!-- jQuery & jQuery UI -->
+<link rel="stylesheet" href="includes/jquery/ui/themes/jquery-ui.min.css" />
+<script src="includes/jquery/jquery-1.10.2.min.js"></script>
+<script src="includes/jquery/ui/jquery-ui.min.js"></script>
 
 <!-- Highcharts -->
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/highcharts-more.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="http://code.highcharts.com/adapters/mootools-adapter.js"></script>
-<script src="http://code.highcharts.com/adapters/prototype-adapter.js"></script>
+<script src="includes/highcharts/highcharts.js"></script>
+<script src="includes/highcharts/highcharts-more.js"></script>
+<script src="includes/highcharts/modules/exporting.js"></script>
+<script src="includes/highcharts/adapters/mootools-adapter.js"></script>
+<script src="includes/highcharts/adapters/prototype-adapter.js"></script>
 
 <script src="js/form.js"></script>
 <script src="js/report.js"></script>
