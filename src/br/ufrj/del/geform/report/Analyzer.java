@@ -3,7 +3,7 @@
  */
 package br.ufrj.del.geform.report;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -64,8 +64,8 @@ public class Analyzer {
 	 */
 	public Report process() {
 		final List<ItemBean> items = this.form.getItems();
-		final Map<String, Map<String,Integer>> itemsReport = new HashMap<String, Map<String,Integer>>( items.size() );
-		final Map<String,Integer> collectorsReport = new HashMap<String,Integer>();
+		final Map<String, Map<String,Integer>> itemsReport = new LinkedHashMap<String, Map<String,Integer>>( items.size() );
+		final Map<String,Integer> collectorsReport = new LinkedHashMap<String,Integer>();
 		final Report report = new Report();
 		report.setItems( itemsReport );
 		report.setCollectors( collectorsReport );
@@ -80,33 +80,34 @@ public class Analyzer {
 			case TEXT:
 				//itens de texto nao sao quantificados
 				itemsReport.put( key, null );
-				continue;
+				break;
 			case MULTIPLE_CHOICE:
 			case SINGLE_CHOICE:
 				//inicializando contador de cada opcao
 				final List<OptionBean> options = item.getOptions();
-				final HashMap<String,Integer> itemCounter = new HashMap<String,Integer>( options.size() );
+				final Map<String,Integer> itemCounter = new LinkedHashMap<String,Integer>( options.size() );
 				for( final OptionBean option : options ) {
 					final String value = option.getValue();
 					itemCounter.put( value, 0 );
 				}
 				itemsReport.put( key, itemCounter );
-				break;
-			}
 
-			final Map<String,Integer> counter = itemsReport.get( key );
-			for( final CollectionBean collection : this.collections ) {
-				final String collector = collection.getCollector();
-				Integer collectorCounter = collectorsReport.containsKey( collector ) ? collectorsReport.get( collector ) : 0;
-				collectorCounter++;
-				collectorsReport.put( collector, collectorCounter );
-				final List<AnswerBean> itemsAnswers = collection.getItems();
-				final AnswerBean answerBean = itemsAnswers.get( index );
-				for( final String answer : answerBean.getAnswers() ) {
-					Integer count = counter.get( answer );
-					++count;
-					counter.put( answer, count );
+				//contabiliza as respostas dadas
+				final Map<String,Integer> counter = itemsReport.get( key );
+				for( final CollectionBean collection : this.collections ) {
+					final String collector = collection.getCollector();
+					Integer collectorCounter = collectorsReport.containsKey( collector ) ? collectorsReport.get( collector ) : 0;
+					collectorCounter++;
+					collectorsReport.put( collector, collectorCounter );
+					final List<AnswerBean> itemsAnswers = collection.getItems();
+					final AnswerBean answerBean = itemsAnswers.get( index );
+					for( final String answer : answerBean.getAnswers() ) {
+						Integer count = counter.get( answer );
+						++count;
+						counter.put( answer, count );
+					}
 				}
+				break;
 			}
 		}
 
