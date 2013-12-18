@@ -6,16 +6,16 @@
 <link rel="stylesheet" href="css/style.css" />
 
 <!-- jQuery & jQuery UI -->
-<link rel="stylesheet" href="includes/jquery/ui/themes/jquery-ui.min.css" />
-<script src="includes/jquery/jquery-1.10.2.min.js"></script>
-<script src="includes/jquery/ui/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="libs/jquery/ui/themes/jquery-ui.min.css" />
+<script src="libs/jquery/jquery-1.10.2.min.js"></script>
+<script src="libs/jquery/ui/jquery-ui.min.js"></script>
 
 <!-- Highcharts -->
-<script src="includes/highcharts/highcharts.js"></script>
-<script src="includes/highcharts/highcharts-more.js"></script>
-<script src="includes/highcharts/modules/exporting.js"></script>
-<script src="includes/highcharts/adapters/mootools-adapter.js"></script>
-<script src="includes/highcharts/adapters/prototype-adapter.js"></script>
+<script src="libs/highcharts/highcharts.js"></script>
+<script src="libs/highcharts/highcharts-more.js"></script>
+<script src="libs/highcharts/modules/exporting.js"></script>
+<script src="libs/highcharts/adapters/mootools-adapter.js"></script>
+<script src="libs/highcharts/adapters/prototype-adapter.js"></script>
 
 <script src="js/form.js"></script>
 <script src="js/report.js"></script>
