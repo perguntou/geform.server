@@ -1,6 +1,11 @@
 ﻿/**
  * 
  */
+define([
+	'jquery',
+	'text!templates/form.html',
+	'jquery_ui',
+], function( $, formTemplate ) {
 var INPUT_TYPE = {
 	TEXT : 'text',
 	MULTIPLE_CHOICE : 'checkbox',
@@ -33,7 +38,8 @@ var init = function() {
 				var done = function( result, status )
 				{
 					try {
-						var $template = $('[id=template] .form').clone();
+						var $base = $(formTemplate);
+						var $template = $base.find( '.form' ).clone();
 						var $content = $('[id=content]');
 						if( result == null ) {
 							$content.html("");
@@ -48,7 +54,7 @@ var init = function() {
 						insertFieldContent( $template.find('.description'), result.description );
 						var insertItem = function( itemIndex, item ) {
 							try {
-								var $itemView = $('[id=template] .item').clone();
+								var $itemView = $base.find('.item').clone();
 								insertFieldContent( $itemView.find('.question'), item.question );
 								var attr = $(item).attr('type');
 								if( attr != 'TEXT' ) {
@@ -62,7 +68,7 @@ var init = function() {
 								} else {
 									$itemView.append( $(document.createElement('textArea') ) );
 								}
-								$template.append( $itemView );
+								$template.find('.items').append( $itemView );
 							} catch( exception ) {
 								var msg = "There was an error on form.init.callback.done.insertItem.\n\nError description: "+ exception.message + "\n\nClick OK to continue.\n\n";
 								alert( msg );
@@ -101,5 +107,5 @@ function insertFieldContent( view, value ) {
 		alert( msg );
 	}
 };
-
-$( init );
+return { init: init };
+} );

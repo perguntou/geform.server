@@ -1,12 +1,25 @@
 ﻿/**
  * 
  */
+define( [
+	'jquery',
+	'jquery_ui',
+	'highcharts/highcharts',
+	'highcharts/modules/exporting',
+], function( $ ) {
 var init = function() {
 	try {
 		var $input = $('[id=form]');
 		var $button = $('[id=report]');
+		var $dialog = $( "[id=dialog]" ).dialog(
+		{
+			height: 140,
+			width: 345,
+			autoOpen: false,
+			modal: true
+		} );
 		var callback = function() {
-			try{
+			try {
 				var value = $input.val();
 				var id = parseInt( value );
 				if( isNaN( id ) ) {
@@ -128,4 +141,6 @@ var init = function() {
 	}
 };
 
-$( init );
+return { init: init };
+
+} );
