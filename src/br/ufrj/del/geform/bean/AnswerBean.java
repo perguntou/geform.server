@@ -3,6 +3,7 @@
  */
 package br.ufrj.del.geform.bean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,8 +39,11 @@ public class AnswerBean {
 		this.answers = answers;
 	}
 
-	public void setAnswers( String... answers ) {
-		this.answers = Arrays.asList( answers );
+	public void addAnswers( String... answers ) {
+		if( this.answers == null ) {
+			this.answers = new ArrayList<String>();
+		}
+		this.answers.addAll( Arrays.asList( answers ) );
 	}
 
 	@Override
