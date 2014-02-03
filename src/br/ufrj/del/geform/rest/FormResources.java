@@ -33,7 +33,7 @@ public class FormResources {
 	DatabaseManager dbManager = new DatabaseManager();
 
 	@POST
-	@Consumes( MediaType.APPLICATION_XML )
+	@Consumes( {MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
 	public final String create( FormBean form ) {
 		dbManager.insertNewForm( form );
 		final Long id = form.getId();
@@ -51,7 +51,7 @@ public class FormResources {
 	}
 
 	@POST
-	@Consumes( MediaType.APPLICATION_XML )
+	@Consumes( {MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON} )
 	@Path("{id}")
 	public final String update( List<CollectionBean> collections, @PathParam("id") final long targetId ) {
 		Integer received = 0;
