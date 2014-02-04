@@ -4,108 +4,153 @@
 define([
 	'jquery',
 	'text!templates/form.html',
-	'jquery_ui',
-], function( $, formTemplate ) {
+	'report',
+	'jquery_ui'
+], function( $, template, Report ) {
+
 var INPUT_TYPE = {
 	TEXT : 'text',
 	MULTIPLE_CHOICE : 'checkbox',
 	SINGLE_CHOICE : 'radio',
 };
 
-var init = function() {
+var view = {};
+var currentForm = {};
+
+function submit( event )
+{
 	try {
-		var $input = $('[id=form]');
-		var $button = $('[id=search]');
-		var $dialog = $( "[id=dialog]" ).dialog(
-		{
-			height: 140,
-			width: 345,
-			autoOpen: false,
-			modal: true
-		} );
-		var callback = function()
-		{
-			try {
-				var value = $input.val();
-				var id = parseInt( value );
-				if( isNaN( id ) ) {
-					$dialog.text('Enter a valid numeric id.');
-					$dialog.dialog('open');
-					return;
-				}
-				var url = "/GeForm/rest/forms/"+id;
-//				window.location.replace( url );
-				var done = function( result, status )
-				{
-					try {
-						var $base = $(formTemplate);
-						var $template = $base.find( '.form' ).clone();
-						var $content = $('[id=content]');
-						if( result == null ) {
-							$content.html("");
-							$dialog.text('Could not get the form (id = ' + id + ')');
-							$dialog.dialog('open');
-							return;
-						}
-						insertFieldContent( $template.find('.id'), result.id );
-						insertFieldContent( $template.find('.title'), result.title );
-						insertFieldContent( $template.find('.creator'), result.creator );
-						insertFieldContent( $template.find('.creationDate'), result.timestamp );
-						insertFieldContent( $template.find('.description'), result.description );
-						var insertItem = function( itemIndex, item ) {
-							try {
-								var $itemView = $base.find('.item').clone();
-								insertFieldContent( $itemView.find('.question'), item.question );
-								var attr = $(item).attr('type');
-								if( attr != 'TEXT' ) {
-									var $options = $(document.createElement('span'));
-									var insertOption = function( optionIndex, option ) {
-										var $input = $('<input type=' + INPUT_TYPE[attr] +' value=' + option.id + ' name=' + itemIndex + '>' + option.value +'</input>');
-										$options.append( $input );
-									};
-									$.each( item.options, insertOption );
-									$itemView.append( $options );
-								} else {
-									$itemView.append( $(document.createElement('textArea') ) );
-								}
-								$template.find('.items').append( $itemView );
-							} catch( exception ) {
-								var msg = "There was an error on form.init.callback.done.insertItem.\n\nError description: "+ exception.message + "\n\nClick OK to continue.\n\n";
-								alert( msg );
-							}
-						};
-						$.each( result.item, insertItem );
-//						$template.find(':input').attr('disabled',true);
-						$content.html( $template );
-					} catch( exception ) {
-						var msg = "There was an error on form.init.callback.done.\n\nError description: "+ exception.message + "\n\nClick OK to continue.\n\n";
-						alert( msg );
-					}
-				};
-				$.getJSON( url, done );
-			} catch ( exception ) {
-				var msg = "There was an error on form.init.callback.\n\nError description: "+ exception.message + "\n\nClick OK to continue.\n\n";
-				alert( msg );
-			}
+		var itens = $(view).find('.item');
+		var complete = true;
+		var inputCollector = $('[id=content]').find('[id=collector]');
+		var collector = inputCollector.val().trim();
+		if( collector.length == 0 ) {
+			showDialog( "Identify yourself to commit this collection." );
+			return;
+		}
+		var data = {
+			form: currentForm.id,
+			collector: collector,
+			item: []
 		};
-		$button.click( callback );
-	} catch( exception ) {
-		var msg = "There was an error on form.init.\n\nError description: "+ exception.message + "\n\nClick OK to continue.\n\n";
-		alert( msg );
+		$.each( itens, function( index, item ) {
+			var model = $(item).data( 'model' );
+			var $input = $(item).find('.input');
+			var answer;
+			if( model.type === 'TEXT' ) {
+				answer = $input.val().trim();
+				if( answer.length != 0 ) {
+					data.item.push( {
+						answer: [answer]
+					} );
+				} else {
+					complete = false;
+				}
+			} else {
+				var $checkedList = $(item).find(':checked');
+				if( $checkedList.length != 0 ) {
+					var values = [];
+					$.each( $checkedList, function( idx, checked ) {
+						var value = $input.index( checked );
+						values.push( value );
+					} );
+					data.item.push( {
+						answer: values
+					} );
+				} else {
+					complete = false;
+				}
+			}
+			return complete;
+		} );
+		if( !complete ) {
+			showDialog( "All items must be answered before commit." );
+		} else {
+			$.ajax( {
+				url: '/GeForm/rest/forms/' + currentForm.id,
+				type: 'POST',
+				contentType: 'application/json; charset=UTF-8',
+				data : JSON.stringify( [ data ] ),
+				success: function( json ) {
+					showDialog('Collection sent with success.');
+					$(view).trigger('reset');
+				}
+			} );
+		}
+	} catch ( exception ) {
+		showError( "form.submit", exception );
+	} finally {
+	    event.preventDefault();
 	}
 };
 
-function insertFieldContent( view, value ) {
+show = function( form )
+{
 	try {
-		var $view = $(view);
-		if( value == null || value == "" ) {
-			value = "---";
-		}
-		$view.text( value );
-	} catch( exception ) {
-		var msg = "There was an error on form.insertFieldContent.\n\nError description: " + exception.message + "\n\nClick OK to continue.\n\n";
-		alert( msg );
+		currentForm = form;
+		var $content = $('[id=content]');
+		view = $(template).find( '.form' ).clone();
+		view.submit( submit );
+		$('#report').click( function() {
+			Report.request( form.id );
+		} );
+		insertFieldContent( view.find('.id'), form.id );
+		insertFieldContent( view.find('.title'), form.title );
+		insertFieldContent( view.find('.creator'), form.creator );
+		insertFieldContent( view.find('.creationDate'), form.timestamp );
+		insertFieldContent( view.find('.description'), form.description );
+		$.each( form.item, addItemToShow );
+//		view.find(':input').attr( 'disabled',true );
+		$content.html( view );
+		var inputCollector = "<label for='collector'>Collector:</label><input type='text' name='collector' id='collector'>"; 
+		$content.prepend( inputCollector );
+	} catch ( exception ) {
+		showError( "form.show", exception );
 	}
 };
-return { init: init };
+
+function addItemToShow( itemIndex, item ) {
+	try {
+		var $itemView = $(template).find('.item').clone();
+		$itemView.data( 'model', item );
+		insertFieldContent( $itemView.find('.question'), item.question );
+		var attr = $(item).attr('type');
+		if( attr != 'TEXT' ) {
+			var $options = $(document.createElement('span'));
+			var insertOption = function( optionIndex, option ) {
+				var $input = $('<input>' + option.value + '</option>');
+				$input.addClass('input');
+				$input.attr( 'type', INPUT_TYPE[attr] );
+				$input.attr( 'value', option.id );
+				$input.attr( 'name', itemIndex );
+				$options.append( $input );
+			};
+			$.each( item.options, insertOption );
+			$itemView.append( $options );
+		} else {
+			var $textArea = $(document.createElement('textArea') );
+			$textArea.addClass('input');
+			$textArea.attr( 'name', itemIndex );
+			$itemView.append( $textArea );
+		}
+		view.find('.items').append( $itemView );
+	} catch( exception ) {
+		showError( "form.addItemToShow", exception );
+	}
+};
+
+function insertFieldContent( field, value ) {
+	try {
+		var $field = $(field);
+		if( value == null || value == "" ) {
+			value = EMPTY_STRING;
+		}
+		$field.text( value );
+	} catch( exception ) {
+		showError( "form.insertFieldContent", exception );
+	}
+};
+
+return { show: show };
+
 } );

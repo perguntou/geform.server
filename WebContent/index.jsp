@@ -16,9 +16,9 @@
 		<hr/>
 	</div>
 	<div id="menu">
-		<input id='form' placeholder='Insert the form id' />
-		<button id='search'>Search</button>
-		<button id='report'>Report</button>
+		<input id='searchInput' placeholder='Insert the form id' />
+		<button id='searchButton'>Search</button>
+  		<button id='report'>Report</button>
 	</div>
 	<div id="content"></div>
 	<div id="dialog" title="Warning"></div>
