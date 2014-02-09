@@ -11,9 +11,10 @@ define( [
 
 	var initialize = function() {
 		try {
-			var searchInput = $('[id=searchInput]');
-			var searchButton = $('[id=searchButton]');
+			var searchInput = $('.searchInput');
+			var searchButton = $('.searchButton');
 
+			searchInput.attr( 'placeholder', 'Insert the form id' );
 			searchButton.click( function() {
 				var value = searchInput.val();
 				var id = parseInt( value );
@@ -21,7 +22,6 @@ define( [
 					showDialog( 'Enter a valid numeric id.' );
 				} else {
 					var url = "/GeForm/rest/forms/"+id;
-//					window.location.replace( url );
 					$.getJSON( url, function( result, status ) {
 						if( result == null ) {
 							var $content = $('[id=content]');

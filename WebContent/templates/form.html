@@ -1,36 +1,61 @@
-<div id="template">
+<div class="template">
+	<div class="form">
+		<div class="info">
+			<h2 class="title"></h2>
+			<span class="infoId">
+				<label>Id: </label>
+				<span class="formId"></span>
+			</span>
+			<br><span class="infoCreator">
+				<label>Creator: </label>
+				<span class="creator"></span>
+			</span>
+			<br><span class="infoCreationDate">
+				<label>Creation Date: </label>
+				<span class="creationDate"></span>
+			</span>
+			<br><span class="infoDescription">
+				<label>Description: </label>
+				<span class="description"></span>
+			</span>
+		</div>
+		<hr/>
+		<div class="buttons">
+			<div>
+			<label class="collectModeLabel"></label>
+			<!-- http://proto.io/freebies/onoff/ -->
+			<div class="onoffswitch">
+			    <input type="checkbox" class="onoffswitch-checkbox" id="collectModeSwitch">
+			    <label class="onoffswitch-label" for="collectModeSwitch">
+			        <div class="onoffswitch-inner"></div>
+			        <div class="onoffswitch-switch"></div>
+			    </label>
+			</div>
+			</div>
+			<div class="features">
+				<a class="formButton"></a>
+				<a class="reportButton"></a>
+				<a class="exportButton"></a>
+			</div>
+		</div>
+		<div class="report"></div>
+		<div class="formContent">
+			<div class="infoCollector">
+				<label>Collector: </label>
+				<input class="collector" type="text">
+			</div>
+			<form class="htmlForm">
+				<div class="items"></div>
+				<span class="htmlFormButtons">
+					<input type="submit" value="Send">
+					<input type="reset" value="Clear">
+				</span>
+			</form>
+		</div>
+	</div>
 
-  <!-- Form View -->
-  <form class="form">
-    <div class="formHeader">
-      <h2 class="title"></h2>
-      <span>
-        <label>Id: </label>
-        <span class="id"></span>
-      </span>
-      <span>
-        <label>Creator: </label>
-        <span class="creator"></span>
-      </span>
-      <span>
-        <label>Creation Date: </label>
-        <span class="creationDate"></span>
-      </span>
-      <span>
-        <label>Description: </label>
-        <span class="description"></span>
-      </span>
-    </div>
-    <div class="items"></div>
-    <span class="buttons">
-      <input type="submit" value="Send">
-      <input type="reset" value="Clear">
-    </span>
-  </form>
-
-  <!-- Item View -->
-  <div class="item">
-    <h3 class="question"></h3>
-  </div>
-
+	<!-- Item -->
+	<div class="item">
+		<h3 class="question"></h3>
+	</div>
 </div>

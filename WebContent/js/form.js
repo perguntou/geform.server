@@ -20,9 +20,10 @@ var currentForm = {};
 function submit( event )
 {
 	try {
+		var thisElement = this;
 		var itens = $(view).find('.item');
 		var complete = true;
-		var inputCollector = $('[id=content]').find('[id=collector]');
+		var inputCollector = $('[id=content]').find('.collector');
 		var collector = inputCollector.val().trim();
 		if( collector.length == 0 ) {
 			showDialog( "Identify yourself to commit this collection." );
@@ -71,9 +72,9 @@ function submit( event )
 				type: 'POST',
 				contentType: 'application/json; charset=UTF-8',
 				data : JSON.stringify( [ data ] ),
-				success: function( json ) {
+				success: function( result ) {
 					showDialog('Collection sent with success.');
-					$(view).trigger('reset');
+					thisElement.reset();
 				}
 			} );
 		}
@@ -84,30 +85,59 @@ function submit( event )
 	}
 };
 
+/**
+ * 
+ * @param form
+ */
 show = function( form )
 {
 	try {
 		currentForm = form;
 		var $content = $('[id=content]');
 		view = $(template).find( '.form' ).clone();
-		view.submit( submit );
-		$('#report').click( function() {
+
+		insertInfo( form );
+		$.each( form.item, addItemToShow );
+
+		var htmlForm = view.find('.htmlForm');
+		htmlForm.submit( submit );
+
+		var collectorInfo = view.find( '.infoCollector' );
+		collectorInfo.children( 'input' ).attr( 'placeholder', 'Insert your name' );
+		view.find( '.collectModeLabel' ).text( "Collect Mode: " );
+		var collectMode = view.find( '[id=collectModeSwitch]' );
+		collectMode.change( function() {
+			var checked = this.checked;
+			htmlForm.find( ':input' ).attr( 'disabled', !checked );
+			htmlForm.trigger( 'reset' );
+			collectorInfo.attr( 'hidden', !checked );
+			htmlForm.find( '.htmlFormButtons' ).attr( 'hidden', !checked );
+		} );
+		collectMode.trigger('change');
+
+		var reportBtn = view.find( '.reportButton' );
+		reportBtn.click( function( event ) {
 			Report.request( form.id );
 		} );
-		insertFieldContent( view.find('.id'), form.id );
-		insertFieldContent( view.find('.title'), form.title );
-		insertFieldContent( view.find('.creator'), form.creator );
-		insertFieldContent( view.find('.creationDate'), form.timestamp );
-		insertFieldContent( view.find('.description'), form.description );
-		$.each( form.item, addItemToShow );
-//		view.find(':input').attr( 'disabled',true );
+		reportBtn.attr( 'title', 'View Report' );
+
+		var exportBtn = view.find( '.exportButton' );
+		exportBtn.attr( 'href', '/GeForm/rest/forms/' + currentForm.id + '/export' );
+		exportBtn.attr( 'title', "Export Collections" );
+
 		$content.html( view );
-		var inputCollector = "<label for='collector'>Collector:</label><input type='text' name='collector' id='collector'>"; 
-		$content.prepend( inputCollector );
 	} catch ( exception ) {
 		showError( "form.show", exception );
 	}
 };
+
+function insertInfo( form ) {
+	insertFieldContent( view.find('.formId'), form.id );
+	insertFieldContent( view.find('.title'), form.title );
+	insertFieldContent( view.find('.creator'), form.creator );
+	insertFieldContent( view.find('.creationDate'), form.timestamp );
+	insertFieldContent( view.find('.description'), form.description );
+}
 
 function addItemToShow( itemIndex, item ) {
 	try {
