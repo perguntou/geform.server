@@ -3,6 +3,7 @@ package br.ufrj.del.geform.rest;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -91,6 +92,7 @@ public class FormResources {
 	}
 
 	@GET
+	@Produces( "text/tab-separated-values" )
 	@Path("{id}/export")
 	public final Response export(  @PathParam("id") long id, @Context HttpServletRequest httpRequest, @Context HttpServletResponse httpResponse ) {
 		final FormBean form = dbManager.selectFormBean( id );
@@ -99,15 +101,25 @@ public class FormResources {
 			builder = Response.noContent();
 		} else {
 			final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
-			form.setCollections( collections );
-			try {
-				final ServletOutputStream out = httpResponse.getOutputStream();
-				final OutputStreamWriter writer = new OutputStreamWriter( out, Charset.forName("UTF-16LE") );
-				Exporter.writeTsv( writer, form );
-			} catch( Exception e ) {
-				e.printStackTrace();
+			if( collections.isEmpty() ) {
+				builder = Response.noContent();
+			} else {
+				form.setCollections( collections );
+				try {
+					final String date = String.format( "%tF_%<tH-%<tM-%<tS", Calendar.getInstance().getTime() );
+					final String filename = String.format( "collections_form%s_%s", id, date );
+					final String contentDisposition = String.format( "attachment; filename=\"%s.tsv\"", filename );
+					httpResponse.addHeader( "Content-Disposition", contentDisposition );
+					httpResponse.addHeader( "Cache-Control", "no-cache" );
+
+					final ServletOutputStream out = httpResponse.getOutputStream();
+					final OutputStreamWriter writer = new OutputStreamWriter( out, Charset.forName("UTF-16LE") );
+					Exporter.writeTsv( writer, form );
+				} catch( Exception e ) {
+					e.printStackTrace();
+				}
+				builder = Response.ok();
 			}
-			builder = Response.ok();
 		}
 		final Response response = builder.build();
 		return response;
