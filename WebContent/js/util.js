@@ -37,7 +37,7 @@ define( [
 	showDialog = function( message, height, width ) {
 		try {
 			var $dialog = $( "[id=dialog]" );
-			$dialog.text( message );
+			$dialog.html( message );
 			$dialog.dialog( {
 				height: height | 140,
 				width: width | 345,
