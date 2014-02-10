@@ -16,16 +16,19 @@
 <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
+
 <style>
-  /* IE has layout issues when sorting (see #5413) */
-  .group { zoom: 1 }
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
 </style>
 <script>
   $(function() {
     $( "#accordion" )
       .accordion({
         heightStyle: "content",
-        header: "> div > h3"
+        header: "> div > h3",
+        collapsible: true
       })
       .click( function() {
         var textCreateView = new TextCreateView();
@@ -73,6 +76,9 @@
         $('.questions').append(multipleCreateView.el)
         $('.questions').accordion("refresh");    
     });
+    $('#submitForm').click( function() {
+    	window.alert("Form saved in server.");  
+    });
   });
 </script>
 </head>
@@ -86,6 +92,7 @@
     <button id="addText">Add Text Question</button>
     <button id="addSingle">Add Single Choice Question</button>
     <button id="addMultiple">Add Multiple Choice Question</button>
+    <button id="submitForm">Save</button>
 </div>
 
 <!--
