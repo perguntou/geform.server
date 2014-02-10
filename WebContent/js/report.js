@@ -19,7 +19,7 @@ var request = function( id ) {
 
 function done( result, status ) {
 	try {
-		var $content = $('[id=content]');
+		var $content = $('.reportContent');
 
 		$content.html('');
 		if( status != 'success' )
@@ -75,7 +75,7 @@ function done( result, status ) {
 				$itemQuestion.text( index );
 				$itemDiv.append( $itemQuestion );
 				var $itemQuestion = $(document.createElement('span'));
-				$itemQuestion.text( 'This item could not generate data.' );
+				$itemQuestion.text( 'This item not generate report.' );
 				$itemDiv.append( $itemQuestion );
 			} else {
 				var data = [];
@@ -110,6 +110,7 @@ function done( result, status ) {
 					}
 				} );
 			}
+			$itemDiv.prepend( '<hr/>' );
 			$content.append( $itemDiv );
 		} );
 	} catch( exception ) {

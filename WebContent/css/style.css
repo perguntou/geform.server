@@ -69,16 +69,34 @@ body {
 }
 
 .reportButton {
+	position: relative;
+	right: -40px;
+	opacity: 0;
+	height: 32px;
+	width: 32px;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+.reportButton + label {
 	background-image: url(../images/report.png);
-	background-color: transparent;
 	background-size: 32px 32px;
 	background-repeat: no-repeat;
 	background-position: center;
 	display: inline-block;
 	height: 32px;
 	width: 32px;
-	border: none;
-	cursor: pointer;
+	vertical-align: middle;
+}
+
+.reportButton:checked + label {
+	background-image:url(../images/form.png);
+	background-size: 32px 32px;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+	height: 32px;
+	width: 32px;
 	vertical-align: middle;
 }
 
@@ -92,13 +110,6 @@ body {
 	width:32px;
 	cursor: pointer;
 	vertical-align: middle;
-}
-
-.report {
-	margin: auto;
-    -moz-opacity: 1;
-    -khtml-opacity: 1;
-    opacity: 1;
 }
 
 .htmlFormButtons {

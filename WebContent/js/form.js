@@ -104,7 +104,8 @@ show = function( form )
 
 		var collectorInfo = view.find( '.infoCollector' );
 		collectorInfo.children( 'input' ).attr( 'placeholder', 'Insert your name' );
-		view.find( '.collectModeLabel' ).text( "Collect Mode: " );
+		var collectModeLabel = view.find( '.collectModeLabel' );
+		collectModeLabel.text( "Collect Mode: " );
 		var collectMode = view.find( '[id=collectModeSwitch]' );
 		collectMode.change( function() {
 			var checked = this.checked;
@@ -116,10 +117,21 @@ show = function( form )
 		collectMode.trigger('change');
 
 		var reportBtn = view.find( '.reportButton' );
-		reportBtn.click( function( event ) {
-			Report.request( form.id );
+		reportBtn.change( function( event ) {
+			if( this.checked ) {
+				Report.request( form.id );
+				$('.formContent').hide();
+				this.title = "View Items";
+				$('.onoffswitch').attr('hidden', true );
+				collectModeLabel.fadeTo( 0, 0 );
+			} else {
+				$('.reportContent').html('');
+				$('.formContent').show();
+				this.title = "View Report";
+				$('.onoffswitch').attr('hidden', false );
+				collectModeLabel.fadeTo( 0, 1 );
+			}
 		} );
-		reportBtn.attr( 'title', 'View Report' );
 
 		var exportBtn = view.find( '.exportButton' );
 		exportBtn.attr( 'href', '/GeForm/rest/forms/' + currentForm.id + '/export' );
