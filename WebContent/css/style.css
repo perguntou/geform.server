@@ -34,6 +34,18 @@ body {
 	vertical-align: top;
 }
 
+.newFormButton {
+	background-image:url(../images/button_add.png);
+	background-size:24px 24px;
+	background-repeat:no-repeat;
+	background-position:center;
+	display:inline-block;
+	height:24px;
+	width:24px;
+	cursor: pointer;
+	vertical-align: top;
+}
+
 .buttons {
 	width: 100%;
 	height: 50px;

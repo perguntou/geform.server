@@ -88,12 +88,17 @@
 		<hr/>
 	</div>
 
-<div>
-    <button id="addText">Add Text Question</button>
-    <button id="addSingle">Add Single Choice Question</button>
-    <button id="addMultiple">Add Multiple Choice Question</button>
-    <button id="submitForm">Save</button>
-</div>
+	<div>
+		<p><textarea class="formTitle" rows="2" cols="80" placeholder="Insert the form title"></textarea></p>
+		<p><textarea class="creator" rows="1" cols="80" placeholder="Insert your name"></textarea></p>
+		<p><button id="submitForm">Save</button></p>
+	</div>
+
+	<div>
+	    <button id="addText">Add Text Question</button>
+	    <button id="addSingle">Add Single Choice Question</button>
+	    <button id="addMultiple">Add Multiple Choice Question</button>
+	</div>
 
 <!--
 <div id="draggable" >
