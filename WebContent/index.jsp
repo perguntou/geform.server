@@ -17,19 +17,15 @@
 	</div>
 	<div id="menu">
 		<input class='searchInput'/>
-		<a class='searchButton'></a>
+		<a class='searchButton'></a><a class='newFormButton' href="createForm.jsp" title="Link to create a form."></a>
+		<div align="center">
+		<h1>Creation System Forms</h1>
+		<p>This site enables the creation and acquisition of data from forms made using our system. 
+		It is a quick, efficient and secure way to collect information that you need.</p>
+	</div>
 	</div>
 	<div id="content"></div>
 	<div id="dialog" title="Warning"></div>
-	
-	<div><h2><a href="createForm.jsp" title="Link to create a form.">Create Form</a></h2></div>
-	
-
-	<div align="center">
-		<h2>Sistema de Criação de Formulários</h2>
-		<p>Este site possibilita a criação e aquisição de dados de formulários feitos usando nosso sistema.
-		É uma forma rápida, eficiente e segura para a coleta de informações que precisar.</p>
-	</div>
 	
 </body>
 </html>
@@ -54,9 +50,9 @@
 			</td>
 			<td>
 				<div align="center">
-					<h2>Sistema de Criação de Formulários</h2>
-					<p>Este site possibilita a criação e aquisição de dados de formulários feitos usando nosso sistema.
-					É uma forma rápida, eficiente e segura para a coleta de informações que precisar.</p>
+					<h2>Sistema de CriaÃ§Ã£o de FormulÃ¡rios</h2>
+					<p>Este site possibilita a criaÃ§Ã£o e aquisiÃ§Ã£o de dados de formulÃ¡rios feitos usando nosso sistema.
+					Ã‰ uma forma rÃ¡pida, eficiente e segura para a coleta de informaÃ§Ãµes que precisar.</p>
 				</div>
 			</td>
 		</tr>
