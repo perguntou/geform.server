@@ -28,8 +28,36 @@
 	<div align="center">
 		<h2>Sistema de Criação de Formulários</h2>
 		<p>Este site possibilita a criação e aquisição de dados de formulários feitos usando nosso sistema.
-		É uma forma rápide, eficiente e segura para a coleta de informações que precisar.</p>
+		É uma forma rápida, eficiente e segura para a coleta de informações que precisar.</p>
 	</div>
 	
 </body>
 </html>
+<!--<table >
+		<tr>
+			<td colspan="2">
+				<div id="header">
+					<h1>GeForm Web Application</h1>
+					<hr/>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="menu">
+					<input class='searchInput'/>
+					<a class='searchButton'></a>
+				</div>
+				<div id="content"></div>
+				<div id="dialog" title="Warning"></div>
+				<div><h2><a href="createForm.jsp" title="Link to create a form.">Create Form</a></h2></div>
+			</td>
+			<td>
+				<div align="center">
+					<h2>Sistema de Criação de Formulários</h2>
+					<p>Este site possibilita a criação e aquisição de dados de formulários feitos usando nosso sistema.
+					É uma forma rápida, eficiente e segura para a coleta de informações que precisar.</p>
+				</div>
+			</td>
+		</tr>
+	</table> -->
