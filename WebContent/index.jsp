@@ -17,7 +17,7 @@
 	</div>
 	<div id="menu">
 		<input class='searchInput'/>
-		<a class='searchButton'></a><a class='newFormButton' href="createForm.jsp" title="Link to create a form."></a>
+		<a class='searchButton'></a><a class='newFormButton' href="createForm.jsp" title="Create a form"></a>
 		<div align="center">
 		<h1>Creation System Forms</h1>
 		<p>This site enables the creation and acquisition of data from forms made using our system. 

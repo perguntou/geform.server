@@ -35,7 +35,7 @@ body {
 }
 
 .newFormButton {
-	background-image:url(../images/button_add.png);
+	background-image:url(../images/add.png);
 	background-size:24px 24px;
 	background-repeat:no-repeat;
 	background-position:center;
@@ -44,6 +44,7 @@ body {
 	width:24px;
 	cursor: pointer;
 	vertical-align: top;
+	margin-left: 5px;
 }
 
 .buttons {
