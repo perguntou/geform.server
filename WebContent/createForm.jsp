@@ -6,16 +6,15 @@
 
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" href="libs/jquery/ui/themes/jquery-ui.min.css" />
+<link rel="stylesheet" href="libs/jquery/ui/themes/jquery-ui.css">
 
 <script data-main="js/main" src="libs/require/require.min.js"></script>
 <script src="libs/jquery/jquery-1.10.2.min.js"></script>
+<script src="libs/jquery/jquery-1.10.2.js"></script>
+<script src="libs/jquery/ui/jquery-ui.js"></script>
 <script src="libs/underscore/underscore.min.js"></script>
 <script src="libs/backbone/backbone.min.js"></script>
 <script src="js/createQuestionView.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-
 
 <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
