@@ -6,6 +6,7 @@ define( [
 	'underscore',
 	'backbone',
 	'form',
+	'createForm',
 	'util'
 ], function( $, _, Backbone, Form ) {
 
