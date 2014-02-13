@@ -16,6 +16,7 @@ var INPUT_TYPE = {
 
 var view = {};
 var currentForm = {};
+var wait = false;
 
 function submit( event )
 {
@@ -67,16 +68,26 @@ function submit( event )
 		if( !complete ) {
 			showDialog( "All items must be answered before commit." );
 		} else {
-			$.ajax( {
-				url: '/GeForm/rest/forms/' + currentForm.id,
-				type: 'POST',
-				contentType: 'application/json; charset=UTF-8',
-				data : JSON.stringify( [ data ] ),
-				success: function( result ) {
-					showDialog('Collection sent with success.');
-					thisElement.reset();
-				}
-			} );
+			if( wait ) {
+				window.alert("Wait! Collection is being saved on the server.");
+			} else {
+				wait = true;
+				$.ajax( {
+					url: '/GeForm/rest/forms/' + currentForm.id,
+					type: 'POST',
+					contentType: 'application/json; charset=UTF-8',
+					data : JSON.stringify( [ data ] ),
+					success: function( result ) {
+						showDialog('Collection sent with success.');
+						thisElement.reset();
+						wait = false;
+					},
+					error: function( result ) {
+						window.alert("Error sending the collection.\nTry again.");
+						wait = false;
+					}
+				} );
+			}
 		}
 	} catch ( exception ) {
 		showError( "form.submit", exception );

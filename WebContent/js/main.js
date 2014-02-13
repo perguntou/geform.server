@@ -30,6 +30,6 @@ requirejs.config( {
 
 require( [
 	'app',
-], function( App ) {
-	App.initialize();
+], function( app ) {
+	app.initialize();
 } );
