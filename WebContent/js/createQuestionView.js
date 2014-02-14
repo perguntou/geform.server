@@ -7,7 +7,7 @@ define([
 
 var TextCreateView = Backbone.View.extend({
     tagName: 'div',
-    className: 'textQuestion',
+    className: 'item',
     template: _.template('\
     					<h3>Text Question</h3>\
     					<div>\
@@ -21,7 +21,7 @@ var TextCreateView = Backbone.View.extend({
 
 var SingleCreateView = Backbone.View.extend({
     tagName: 'div',
-    className: 'singleChoiceQuestion',
+    className: 'item',
     template: _.template('\
 						<h3>Single Choice Question</h3>\
 						<div>\
@@ -29,7 +29,7 @@ var SingleCreateView = Backbone.View.extend({
 								<textarea class="question" rows="2" cols="80" placeholder="Insert the question"></textarea>\
 								<br><button id="addOption">Add Option</button>\
 							</p>\
-							<div class="single-options"></div>\
+							<div class="options"></div>\
 						</div>'),
     events: {
         "click #addOption" : "newOption"
@@ -40,13 +40,13 @@ var SingleCreateView = Backbone.View.extend({
     newOption: function( event ) {
         var singleOptionCreateView = new SingleOptionCreateView();
         singleOptionCreateView.render(this.cid);
-        this.$el.find('.single-options').append(singleOptionCreateView.el);
+        this.$el.find('.options').append(singleOptionCreateView.el);
     }
 });
 
 var MultipleCreateView = Backbone.View.extend({
     tagName: 'div',
-    className: 'multipleChoiceQuestion',
+    className: 'item',
     template: _.template('\
     					<h3>Multiple Choice Question</h3>\
     					<div>\
@@ -54,7 +54,7 @@ var MultipleCreateView = Backbone.View.extend({
     							<textarea class="question" rows="2" cols="80" placeholder="Insert the question"></textarea>\
     							<br><button id="addOption">Add Option</button>\
     						</p>\
-    						<div class="multiple-options"></div>\
+    						<div class="options"></div>\
     					</div>'),
     events: {
         "click #addOption" : "newOption"
@@ -65,7 +65,7 @@ var MultipleCreateView = Backbone.View.extend({
     newOption: function() {
         var multipleOptionCreateView = new MultipleOptionCreateView();
         multipleOptionCreateView.render();
-        this.$el.find('.multiple-options').append(multipleOptionCreateView.el);
+        this.$el.find('.options').append(multipleOptionCreateView.el);
     }
 });
 
@@ -74,11 +74,10 @@ var SingleOptionCreateView = Backbone.View.extend({
     className: 'singleChoiceOption',
     template: _.template('\
     					<input type="radio" name="<%= name %>">\
-    					<input type="text" placeholder="Insert the option">\
+    					<input class="option" type="text" placeholder="Insert the option">\
     					'),
     render: function(cid) {
         this.$el.html(this.template({name: cid}));
-        console.log(this.el);
     }
 });
 
@@ -87,7 +86,7 @@ var MultipleOptionCreateView = Backbone.View.extend({
     className: 'multipleChoiceOption',
     template: _.template('\
     					<input type="checkbox">\
-    					<input type="text" placeholder="Insert the option">\
+    					<input class="option" type="text" placeholder="Insert the option">\
     					'),
     
     render: function() {

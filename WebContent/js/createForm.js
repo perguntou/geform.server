@@ -49,62 +49,83 @@ define([
 		$('.questions').append(multipleCreateView.el);
 		$('.questions').accordion("refresh");    
 	});
+	
+	var wait = false;
 	$('#submitForm').click( function() {
-		{
 			try {
-				var view = {};
 				
-				var formTitleInput = $('.formTitle');
+				var formTitle = $('.formTitle').val().trim();
+				var description = $('.description').val().trim();
+				var creator = $('.creator').val().trim();
 				
-				var creatorInput = $('.creator');
+				var itemsElement = $('.questions');
+
+				var items = itemsElement.find('.item');
 				
-				var itensElement = $('.questions');
-				
-				
-				//########## Parei aqui ######################
-				
-				var itens = $(view).find('.item');
-				
+				var question = "";
+				var type = "";
+
 				var complete = true;
-				var inputCollector = $('[id=content]').find('.collector');
-				var collector = inputCollector.val().trim();
-				if( collector.length == 0 ) {
-					showDialog( "Identify yourself to commit this collection." );
+
+				if( formTitle.length == 0 ) {
+					alert( "Insert the form title to commit." );
 					return;
 				}
+				if( description.length == 0 ) {
+					alert( "Insert the form description to commit." );
+					return;
+				}
+				if( creator.length == 0 ) {
+					alert( "Identify yourself to commit this form." );
+					return;
+				}
+				
 				var data = {
-					form: currentForm.id,
-					collector: collector,
-					item: []
+					title: formTitle,
+					description: description,
+					creator: creator,
+					items: []
 				};
-				$.each( itens, function( index, item ) {
-					var model = $(item).data( 'model' );
-					var $input = $(item).find('.input');
-					var answer;
-					if( model.type === 'TEXT' ) {
-						answer = $input.val().trim();
-						if( answer.length != 0 ) {
-							data.item.push( {
-								answer: [answer]
-							} );
-						} else {
-							complete = false;
-						}
+				
+				var dataItem = {
+					question: question,
+					type: type,
+					options: []
+				};
+				
+				
+				$.each( items, function( index, item ) {
+					question = $(item).find('.question').val().trim();
+					var options = $(item).find('.option');
+					
+					if( question.length != 0 ) {
+						dataItem.question = question;
 					} else {
-						var $checkedList = $(item).find(':checked');
-						if( $checkedList.length != 0 ) {
-							var values = [];
-							$.each( $checkedList, function( idx, checked ) {
-								var value = $input.index( checked );
-								values.push( value );
-							} );
-							data.item.push( {
-								answer: values
-							} );
-						} else {
+						complete = false;
+					}
+					if( options.length === 0 ) {
+						dataItem.type = "text";
+					} else {
+						if ( options.length < 2 ) {
+							alert("Need 2 or more options to send a form.");
 							complete = false;
+						} else {
+							if( $(item).find('.singleChoiceOption').length !== 0 ) {
+								dataItem.type = "single";
+							} else {
+								dataItem.type = "multiple";
+							}
+							$.each( options, function( index, option ) {
+								var optionText = $(option).val().trim();
+								if ( optionText.length != 0 ) {
+									dataItem.options.push( { option: [optionText] } );
+								} else {
+									complete = false;
+								}
+							} );
 						}
 					}
+					data.items.push( { items: dataItem } );
 					return complete;
 				} );
 				if( !complete ) {
@@ -115,13 +136,15 @@ define([
 					} else {
 						wait = true;
 						$.ajax( {
-							url: '/GeForm/rest/forms/' + currentForm.id,
+							url: '/GeForm/rest/forms/',
 							type: 'POST',
 							contentType: 'application/json; charset=UTF-8',
 							data : JSON.stringify( [ data ] ),
 							success: function( result ) {
 								showDialog('Collection sent with success.');
-								itensElement.reset();
+								$.each( items, function( index, item ) {
+									$(item).remove();
+								} );
 								wait = false;
 							},
 							error: function( result ) {
@@ -133,9 +156,9 @@ define([
 				}
 			} catch ( exception ) {
 				showError( "form.submit", exception );
-			} finally {
+			} 
+			finally {
 			    event.preventDefault();
 			}
-		};
 	});
 });
