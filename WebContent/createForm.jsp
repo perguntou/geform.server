@@ -17,7 +17,8 @@
 
 	<div>
 		<p><textarea class="formTitle" rows="2" cols="80" placeholder="Insert the form title"></textarea></p>
-		<p><textarea class="creator" rows="1" cols="80" placeholder="Insert your name"></textarea></p>
+		<p><textarea class="description" rows="3" cols="80" placeholder="Insert the form description"></textarea></p>
+		<p><textarea class="creator" rows="1" cols="40" placeholder="Insert your name"></textarea></p>
 		<p><button id="submitForm">Save</button></p>
 	</div>
 
