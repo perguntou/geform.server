@@ -19,6 +19,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.Logger;
 
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
@@ -30,6 +33,8 @@ import br.ufrj.del.geform.report.Report;
 
 @Path("/forms")
 public class FormResources {
+
+	private static final Logger logger = Logger.getLogger( FormResources.class );
 
 	DatabaseManager dbManager = new DatabaseManager();
 
@@ -46,7 +51,7 @@ public class FormResources {
 	@Path("{id}")
 	public final Response get( @PathParam("id") long id, @Context HttpServletRequest httpRequest ) {
 		final FormBean form = dbManager.selectFormBean( id );
-		final ResponseBuilder builder = form != null ? Response.ok(form) : Response.noContent();
+		final ResponseBuilder builder = form != null ? Response.ok(form) : Response.status( Status.NOT_FOUND );
 		final Response response = builder.build();
 		return response;
 	}
@@ -77,52 +82,51 @@ public class FormResources {
 	@Path("{id}/report")
 	public final Response generateReport( @PathParam("id") long id, @Context HttpServletRequest httpRequest ) {
 		final FormBean form = dbManager.selectFormBean( id );
-		final ResponseBuilder builder;
 		if( form == null ) {
-			builder = Response.noContent();
-		} else {
-			final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
-			form.setCollections( collections );
-			final Analyzer analyzer = new Analyzer( form );
-			final Report report = analyzer.process();
-			builder = Response.ok( report );
+			return Response.status( Status.NOT_FOUND ).build();
 		}
-		final Response response = builder.build();
-		return response;
+
+		final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
+		if( collections.isEmpty() ) {
+			return Response.noContent().build();
+		}
+
+		form.setCollections( collections );
+		final Analyzer analyzer = new Analyzer( form );
+		final Report report = analyzer.process();
+		return Response.ok( report ).build();
 	}
 
 	@GET
-	@Produces( "text/tab-separated-values" )
+//	@Produces( "text/tab-separated-values" )
 	@Path("{id}/export")
 	public final Response export(  @PathParam("id") long id, @Context HttpServletRequest httpRequest, @Context HttpServletResponse httpResponse ) {
-		final FormBean form = dbManager.selectFormBean( id );
-		final ResponseBuilder builder;
-		if( form == null ) {
-			builder = Response.noContent();
-		} else {
+		try {
+			final FormBean form = dbManager.selectFormBean( id );
+			if( form == null ) {
+				return Response.status( Status.NOT_FOUND ).build();
+			}
+
 			final List<CollectionBean> collections = dbManager.selectCollectionBeanList( id );
 			if( collections.isEmpty() ) {
-				builder = Response.noContent();
-			} else {
-				form.setCollections( collections );
-				try {
-					final String date = String.format( "%tF_%<tH-%<tM-%<tS", Calendar.getInstance().getTime() );
-					final String filename = String.format( "collections_form%s_%s", id, date );
-					final String contentDisposition = String.format( "attachment; filename=\"%s.tsv\"", filename );
-					httpResponse.addHeader( "Content-Disposition", contentDisposition );
-					httpResponse.addHeader( "Cache-Control", "no-cache" );
-
-					final ServletOutputStream out = httpResponse.getOutputStream();
-					final OutputStreamWriter writer = new OutputStreamWriter( out, Charset.forName("UTF-16LE") );
-					Exporter.writeTsv( writer, form );
-				} catch( Exception e ) {
-					e.printStackTrace();
-				}
-				builder = Response.ok();
+				return Response.noContent().build();
 			}
+
+			form.setCollections( collections );
+			final String date = String.format( "%tF_%<tH-%<tM-%<tS", Calendar.getInstance().getTime() );
+			final String filename = String.format( "collections_form%s_%s", id, date );
+			final String contentDisposition = String.format( "attachment; filename=\"%s.tsv\"", filename );
+			httpResponse.addHeader( "Content-Disposition", contentDisposition );
+			httpResponse.addHeader( "Cache-Control", "no-cache" );
+
+			final ServletOutputStream out = httpResponse.getOutputStream();
+			final OutputStreamWriter writer = new OutputStreamWriter( out, Charset.forName("UTF-16LE") );
+			Exporter.writeTsv( writer, form );
+			return Response.ok().build();
+		} catch( final Throwable e ) {
+			logger.error( "Error exporting collections", e );
+			return Response.serverError().build();
 		}
-		final Response response = builder.build();
-		return response;
 	}
 
 }
