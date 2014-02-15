@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.apache.log4j.Logger;
 import org.supercsv.cellprocessor.Trim;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -24,6 +25,8 @@ import br.ufrj.del.geform.bean.ItemBean;
  *
  */
 public class Exporter {
+
+	private static final Logger logger = Logger.getLogger( Exporter.class );
 
 	/**
 	 * 
@@ -94,7 +97,7 @@ public class Exporter {
 				beanWriter.write( collection, processors );
 			}
 		} catch( IOException e ) {
-
+			logger.error( "Error while writing tsv.", e );
 		} finally {
 			if( beanWriter != null ) {
 				beanWriter.close();
