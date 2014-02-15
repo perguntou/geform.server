@@ -128,6 +128,7 @@ show = function( form )
 		collectMode.trigger('change');
 
 		var reportBtn = view.find( '.reportButton' );
+		reportBtn.attr( 'title', 'View Report' );
 		reportBtn.change( function( event ) {
 			if( this.checked ) {
 				Report.request( form.id );
