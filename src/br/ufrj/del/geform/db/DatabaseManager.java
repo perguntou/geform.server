@@ -13,6 +13,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
+
 import br.ufrj.del.geform.bean.AnswerBean;
 import br.ufrj.del.geform.bean.CollectionBean;
 import br.ufrj.del.geform.bean.FormBean;
@@ -28,9 +30,10 @@ import br.ufrj.del.geform.db.model.Item;
 import br.ufrj.del.geform.db.model.ItemOption;
 import br.ufrj.del.geform.db.model.Options;
 import br.ufrj.del.geform.db.model.Text;
-import br.ufrj.del.geform.db.model.Type;
 
 public class DatabaseManager {
+
+	private static final Logger logger = Logger.getLogger( DatabaseManager.class );
 
 	private static final String DB_NAME = "geformdb";
 
@@ -56,7 +59,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a choice.", e );
 		}
 	}
 
@@ -72,7 +75,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a collection.", e );
 		}
 
 		collection.setId( collectionDB.getId() );
@@ -94,7 +97,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a form", e );
 		}
 		form.setId( formDB.getId() );
 	}
@@ -112,7 +115,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a form-collection", e );
 		}
 	}
 
@@ -130,7 +133,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a form-item", e );
 		}
 	}
 
@@ -148,7 +151,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting an item", e );
 		}
 
 		item.setId( itemDB.getId() );
@@ -168,7 +171,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting an item-option", e );
 		}
 	}
 
@@ -184,7 +187,7 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting an option", e );
 		}
 
 		option.setId( optionBD.getId() );
@@ -204,11 +207,9 @@ public class DatabaseManager {
 
 			transaction.commit();
 		} catch( Exception e ) {
-			System.out.printf( "Erro: %s", e.getMessage() );
+			logger.error( "Error while inserting a text", e );
 		}
 	}
-
-	public void insertType() {}
 
 	public void insertNewForm( FormBean form ) {
 		insertForm( form );
@@ -278,48 +279,6 @@ public class DatabaseManager {
 		}
 	}
 
-	// Update functions
-	public void updateChoice() {}
-
-	public void updateCollection() {}
-
-	public void updateForm() {}
-
-	public void updateFormCollection() {}
-
-	public void updateFormItem() {}
-
-	public void updateItem() {}
-
-	public void updateItemOption() {}
-
-	public void updateOption() {}
-
-	public void updateText() {}
-
-	public void updateType() {}
-
-	public void removeChoice() {}
-
-	// Remove functions
-	public void removeCollection() {}
-
-	public void removeForm() {}
-
-	public void removeFormCollection() {}
-
-	public void removeFormItem() {}
-
-	public void removeItem() {}
-
-	public void removeItemOption() {}
-
-	public void removeOption() {}
-
-	public void removeText() {}
-
-	public void removeType() {}
-
 	// Select functions
 	public List<Choice> selectChoiceAnswerList( Long collectionID, Long itemID ) {
 		final String queryString = String.format( "SELECT c FROM choice c WHERE (collection_id = %s) AND (item_id = %s)", collectionID,itemID );
@@ -328,10 +287,6 @@ public class DatabaseManager {
 		List<Choice> choiceAnswerList  = query.getResultList();
 
 		return choiceAnswerList;
-	}
-
-	public List<Collection> selectCollection() {
-		return null;
 	}
 
 	public Collection selectCollectionById( Long collectionID ) {
@@ -353,10 +308,6 @@ public class DatabaseManager {
 			collections.add( c );
 		}
 		return collections;
-	}
-
-	public List<Form> selectForm() {
-		return null;
 	}
 
 	public Form selectFormById( Long formID ) {
@@ -381,18 +332,6 @@ public class DatabaseManager {
 		return items;
 	}
 
-	public List<FormCollection> selectFormCollection() {
-		return null;
-	}
-
-	public List<FormItem> selectFormItem() {
-		return null;
-	}
-
-	public List<Item> selectItem() {
-		return null;
-	}
-
 	public Item selectItemById( Long itemID ) {
 		Item item = new Item();
 		item = this.entityManager.find( Item.class, itemID );
@@ -415,24 +354,12 @@ public class DatabaseManager {
 		return options;
 	}
 
-	public List<ItemOption> selectItemOption() {
-		return null;
-	}
-
-	public List<Options> selectOptions() {
-		return null;
-	}
-
 	public Options selectOptionsById( Long optionID ) {
 		Options option = new Options();
 		option = this.entityManager.find( Options.class, optionID );
 		return option;
 	}
 
-	public List<Text> selectText() {
-		return null;
-	}
-	
 	public Text selectTextAnswer( Long collectionID, Long itemID ) {
 		final String queryString = String.format( "SELECT t FROM text t WHERE (collection_id = %s) AND (item_id = %s)", collectionID,itemID );
 		Query query = this.entityManager.createQuery(queryString);
@@ -441,10 +368,6 @@ public class DatabaseManager {
 		Text textAnswer = texts.get(0);
 		
 		return textAnswer;
-	}
-
-	public List<Type> selectType() {
-		return null;
 	}
 
 	public FormBean selectFormBean( Long formID ) {
