@@ -11,7 +11,7 @@ define( [
 	try {
 		var request = function( id ) {
 			try {
-				var url = "/GeForm/rest/forms/"+id+"/report";
+				var url = "rest/forms/"+id+"/report";
 				$.getJSON( url )
 				.done( done )
 				.fail( error );
