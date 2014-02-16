@@ -61,9 +61,6 @@ define([
 				var itemsElement = $('.questions');
 
 				var items = itemsElement.find('.item');
-				
-				var question = "";
-				var type = "";
 
 				var complete = true;
 
@@ -71,12 +68,12 @@ define([
 					alert( "Insert the form title to commit." );
 					return;
 				}
-				if( description.length == 0 ) {
-					alert( "Insert the form description to commit." );
-					return;
-				}
 				if( creator.length == 0 ) {
 					alert( "Identify yourself to commit this form." );
+					return;
+				}
+				if( items.length == 0 ) {
+					alert( "Insert items to commit this form." );
 					return;
 				}
 				
@@ -84,17 +81,15 @@ define([
 					title: formTitle,
 					description: description,
 					creator: creator,
-					items: []
+					item: []
 				};
-				
-				var dataItem = {
-					question: question,
-					type: type,
-					options: []
-				};
-				
 				
 				$.each( items, function( index, item ) {
+					var dataItem = {
+							question: "",
+							type: "",
+							options: []
+					};
 					question = $(item).find('.question').val().trim();
 					var options = $(item).find('.option');
 					
@@ -103,45 +98,46 @@ define([
 					} else {
 						complete = false;
 					}
-					if( options.length === 0 ) {
-						dataItem.type = "text";
+					if( options.length == 0 ) {
+						dataItem.type = "TEXT";
+						dataItem.options = null;
 					} else {
 						if ( options.length < 2 ) {
 							alert("Need 2 or more options to send a form.");
 							complete = false;
 						} else {
-							if( $(item).find('.singleChoiceOption').length !== 0 ) {
-								dataItem.type = "single";
+							if( $(item).find('.singleChoiceOption').length != 0 ) {
+								dataItem.type = "SINGLE_CHOICE";
 							} else {
-								dataItem.type = "multiple";
+								dataItem.type = "MULTIPLE_CHOICE";
 							}
 							$.each( options, function( index, option ) {
 								var optionText = $(option).val().trim();
 								if ( optionText.length != 0 ) {
-									dataItem.options.push( { option: [optionText] } );
+									dataItem.options.push( { value: optionText } );
 								} else {
 									complete = false;
 								}
 							} );
 						}
 					}
-					data.items.push( { items: dataItem } );
+					data.item.push( dataItem );
 					return complete;
 				} );
 				if( !complete ) {
-					showDialog( "All items must be answered before commit." );
+					alert( "All items must be answered before commit." );
 				} else {
 					if( wait ) {
 						window.alert("Wait! Collection is being saved on the server.");
 					} else {
 						wait = true;
 						$.ajax( {
-							url: '/GeForm/rest/forms/',
+							url: 'rest/forms/',
 							type: 'POST',
 							contentType: 'application/json; charset=UTF-8',
-							data : JSON.stringify( [ data ] ),
+							data : JSON.stringify( data ),
 							success: function( result ) {
-								showDialog('Collection sent with success.');
+								alert('Collection sent with success.');
 								$.each( items, function( index, item ) {
 									$(item).remove();
 								} );
