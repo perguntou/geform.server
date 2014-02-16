@@ -73,7 +73,7 @@ function submit( event )
 			} else {
 				wait = true;
 				$.ajax( {
-					url: '/GeForm/rest/forms/' + currentForm.id,
+					url: 'rest/forms/' + currentForm.id,
 					type: 'POST',
 					contentType: 'application/json; charset=UTF-8',
 					data : JSON.stringify( [ data ] ),
@@ -146,7 +146,7 @@ show = function( form )
 		} );
 
 		var exportBtn = view.find( '.exportButton' );
-		exportBtn.attr( 'href', '/GeForm/rest/forms/' + currentForm.id + '/export' );
+		exportBtn.attr( 'href', 'rest/forms/' + currentForm.id + '/export' );
 		exportBtn.attr( 'title', "Export Collections" );
 
 		$content.html( view );

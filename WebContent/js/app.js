@@ -42,7 +42,7 @@ define( [
 					}
 				};
 
-				var url = "/GeForm/rest/forms/"+id;
+				var url = "rest/forms/"+id;
 				$.getJSON( url )
 				.done( success )
 				.fail( error );
