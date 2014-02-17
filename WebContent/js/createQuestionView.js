@@ -74,9 +74,10 @@ var SingleCreateView = Backbone.View.extend({
         this.$el.html(this.template());
     },
     newOption: function( event ) {
-        var singleOptionCreateView = new SingleOptionCreateView();
-        singleOptionCreateView.render(this.cid);
+        var singleOptionCreateView = new SingleOptionCreateView( { attributes: {item : this } } );
+        singleOptionCreateView.render();
         this.$el.find(".options").append(singleOptionCreateView.el);
+        verifyChoiceItem(this);
     },
     deleteItem: function() {
         this.remove();
@@ -87,32 +88,8 @@ var SingleCreateView = Backbone.View.extend({
         this.$(".showQuestion").html( showQuestion );
         $('.questions').accordion("refresh");
     },
-    //############## Ainda falta corrigir. Botıes n„o fazer verify. #########
     verify: function() {
-    	var ready = "<a class = \"itemReady\"></a>";
-    	var complete = false;
-    	if ( this.$(".question").val().trim().length != 0 ) {
-    		var options = this.$el.find(".option");
-    		if ( options.length > 1 ) {
-    			var noEmpty = true;
-    			$.each( options, function( index, option ){
-    				if ( $(option).val().trim().length == 0 ){
-    					noEmpty = false;
-    				}
-    			});
-    			if ( noEmpty ) {
-    				complete = true;
-    			}
-    		}
-    	}
-    	if ( complete ) {
-    		if ( (this.$el.find(".itemReady").length == 0) ) {
-    			this.$(".showQuestion").prepend( ready );
-    	        $('.questions').accordion("refresh");
-    		}
-    	} else {
-    		this.$(".itemReady").remove();
-    	}
+    	verifyChoiceItem(this);
     }
 });
 
@@ -135,15 +112,17 @@ var MultipleCreateView = Backbone.View.extend({
     events: {
         "click #addOption" : "newOption",
         "click .deleteItem" : "deleteItem",
-        "change .question" : "updateShowQuestion"
+        "change .question" : "updateShowQuestion",
+        "change" : "verify"
     },
     render: function() {
         this.$el.html(this.template());
     },
     newOption: function() {
-        var multipleOptionCreateView = new MultipleOptionCreateView();
+        var multipleOptionCreateView = new MultipleOptionCreateView( { attributes: {item : this } } );
         multipleOptionCreateView.render();
         this.$el.find(".options").append(multipleOptionCreateView.el);
+        verifyChoiceItem(this);
     },
     deleteItem: function() {
         this.remove();
@@ -153,6 +132,9 @@ var MultipleCreateView = Backbone.View.extend({
     						"<a class=\"deleteItem\" title=\"Delete this item\"></a>";
         this.$(".showQuestion").html( showQuestion );
         $('.questions').accordion("refresh");
+    },
+    verify: function() {
+    	verifyChoiceItem(this);
     }
 });
 
@@ -167,11 +149,14 @@ var SingleOptionCreateView = Backbone.View.extend({
     events: {
         "click .deleteOption": "deleteOption"
     },
-    render: function(cid) {
-        this.$el.html(this.template({name: cid}));
+    render: function() {
+    	var name = this.attributes.item.cid;
+        this.$el.html(this.template({name: name }));
     },
+  //############## Ainda falta corrigir. Boat√£o n√£o fazendo verify. #########
     deleteOption: function() {
         this.remove();
+        verifyChoiceItem( this.attributes.item );
     }
 });
 
@@ -191,6 +176,7 @@ var MultipleOptionCreateView = Backbone.View.extend({
     },
     deleteOption: function() {
         this.remove();
+        verifyChoiceItem( this.attributes.item );
     }
 });
 
@@ -201,5 +187,32 @@ return {
 	SingleOptionCreateView: SingleOptionCreateView,
 	MultipleOptionCreateView: MultipleOptionCreateView
 };
+
+function verifyChoiceItem (view) {
+	var ready = "<a class = \"itemReady\"></a>";
+	var complete = false;
+	if ( view.$(".question").val().trim().length != 0 ) {
+		var options = view.$el.find(".option");
+		if ( options.length > 1 ) {
+			var noEmpty = true;
+			$.each( options, function( index, option ){
+				if ( $(option).val().trim().length == 0 ){
+					noEmpty = false;
+				}
+			});
+			if ( noEmpty ) {
+				complete = true;
+			}
+		}
+	}
+	if ( complete ) {
+		if ( (view.$el.find(".itemReady").length == 0) ) {
+			view.$(".showQuestion").prepend( ready );
+	        $('.questions').accordion("refresh");
+		}
+	} else {
+		view.$(".itemReady").remove();
+	}
+}
 
 });
