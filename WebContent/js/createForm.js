@@ -47,7 +47,11 @@ define([
 		var multipleCreateView = new CreateQuestionView.MultipleCreateView();
 		multipleCreateView.render();
 		$('.questions').append(multipleCreateView.el);
-		$('.questions').accordion("refresh");    
+		$('.questions').accordion("refresh");
+	});
+	
+	$('#cancel').click( function() {
+		window.location.href = "index.jsp";
 	});
 	
 	var wait = false;
@@ -57,10 +61,8 @@ define([
 				var formTitle = $('.formTitle').val().trim();
 				var description = $('.description').val().trim();
 				var creator = $('.creator').val().trim();
-				
-				var itemsElement = $('.questions');
 
-				var items = itemsElement.find('.item');
+				var items = $('.questions').find('.item');
 
 				var complete = true;
 
@@ -98,7 +100,7 @@ define([
 					} else {
 						complete = false;
 					}
-					if( options.length == 0 ) {
+					if( item.attributes.type.value == "TEXT" ) {
 						dataItem.type = "TEXT";
 						dataItem.options = null;
 					} else {
@@ -106,9 +108,10 @@ define([
 							alert("Need 2 or more options to send a form.");
 							complete = false;
 						} else {
-							if( $(item).find('.singleChoiceOption').length != 0 ) {
+							if ( item.attributes.type.value == "SINGLE_CHOICE" ) {
 								dataItem.type = "SINGLE_CHOICE";
-							} else {
+							} 
+							if ( item.attributes.type.value == "MULTIPLE_CHOICE" ) {
 								dataItem.type = "MULTIPLE_CHOICE";
 							}
 							$.each( options, function( index, option ) {
@@ -125,10 +128,10 @@ define([
 					return complete;
 				} );
 				if( !complete ) {
-					alert( "All items must be answered before commit." );
+					alert( "All items must be filled before commit." );
 				} else {
 					if( wait ) {
-						window.alert("Wait! Collection is being saved on the server.");
+						window.alert("Wait! Form is being saved on the server.");
 					} else {
 						wait = true;
 						$.ajax( {
@@ -137,14 +140,13 @@ define([
 							contentType: 'application/json; charset=UTF-8',
 							data : JSON.stringify( data ),
 							success: function( result ) {
-								alert('Collection sent with success.');
-								$.each( items, function( index, item ) {
-									$(item).remove();
-								} );
+								alert("Form sent with success.\nForm ID is " + result);
+								//document.location.reload(); //Mostrar a mesma página.
+								window.location.href = "index.jsp"; //Mostrar a página inicial.
 								wait = false;
 							},
 							error: function( result ) {
-								window.alert("Error sending the collection.\nTry again.");
+								window.alert("Error sending the form.\nTry again.");
 								wait = false;
 							}
 						} );

@@ -16,10 +16,10 @@
 	</div>
 
 	<div>
-		<textarea class="formTitle" rows="2" cols="80" placeholder="Insert the form title"></textarea>
-		<textarea class="description" rows="3" cols="80" placeholder="Insert the form description"></textarea>
-		<textarea class="creator" rows="1" cols="40" placeholder="Insert your name"></textarea>
-		<p><button id="submitForm">Save</button></p>
+		<p><textarea class="formTitle" rows="2" cols="80" placeholder="Insert the form title"></textarea></p>
+		<p><textarea class="description" rows="3" cols="80" placeholder="Insert the form description"></textarea></p>
+		<p><textarea class="creator" rows="1" cols="40" placeholder="Insert your name"></textarea></p>
+		<p><button id="submitForm">Save</button><button id="cancel">Cancel</button></p>
 	</div>
 
 	<div>
