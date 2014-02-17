@@ -20,17 +20,6 @@ define([
 		}
 	});
 
-//	$( "#draggable" ).draggable({
-//		connectToSortable: "#accordion",
-//		helper: "clone",
-//		revert: "invalid"
-//	})
-//	.accordion({
-//		heightStyle: "content",
-//		header: "> div > h3"  
-//	});
-//	$( "h3" ).disableSelection();
-
 	$('#addText').click( function() {
 		var textCreateView = new CreateQuestionView.TextCreateView();
 		textCreateView.render();
@@ -87,6 +76,7 @@ define([
 				};
 				
 				$.each( items, function( index, item ) {
+					$(item).find('.showQuestion').css("color" , "");
 					var dataItem = {
 							question: "",
 							type: "",
@@ -98,6 +88,10 @@ define([
 					if( question.length != 0 ) {
 						dataItem.question = question;
 					} else {
+						$(item).find('.showQuestion').css("color" , "red");
+						var showQuestion = "Insert the question text" +
+											"<a class=\"deleteItem\" title=\"Delete this item\"></a>";
+						$(item).find('.showQuestion').html( showQuestion );
 						complete = false;
 					}
 					if( item.attributes.type.value == "TEXT" ) {
@@ -106,6 +100,7 @@ define([
 					} else {
 						if ( options.length < 2 ) {
 							alert("Need 2 or more options to send a form.");
+							$(item).find('.showQuestion').css("color" , "red");
 							complete = false;
 						} else {
 							if ( item.attributes.type.value == "SINGLE_CHOICE" ) {
@@ -119,13 +114,13 @@ define([
 								if ( optionText.length != 0 ) {
 									dataItem.options.push( { value: optionText } );
 								} else {
+									$(item).find('.showQuestion').css("color" , "red");
 									complete = false;
 								}
 							} );
 						}
 					}
 					data.item.push( dataItem );
-					return complete;
 				} );
 				if( !complete ) {
 					alert( "All items must be filled before commit." );
@@ -141,8 +136,8 @@ define([
 							data : JSON.stringify( data ),
 							success: function( result ) {
 								alert("Form sent with success.\nForm ID is " + result);
-								//document.location.reload(); //Mostrar a mesma página.
-								window.location.href = "index.jsp"; //Mostrar a página inicial.
+								//document.location.reload(); //Mostrar a mesma pï¿½gina.
+								window.location.href = "index.jsp"; //Mostrar a pï¿½gina inicial.
 								wait = false;
 							},
 							error: function( result ) {
