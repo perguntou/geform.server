@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div id="header">
-		<h1>GeForm Web Application</h1>
+		<h1>GeForm Web Application - New Form</h1>
 		<hr/>
 	</div>
 
