@@ -19,9 +19,9 @@
 		<input class='searchInput'/>
 		<a class='searchButton'></a><a class='newFormButton' href="createForm.jsp" title="Create a form"></a>
 		<div align="center">
-		<h1>Creation System Forms</h1>
-		<p>This site enables the creation and acquisition of data from forms made using our system. 
-		It is a quick, efficient and secure way to collect information that you need.</p>
+		<h1>Generic e-Form System</h1>
+		<p>This site allows the creation and acquisition of data from forms made ​​with our system 
+		and gives users simplified data reports. It is a quick, efficient and secure way to collect information.</p>
 	</div>
 	</div>
 	<div id="content"></div>
