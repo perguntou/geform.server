@@ -16,7 +16,7 @@ var TextCreateView = Backbone.View.extend({
     					</h3>\
     					<div>\
     						<p><textarea class="question" rows="2" cols="80" placeholder="Insert the question"></textarea></p>\
-    						<p><textarea id="answer" rows="4" cols="80"></textarea></p>\
+    						<p><textarea id="answer" rows="4" cols="80" disabled></textarea></p>\
     					</div>'),
     events: {
         "click .deleteItem" : "deleteItem",

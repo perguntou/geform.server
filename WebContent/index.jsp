@@ -12,48 +12,20 @@
 </head>
 <body>
 	<div id="header">
-		<h1>GeForm Web Application</h1>
+		<h1 class="appTitle">GeForm Web Application</h1>
 		<hr/>
 	</div>
 	<div id="menu">
 		<input class='searchInput'/>
-		<a class='searchButton'></a><a class='newFormButton' href="createForm.jsp" title="Create a form"></a>
-		<div align="center">
-		<h1>Generic e-Form System</h1>
-		<p>This site allows the creation and acquisition of data from forms made ​​with our system 
-		and gives users simplified data reports. It is a quick, efficient and secure way to collect information.</p>
-	</div>
+		<a class='searchButton'></a><a class='newFormButton'></a>
+		<hr/>
 	</div>
 	<div id="content"></div>
+	<footer id="footer">
+		<hr/>
+		<p><b>Generic e-Form System</b> - Allows the creation and acquisition of data from forms made ​​with our system 
+		and gives users simplified data reports. It is a quick and efficient way to collect information.</p>
+	</footer>
 	<div id="dialog" title="Warning"></div>
-	
 </body>
 </html>
-<!--<table >
-		<tr>
-			<td colspan="2">
-				<div id="header">
-					<h1>GeForm Web Application</h1>
-					<hr/>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="menu">
-					<input class='searchInput'/>
-					<a class='searchButton'></a>
-				</div>
-				<div id="content"></div>
-				<div id="dialog" title="Warning"></div>
-				<div><h2><a href="createForm.jsp" title="Link to create a form.">Create Form</a></h2></div>
-			</td>
-			<td>
-				<div align="center">
-					<h2>Sistema de Criação de Formulários</h2>
-					<p>Este site possibilita a criação e aquisição de dados de formulários feitos usando nosso sistema.
-					É uma forma rápida, eficiente e segura para a coleta de informações que precisar.</p>
-				</div>
-			</td>
-		</tr>
-	</table> -->

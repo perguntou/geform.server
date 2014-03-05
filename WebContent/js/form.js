@@ -5,7 +5,6 @@ define([
 	'jquery',
 	'text!templates/form.html',
 	'report',
-	'jquery_ui'
 ], function( $, template, Report ) {
 
 var INPUT_TYPE = {
@@ -69,7 +68,7 @@ function submit( event )
 			showDialog( "All items must be answered before commit." );
 		} else {
 			if( wait ) {
-				window.alert("Wait! Collection is being saved on the server.");
+				showDialog( "Wait! Collection is being saved on the server." );
 			} else {
 				wait = true;
 				$.ajax( {
@@ -83,7 +82,7 @@ function submit( event )
 						wait = false;
 					},
 					error: function( result ) {
-						window.alert("Error sending the collection.\nTry again.");
+						showDialog( "Error sending the collection.\nTry again." );
 						wait = false;
 					}
 				} );
@@ -93,6 +92,40 @@ function submit( event )
 		showError( "form.submit", exception );
 	} finally {
 	    event.preventDefault();
+	}
+};
+
+request = function( id )
+{
+	try {
+		if( isNaN( id ) ) {
+			showDialog( 'Enter a valid numeric id.' );
+			return false;
+		}
+
+		var success = function( data, status, xhr ) {
+			try {
+				show( data );
+			} catch( exception ) {
+				showError( "form.request.success", exception );
+			}
+		};
+		var error = function( jqxhr, textStatus, error ) {
+			try {
+				var $content = $('[id=content]');
+				$content.html("");
+				showDialog( "Could not get the form (id = " + id + ")" );
+			} catch( exception ) {
+				showError( "form.request.error", exception );
+			}
+		};
+
+		var url = "rest/forms/"+id;
+		$.getJSON( url )
+		.done( success )
+		.fail( error );
+	} catch( exception ) {
+		showError( "form.request", exception );
 	}
 };
 
@@ -205,6 +238,7 @@ function insertFieldContent( field, value ) {
 	}
 };
 
-return { show: show };
+return { show: show,
+		 request: request };
 
 } );

@@ -1,5 +1,6 @@
 define( [
-	'jquery'
+	'jquery',
+	'jquery_ui'
 ], function( $ ) {
 
 	EMPTY_STRING = "---";
@@ -34,18 +35,20 @@ define( [
 	 * @param height
 	 * @param width
 	 */
-	showDialog = function( message, height, width ) {
+	showDialog = function( message, height, width, callback ) {
 		try {
 			var $dialog = $( "[id=dialog]" );
-			$dialog.html( message );
+			$dialog.text( message );
+			callback = callback || function() { $dialog.dialog('close'); };
 			$dialog.dialog( {
-				height: height | 140,
-				width: width | 345,
+				height: height || 200,
+				width: width || 345,
 				autoOpen: true,
-				modal: true
+				modal: true,
+				buttons: { Ok: callback	}
 			} );
 		} catch( exception ) {
-			showError( "", exception );
+			showError( "util.showDialog", exception );
 		}
 	};
 

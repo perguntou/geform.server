@@ -8,44 +8,19 @@ define( [
 	'form',
 	'createForm',
 	'util'
-], function( $, _, Backbone, Form ) {
+], function( $, _, Backbone, Form, CreateForm ) {
 	try {
 		var ENTER_KEY_CODE = 13;
 
 		var searchInput = $('.searchInput');
 		var searchButton = $('.searchButton');
+		var newFormButton = $('.newFormButton');
 
 		function clickHandler( event ) {
 			try {
 				var value = searchInput.val();
 				var id = parseInt( value );
-
-				if( isNaN( id ) ) {
-					showDialog( 'Enter a valid numeric id.' );
-					return false;
-				}
-
-				var success = function( data, status, xhr ) {
-					try {
-						Form.show( data );
-					} catch( exception ) {
-						showError( "app.clickHandler.success", exception );
-					}
-				};
-				var error = function( jqxhr, textStatus, error ) {
-					try {
-						var $content = $('[id=content]');
-						$content.html("");
-						showDialog( "Could not get the form (id = " + id + ")" );
-					} catch( exception ) {
-						showError( "app.clickHandler.error", exception );
-					}
-				};
-
-				var url = "rest/forms/"+id;
-				$.getJSON( url )
-				.done( success )
-				.fail( error );
+				Form.request( id );
 			} catch( exception ) {
 				showError( "app.clickHandler", exception );
 			}
@@ -61,13 +36,22 @@ define( [
 						searchButton.click();
 					}
 				} );
+
+				newFormButton.attr( 'title', 'Create a form' );
+				newFormButton.click( CreateForm.show );
 			} catch( exception ) {
 				showError( "app.initialize", exception );
 			}
 		};
 
+		var reset = function() {
+			$('[id=content]').html('');
+			$('[id=header]').find('.appTitle').text( 'GeForm Web Application' );
+		};
+
 		return {
-			initialize: initialize
+			initialize: initialize,
+			reset: reset
 		};
 	} catch( exception ) {
 		showError( "app", exception );

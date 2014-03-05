@@ -5,6 +5,7 @@ html {
 	height: 100%;
 	margin: 0 auto;
 	min-width: 500px;
+	min-height: 200px;
 }
 
 body {
@@ -20,6 +21,11 @@ body {
 	text-indent: 15px;
 	position: relative;
 	top: 10px;
+}
+
+#footer {
+	width: 100%;
+	float: left;
 }
 
 .searchButton {
