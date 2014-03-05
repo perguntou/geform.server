@@ -1,52 +1,17 @@
 define([
 	'jquery',
+	'text!templates/creation.html',
 	'createQuestionView',
-	'jquery_ui'
-], function( $, CreateQuestionView ) {
+	'form',
+	'jquery_ui',
+	'util'
+], function( $, template, CreateQuestionView, Form ) {
+	try{
+		var content = $('[id=content]');
+		var wait = false;
 
-	$( "#accordion" )
-	.accordion({
-		heightStyle: "content",
-		header: "> div > h3",
-		collapsible: true
-	})
-	.sortable({
-		axis: "y",
-		handle: "h3",
-		stop: function( event, ui ) {
-			// IE doesn't register the blur when sorting
-			// so trigger focusout handlers to remove .ui-state-focus
-			ui.item.children( "h3" ).triggerHandler( "focusout" );
-		}
-	});
-
-	$('#addText').click( function() {
-		var textCreateView = new CreateQuestionView.TextCreateView();
-		textCreateView.render();
-		$('.questions').append(textCreateView.el);
-		$('.questions').accordion("refresh");        
-	});
-	$('#addSingle').click( function() {
-		var singleCreateView = new CreateQuestionView.SingleCreateView();
-		singleCreateView.render();
-		$('.questions').append(singleCreateView.el);
-		$('.questions').accordion("refresh");        
-	});
-	$('#addMultiple').click( function() {
-		var multipleCreateView = new CreateQuestionView.MultipleCreateView();
-		multipleCreateView.render();
-		$('.questions').append(multipleCreateView.el);
-		$('.questions').accordion("refresh");
-	});
-	
-	$('#cancel').click( function() {
-		window.location.href = "index.jsp";
-	});
-	
-	var wait = false;
-	$('#submitForm').click( function() {
+		function submit( event ) {
 			try {
-				
 				var formTitle = $('.formTitle').val().trim();
 				var description = $('.description').val().trim();
 				var creator = $('.creator').val().trim();
@@ -56,25 +21,25 @@ define([
 				var complete = true;
 
 				if( formTitle.length == 0 ) {
-					alert( "Insert the form title to commit." );
+					showDialog( "The form title is missing." );
 					return;
 				}
 				if( creator.length == 0 ) {
-					alert( "Identify yourself to commit this form." );
+					showDialog( "Identify yourself to send this form." );
 					return;
 				}
 				if( items.length == 0 ) {
-					alert( "Insert items to commit this form." );
+					showDialog( "Insert at least one item to send this form." );
 					return;
 				}
-				
+
 				var data = {
 					title: formTitle,
 					description: description,
 					creator: creator,
 					item: []
 				};
-				
+
 				$.each( items, function( index, item ) {
 					$(item).find('.showQuestion').css("color" , "");
 					var dataItem = {
@@ -84,7 +49,7 @@ define([
 					};
 					question = $(item).find('.question').val().trim();
 					var options = $(item).find('.option');
-					
+
 					if( question.length != 0 ) {
 						dataItem.question = question;
 					} else {
@@ -99,13 +64,13 @@ define([
 						dataItem.options = null;
 					} else {
 						if ( options.length < 2 ) {
-							alert("Need 2 or more options to send a form.");
+							showDialog( "Need 2 or more options to send the form." );
 							$(item).find('.showQuestion').css("color" , "red");
 							complete = false;
 						} else {
 							if ( item.attributes.type.value == "SINGLE_CHOICE" ) {
 								dataItem.type = "SINGLE_CHOICE";
-							} 
+							}
 							if ( item.attributes.type.value == "MULTIPLE_CHOICE" ) {
 								dataItem.type = "MULTIPLE_CHOICE";
 							}
@@ -122,11 +87,9 @@ define([
 					}
 					data.item.push( dataItem );
 				} );
-				if( !complete ) {
-					alert( "All items must be filled before commit." );
-				} else {
+				if( complete ) {
 					if( wait ) {
-						window.alert("Wait! Form is being saved on the server.");
+						showDialog( "Wait! Form is being saved on the server." );
 					} else {
 						wait = true;
 						$.ajax( {
@@ -134,14 +97,15 @@ define([
 							type: 'POST',
 							contentType: 'application/json; charset=UTF-8',
 							data : JSON.stringify( data ),
-							success: function( result ) {
-								alert("Form sent with success.\nForm ID is " + result);
-								//document.location.reload(); //Mostrar a mesma p�gina.
-								window.location.href = "index.jsp"; //Mostrar a p�gina inicial.
-								wait = false;
+							success: function( data, textStatus, jqXHR ) {
+								showDialog( "Form created with success." );
+								App.reset();
+								Form.request( data );
 							},
-							error: function( result ) {
-								window.alert("Error sending the form.\nTry again.");
+							error: function( jqXHR, textStatus, errorThrown ) {
+								showDialog( "Error sending the form.\nTry again." );
+							},
+							complete: function( jqXHR, textStatus ) {
 								wait = false;
 							}
 						} );
@@ -149,9 +113,67 @@ define([
 				}
 			} catch ( exception ) {
 				showError( "form.submit", exception );
-			} 
+			}
 			finally {
 			    event.preventDefault();
 			}
-	});
+		};
+
+		var show = function() {
+			try {
+				$('.appTitle').text( 'GeForm Web Application - New Form' );
+				var view = $(template).find( '.creation' ).clone();
+				var accordion = view.find( "#accordion" );
+				accordion.accordion({
+					heightStyle: "content",
+					header: "> div > h3",
+					collapsible: true
+				});
+				accordion.sortable({
+					axis: "y",
+					handle: "h3",
+					stop: function( event, ui ) {
+						// IE doesn't register the blur when sorting
+						// so trigger focusout handlers to remove .ui-state-focus
+						ui.item.children( "h3" ).triggerHandler( "focusout" );
+					}
+				});
+
+				var questions = view.find('.questions');
+				view.find('#addText').click( function() {
+					var textCreateView = new CreateQuestionView.TextCreateView();
+					textCreateView.render();
+					questions.append( textCreateView.el );
+					questions.accordion( "refresh" );
+				});
+				view.find('#addSingle').click( function() {
+					var singleCreateView = new CreateQuestionView.SingleCreateView();
+					singleCreateView.render();
+					questions.append( singleCreateView.el );
+					questions.accordion( "refresh" );
+				});
+				view.find('#addMultiple').click( function() {
+					var multipleCreateView = new CreateQuestionView.MultipleCreateView();
+					multipleCreateView.render();
+					questions.append( multipleCreateView.el );
+					questions.accordion( "refresh" );
+				});
+
+				view.find('#cancel').click( function() {
+					App.reset();
+				});
+
+				wait = false;
+				view.find('#submitForm').click( submit );
+				content.html( view );
+			} catch( exception ) {
+			showError( "createForm.show", exception );
+			}
+		};
+
+		return { show: show };
+
+	} catch( exception ) {
+		showError( "createForm", exception );
+	}
 });

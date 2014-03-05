@@ -31,5 +31,6 @@ requirejs.config( {
 require( [
 	'app',
 ], function( app ) {
+	App = app;
 	app.initialize();
 } );
