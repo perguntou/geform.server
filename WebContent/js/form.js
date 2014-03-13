@@ -112,14 +112,13 @@ request = function( id )
 		};
 		var error = function( jqxhr, textStatus, error ) {
 			try {
-				var $content = $('[id=content]');
-				$content.html("");
 				showDialog( "Could not get the form (id = " + id + ")" );
 			} catch( exception ) {
 				showError( "form.request.error", exception );
 			}
 		};
 
+		App.reset();
 		var url = "rest/forms/"+id;
 		$.getJSON( url )
 		.done( success )
